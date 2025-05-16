@@ -1,3 +1,4 @@
+import { useDarkTheme } from "@/hooks/useDarkTheme";
 import { getMonthName } from "@/lib/DateUtils";
 import type { ChartData, ChartOptions } from "chart.js";
 import { useMemo } from "react";
@@ -6,6 +7,7 @@ import { useTransactions } from "../hooks/useTransactions";
 
 export default function ExpensesTrend() {
   const { transactions } = useTransactions(false);
+  const isDarkTheme = useDarkTheme();
 
   const data: Record<string, number> = useMemo(() => {
     const temporal: Record<string, number> = {};
@@ -46,6 +48,8 @@ export default function ExpensesTrend() {
     [data]
   );
 
+  const textColor = isDarkTheme ? "#fafafa" : "#0a0a0a";
+
   const chartOptions: ChartOptions<"line"> = useMemo(
     () => ({
       // animations: {
@@ -61,7 +65,7 @@ export default function ExpensesTrend() {
         y: {
           type: "logarithmic",
           ticks: {
-            color: "#fff",
+            color: textColor,
             font: {
               size: 14,
               family: "Moderustic",
@@ -71,7 +75,7 @@ export default function ExpensesTrend() {
         },
         x: {
           ticks: {
-            color: "#fff",
+            color: textColor,
             font: {
               size: 14,
               family: "Moderustic",
@@ -79,7 +83,7 @@ export default function ExpensesTrend() {
           },
         },
       },
-      color: "#FFF",
+      color: textColor,
       responsive: true,
       plugins: {
         legend: {

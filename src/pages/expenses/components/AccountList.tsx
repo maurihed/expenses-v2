@@ -34,15 +34,17 @@ function AccountList() {
   }
 
   return (
-    <ExpenseSection>
+    <ExpenseSection className="py-4 grid grid-cols-1 gap-4">
       {accounts.map((account) => (
-        <div className="flex items-center justify-between p-4 gap-4" key={account.id}>
+        <div className="flex items-center justify-between px-4 gap-4" key={account.id}>
           <div className="bg-green-700 rounded-full p-2 flex items-center justify-center">
             <Wallet />
           </div>
           <div className="grow">
             <p className="font-bold">{account.name}</p>
-            <p className="text-slate-300">{formatMoney(account.balance)}</p>
+            <p className="text-slate-600 dark:text-slate-300">
+              {formatMoney(account.balance)}
+            </p>
           </div>
           <Button
             variant="outline"
@@ -54,7 +56,7 @@ function AccountList() {
         </div>
       ))}
       <Separator />
-      <div className="flex items-center justify-between p-4 gap-4">
+      <div className="flex items-center justify-between px-4 gap-4">
         <span>Total</span>
         <span className="font-bold">
           {formatMoney(accounts.reduce((acc, account) => acc + account.balance, 0))}

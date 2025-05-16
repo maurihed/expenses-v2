@@ -8,11 +8,13 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="min-h-screen w-full max-w-7xl mx-auto px-4 pb-[80px]">{children}</div>
-      <nav className="bg-slate-900 text-white py-3 text-center w-full fixed bottom-0">
+      <nav className="bg-card text-slate-800 dark:text-white py-3 text-center w-full fixed bottom-0">
         <ul className="flex justify-center gap-4">
           <li>
             <NavLink
-              className={({ isActive }) => cn(buttonCommonClasses, { "bg-primary": isActive })}
+              className={({ isActive }) =>
+                cn(buttonCommonClasses, { "bg-primary text-white": isActive })
+              }
               to="/expenses"
             >
               <CircleDollarSign className="mr-3" />
@@ -30,7 +32,9 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
           </li> */}
           <li>
             <NavLink
-              className={({ isActive }) => cn(buttonCommonClasses, { "bg-primary": isActive })}
+              className={({ isActive }) =>
+                cn(buttonCommonClasses, { "bg-primary text-white": isActive })
+              }
               to="/workouts"
             >
               <Dumbbell className="mr-3" />

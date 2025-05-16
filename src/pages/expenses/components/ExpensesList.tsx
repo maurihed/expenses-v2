@@ -87,7 +87,7 @@ function ExpensesList() {
             <p className="text-center">
               No hay transacciones que cumplan con la busqueda, intenta
             </p>
-            <Button className="border-b border-white" size="sm" onClick={cleanFilters}>
+            <Button size="sm" onClick={cleanFilters}>
               Limpiar filtros
             </Button>
           </div>
@@ -96,7 +96,7 @@ function ExpensesList() {
           <div key={_date}>
             <h3 className="text-left mb-4">
               <span className="font-bold">{formatTransactionDate(_date)}</span>
-              <span className="text-slate-400 text-sm ml-2">
+              <span className="text-slate-600 dark:text-slate-400 text-sm ml-2">
                 {getTotalExpenses(_transactions)}
               </span>
             </h3>
@@ -110,7 +110,7 @@ function ExpensesList() {
                   <CategoryIcon category={transaction.category} />
                   <div className="grow grid grid-cols-1">
                     <p className="font-bold">{transaction.description}</p>
-                    <p className="text-slate-400">
+                    <p className="text-slate-600 dark:text-slate-400">
                       {transaction.category} | {getAccountName(transaction.accountId)}
                     </p>
                   </div>

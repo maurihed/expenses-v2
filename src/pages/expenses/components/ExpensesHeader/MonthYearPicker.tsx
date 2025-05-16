@@ -46,7 +46,7 @@ function MonthYearPicker() {
 
   return (
     <div className="pt-2">
-      <span className="text-slate-300">{year}</span>
+      <span className="text-slate-600 dark:text-slate-300">{year}</span>
       <div>
         <Button variant="ghost" onClick={() => handleArrowClick(-1)}>
           <MoveLeft />

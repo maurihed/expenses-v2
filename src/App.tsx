@@ -8,7 +8,12 @@ import RoutinesPage from "./pages/routines/RoutinesPage";
 function App() {
   useEffect(() => {
     // Set the initial theme based on the user's preference
-    window.document.documentElement.classList.add("dark");
+    document.documentElement.classList.toggle(
+      "dark",
+      localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
   }, []);
 
   const queryClient = new QueryClient();

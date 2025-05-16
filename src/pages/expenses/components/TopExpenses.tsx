@@ -1,4 +1,5 @@
 import { ExpenseSection } from "@/components/ui/expense-section";
+import { useDarkTheme } from "@/hooks/useDarkTheme";
 import { getCategoryInfo } from "@/lib/CategoryUtils";
 import { CategoryScale } from "chart.js";
 import Chart from "chart.js/auto";
@@ -10,6 +11,7 @@ Chart.register(CategoryScale);
 
 export default function TopExpenses() {
   const { transactions } = useTransactions(false);
+  const isDarkTheme = useDarkTheme();
 
   const [labels, entries] = useMemo(() => {
     return Object.entries(
@@ -50,6 +52,8 @@ export default function TopExpenses() {
     [labels, entries]
   );
 
+  const textColor = isDarkTheme ? "#fafafa" : "#0a0a0a";
+
   if (!transactions.length) return "No hay transacciones";
 
   return (
@@ -59,7 +63,7 @@ export default function TopExpenses() {
           <Doughnut
             data={chartData}
             options={{
-              color: "#fff",
+              color: textColor,
               plugins: {
                 legend: {
                   labels: {
