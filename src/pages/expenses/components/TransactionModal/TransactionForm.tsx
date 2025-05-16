@@ -42,8 +42,7 @@ const cactegoryItems = Object.values(Categories).map((_category) => {
 function TransactionForm({ accountId, transactionToEdit }: Props) {
   const [dateOpen, setDateOpen] = useState(false);
   const { accounts } = useAccounts(false);
-  const { newTransaction, editTransaction, mutationLoading, isDeleting } =
-    useTransactions(false);
+  const { newTransaction, editTransaction, mutationLoading } = useTransactions(false);
   const autoSelectElementRef = useRef<HTMLInputElement>(null);
 
   const closeModal = useExpensesStore((state) => state.closeTransactionModal);

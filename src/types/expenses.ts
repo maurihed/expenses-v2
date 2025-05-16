@@ -2,7 +2,7 @@ export type Account = {
   id: string;
   name: string;
   balance: number;
-}
+};
 
 export type TransactionType = "income" | "expense";
 
@@ -41,4 +41,4 @@ export type Transaction = {
   description: string;
   date: Date;
   category: Categories;
-}
+};
