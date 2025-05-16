@@ -6,9 +6,9 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
   const buttonCommonClasses = "inline-flex items-center py-2 px-3 rounded-lg hover:bg-primary";
 
   return (
-    <div className="min-h-screen w-full max-w-7xl mx-auto px-4 mb-[80px]">
-      {children}
-      <nav className="bg-slate-800 text-white py-3 -mx-4 text-center w-full fixed bottom-0">
+    <div>
+      <div className="min-h-screen w-full max-w-7xl mx-auto px-4 pb-[80px]">{children}</div>
+      <nav className="bg-slate-900 text-white py-3 text-center w-full fixed bottom-0">
         <ul className="flex justify-center gap-4">
           <li>
             <NavLink

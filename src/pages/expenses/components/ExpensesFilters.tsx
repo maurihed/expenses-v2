@@ -65,7 +65,7 @@ function ExpensesFilters({
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
           <Command>
-            <CommandInput placeholder="Search framework..." className="h-9" />
+            <CommandInput placeholder="Busca categoria..." className="h-9" />
             <CommandList>
               <CommandEmpty>No se encontraron categorias.</CommandEmpty>
               <CommandGroup>
