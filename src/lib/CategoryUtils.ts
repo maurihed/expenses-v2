@@ -1,4 +1,5 @@
 import {
+  Baby,
   BrushCleaning,
   Cake,
   Car,
@@ -40,6 +41,12 @@ export const getCategoryInfo = (category: string): CategoryInfo => {
         icon: ShoppingBasket,
         color: "bg-red-700",
         rawColor: "#b91c1c",
+      };
+    case "Gael":
+      return {
+        icon: Baby,
+        color: "bg-blue-600",
+        rawColor: "#165dfc",
       };
     case "Restaurante":
       return {

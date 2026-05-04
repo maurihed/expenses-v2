@@ -38,7 +38,7 @@ function AccountList() {
       {accounts.map((account) => (
         <div className="flex items-center justify-between px-4 gap-4" key={account.id}>
           <div className="bg-green-700 rounded-full p-2 flex items-center justify-center">
-            <Wallet />
+            <Wallet className="text-gray-300" />
           </div>
           <div className="grow">
             <p className="font-bold">{account.name}</p>

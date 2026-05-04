@@ -8,6 +8,7 @@ export type TransactionType = "income" | "expense";
 
 export enum Categories {
   DESPENSA = "Despensa",
+  GAEL = "Gael",
   CENAS = "Cenas",
   FAMILIA = "Familia",
   GASOLINA = "Gasolina",

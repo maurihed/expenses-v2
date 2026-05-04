@@ -1,22 +1,28 @@
-export type Ingredient = {
+export interface RecipeIngredient {
   id: string;
   name: string;
-  content: number;
-  price: number;
   quantity: number;
-  unit: string;
   unitPrice: number;
 }
 
-export type RecipeType = {
+export interface Recipe {
   id: string;
   name: string;
   description: string;
-  molde: string;
-  ingredients: Ingredient[];
+  moldeid: string;
   steps: string[];
+  ingredients: RecipeIngredient[];
+  cost: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
+export interface CreateRecipeIngredient {
+  id: string;
+  quantity: number;
+}
 
-export type IngredientRequest = Omit<Ingredient, 'unitPrice' | 'name' | 'content' | 'price' | 'unit' | 'unitPrice'>;
-export type RecipeRequest = (Omit<RecipeType, 'id' | 'ingredients'>) & { id?: string; ingredients: IngredientRequest[] };
+export interface CreateRecipe
+  extends Omit<Recipe, "id" | "createdAt" | "updatedAt" | "ingredients"> {
+  ingredients: CreateRecipeIngredient[];
+}
