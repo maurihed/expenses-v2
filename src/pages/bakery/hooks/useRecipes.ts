@@ -3,7 +3,7 @@ import type { Recipe } from "@/types";
 import { useQuery } from "react-query";
 
 export const useRecipes = (enabled = true) => {
-  const { data, isLoading, error } = useQuery<Recipe[]>("recipes", RecipeService.getAll, {
+  const { data, isLoading, error, refetch } = useQuery<Recipe[]>("recipes", RecipeService.getAll, {
     staleTime: Infinity, // Disable background fetching
     enabled,
   });
@@ -12,5 +12,6 @@ export const useRecipes = (enabled = true) => {
     recipes: data,
     isLoading,
     error,
+    retry: refetch,
   };
 };

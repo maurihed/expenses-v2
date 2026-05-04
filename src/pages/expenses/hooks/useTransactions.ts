@@ -22,6 +22,7 @@ export const useTransactions = (enabled = true) => {
     data: transactions,
     isLoading,
     error,
+    refetch,
   } = useQuery(queryId, getTransactions, {
     staleTime: Infinity,
     enabled,
@@ -78,6 +79,7 @@ export const useTransactions = (enabled = true) => {
     isDeleting,
     mutationLoading: newTransactionLoading || editTransactionLoading,
     error,
+    refetch,
     newTransaction,
     editTransaction,
     deleteTransaction,

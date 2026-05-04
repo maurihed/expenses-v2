@@ -1,15 +1,24 @@
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import { useRecipes } from "../../hooks/useRecipes";
 import RecipeListCard from "./recipe-list-card";
 
 export default function RecipeList() {
-  const { recipes, isLoading, error } = useRecipes();
+  const { recipes, isLoading, error, retry } = useRecipes();
 
   if (isLoading) {
-    return <div>Cargando....</div>;
+    return <Loader />;
   }
 
   if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>;
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-8">
+        <p className="text-destructive">Error al cargar recetas</p>
+        <Button variant="outline" onClick={() => retry()}>
+          Reintentar
+        </Button>
+      </div>
+    );
   }
 
   if (!recipes?.length) {

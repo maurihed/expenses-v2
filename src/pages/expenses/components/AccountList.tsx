@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
 
 import { ExpenseSection } from "@/components/ui/expense-section";
@@ -8,19 +9,26 @@ import { formatMoney } from "../../../lib/utils";
 import { useAccounts } from "../hooks/useAccounts";
 
 function AccountList() {
-  const { accounts, loadingAccounts, error } = useAccounts();
+  const { accounts, loadingAccounts, error, refreshAccounts } = useAccounts();
   const openTransactionModal = useExpensesStore((state) => state.openNewTransactionModal);
 
   if (loadingAccounts) {
-    <ExpenseSection>
-      <p>Cargando cuentas...</p>;
-    </ExpenseSection>;
+    return (
+      <ExpenseSection>
+        <Loader />
+      </ExpenseSection>
+    );
   }
 
   if (error) {
     return (
       <ExpenseSection>
-        <p>Error al cargar cuentas</p>
+        <div className="flex flex-col items-center justify-center gap-4 py-8">
+          <p className="text-destructive">Error al cargar cuentas</p>
+          <Button variant="outline" onClick={() => refreshAccounts()}>
+            Reintentar
+          </Button>
+        </div>
       </ExpenseSection>
     );
   }

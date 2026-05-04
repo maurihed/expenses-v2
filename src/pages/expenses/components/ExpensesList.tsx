@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CategoryIcon } from "@/components/ui/category-icon";
+import { Loader } from "@/components/ui/loader";
 import { ExpenseSection } from "@/components/ui/expense-section";
 import { formatDate, formatTransactionDate } from "@/lib/DateUtils";
 import { formatMoney } from "@/lib/utils";
@@ -12,7 +13,7 @@ import { useTransactions } from "../hooks/useTransactions";
 import ExpensesFilters from "./ExpensesFilters";
 
 function ExpensesList() {
-  const { transactions, loading, error } = useTransactions();
+  const { transactions, loading, error, refetch } = useTransactions();
   const { accounts } = useAccounts(false);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState(new Set<string>());
@@ -24,11 +25,20 @@ function ExpensesList() {
   };
 
   if (loading) {
-    return <ExpenseSection>Cargando transacciones...</ExpenseSection>;
+    return <ExpenseSection><Loader /></ExpenseSection>;
   }
 
   if (error) {
-    return <ExpenseSection>Error al cargar transacciones</ExpenseSection>;
+    return (
+      <ExpenseSection>
+        <div className="flex flex-col items-center justify-center gap-4 py-8">
+          <p className="text-destructive">Error al cargar transacciones</p>
+          <Button variant="outline" onClick={() => refetch()}>
+            Reintentar
+          </Button>
+        </div>
+      </ExpenseSection>
+    );
   }
   if (transactions.length === 0) {
     return (

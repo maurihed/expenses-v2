@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 type FilterType = {
   search: string;
-  categories: Set<String>;
+  categories: Set<string>;
 };
 
 interface AuthState {
