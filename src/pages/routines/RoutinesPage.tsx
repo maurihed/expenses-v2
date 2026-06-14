@@ -1,74 +1,36 @@
 import { useState } from "react";
-import { CalendarDays, Dumbbell } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { StorageProvider } from "./storage/StorageContext";
+import { useActiveUser } from "./hooks/useActiveUser";
 import { useRoutineProgress } from "./hooks/useRoutineProgress";
 import UserSelector from "./components/UserSelector";
+import TabNav from "./components/TabNav";
+import type { TabId } from "./components/TabNav";
+import ProgramHeader from "./components/ProgramHeader";
 import RoutineView from "./components/RoutineView";
 import ProgressView from "./components/ProgressView";
 
-type Tab = "entrenamiento" | "progreso";
-
 function RoutinesPageInner() {
+  const { users, activeUser, setActiveUser } = useActiveUser();
   const {
     loading,
-    users,
-    activeUser,
-    setActiveUser,
     getDayProgress,
     toggleExercise,
     isDayComplete,
-  } = useRoutineProgress();
+  } = useRoutineProgress(activeUser);
 
-  const [tab, setTab] = useState<Tab>("entrenamiento");
+  const [tab, setTab] = useState<TabId>("entrenamiento");
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <div className="flex-1">
-          <UserSelector
-            users={users}
-            activeUser={activeUser}
-            onSelect={setActiveUser}
-          />
-        </div>
-      </div>
+      <UserSelector
+        users={users}
+        activeUser={activeUser}
+        onSelect={setActiveUser}
+      />
 
-      <div className="flex gap-1 rounded-xl bg-muted p-1">
-        <button
-          onClick={() => setTab("entrenamiento")}
-          className={cn(
-            "flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
-            tab === "entrenamiento"
-              ? "bg-card text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <Dumbbell className="size-4" />
-          Entrenamiento
-        </button>
-        <button
-          onClick={() => setTab("progreso")}
-          className={cn(
-            "flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
-            tab === "progreso"
-              ? "bg-card text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <CalendarDays className="size-4" />
-          Progreso
-        </button>
-      </div>
+      <TabNav activeTab={tab} onTabChange={setTab} />
 
-      <div className="space-y-1">
-        <h2 className="text-lg font-semibold">
-          {activeUser.program.details.name}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          {activeUser.program.week.focus}
-        </p>
-      </div>
+      <ProgramHeader user={activeUser} />
 
       {tab === "entrenamiento" ? (
         <RoutineView

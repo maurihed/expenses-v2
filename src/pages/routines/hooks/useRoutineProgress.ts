@@ -1,60 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { DayProgress, RoutineProgress, User } from "../types";
 import type { AllUserProgress } from "../storage/types";
 import { useWorkoutStorage } from "../storage/StorageContext";
-import data from "../data.json";
 
-const ACTIVE_USER_KEY = "routine_active_user";
-
-function loadActiveUserId(): string | null {
-  try {
-    return localStorage.getItem(ACTIVE_USER_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function saveActiveUserId(id: string) {
-  try {
-    localStorage.setItem(ACTIVE_USER_KEY, id);
-  } catch {
-    /* localStorage unavailable */
-  }
-}
-
-function findUserByParam(users: User[], param: string): User | undefined {
-  return users.find(
-    (u) => u.name.toLowerCase() === param.toLowerCase() || u.id === param,
-  );
-}
-
-export function useRoutineProgress() {
-  const { id: urlParam } = useParams<{ id: string }>();
+export function useRoutineProgress(activeUser: User) {
   const { repo, ready } = useWorkoutStorage();
-  const users = data as User[];
-
-  const [activeUser, setActiveUserState] = useState<User>(() => {
-    const savedId = loadActiveUserId();
-    if (savedId) {
-      const saved = users.find((u) => u.id === savedId);
-      if (saved) return saved;
-    }
-    if (urlParam) {
-      const matched = findUserByParam(users, urlParam);
-      if (matched) return matched;
-    }
-    return users[0];
-  });
-
   const [dbLoading, setDbLoading] = useState(true);
   const [cache, setCache] = useState<RoutineProgress>({});
 
-  const activeUserIdRef = useRef(activeUser.id);
-  activeUserIdRef.current = activeUser.id;
-
   useEffect(() => {
     if (!ready) return;
+
+    let cancelled = false;
 
     const load = async () => {
       setDbLoading(true);
@@ -62,23 +19,24 @@ export function useRoutineProgress() {
         const progress: AllUserProgress = await repo.getUserProgress(
           activeUser.id,
         );
-        setCache((prev) => ({ ...prev, [activeUser.id]: progress }));
+        if (!cancelled) {
+          setCache((prev) => ({ ...prev, [activeUser.id]: progress }));
+        }
       } catch (err) {
         console.error("Failed to load user progress", err);
       } finally {
-        setDbLoading(false);
+        if (!cancelled) setDbLoading(false);
       }
     };
 
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [repo, ready, activeUser.id]);
 
   const loading = !ready || dbLoading;
-
-  const setActiveUser = useCallback((user: User) => {
-    setActiveUserState(user);
-    saveActiveUserId(user.id);
-  }, []);
 
   const getDayProgress = useCallback(
     (userId: string, dayName: string): DayProgress => {
@@ -164,9 +122,6 @@ export function useRoutineProgress() {
 
   return {
     loading,
-    users,
-    activeUser,
-    setActiveUser,
     getDayProgress,
     toggleExercise,
     isDayComplete,

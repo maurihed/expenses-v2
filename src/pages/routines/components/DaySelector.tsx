@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import type { Day } from "../types";
 
 interface DaySelectorProps {
@@ -21,21 +21,16 @@ function DaySelector({
         const isActive = index === activeIndex;
         const isCompleted = completedDays.has(day.day);
         return (
-          <button
+          <Button
             key={day.day}
+            variant={isActive ? "default" : "secondary"}
+            size="sm"
             onClick={() => onSelect(index)}
-            className={cn(
-              "relative flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all whitespace-nowrap",
-              isActive
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
-            )}
+            className="shrink-0 rounded-full"
           >
-            {isCompleted && (
-              <Check className="size-3.5" />
-            )}
+            {isCompleted && <Check className="size-3.5" />}
             {day.day}
-          </button>
+          </Button>
         );
       })}
     </div>
