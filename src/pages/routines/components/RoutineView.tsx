@@ -34,15 +34,15 @@ function LoadingSkeleton() {
     <div className="space-y-4">
       <div className="flex gap-2">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-9 w-20 animate-pulse rounded-full bg-muted" />
+          <div key={i} className="h-14 w-[72px] animate-pulse rounded-2xl bg-muted" />
         ))}
       </div>
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="rounded-xl border bg-card p-6">
-          <div className="mb-4 h-5 w-32 animate-pulse rounded bg-muted" />
-          <div className="space-y-3">
+        <div key={i} className="rounded-2xl border-2 border-border bg-card p-4">
+          <div className="mb-4 h-5 w-32 animate-pulse rounded-lg bg-muted" />
+          <div className="space-y-2">
             {[...Array(3)].map((_, j) => (
-              <div key={j} className="h-16 animate-pulse rounded-xl bg-muted" />
+              <div key={j} className="h-[72px] animate-pulse rounded-2xl bg-muted" />
             ))}
           </div>
         </div>
@@ -58,12 +58,25 @@ function FocusTags({ focus }: { focus: string[] }) {
       {focus.map((f) => (
         <span
           key={f}
-          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
         >
-          <Flame className="size-3" />
+          <Flame className="size-3" aria-hidden="true" />
           {f}
         </span>
       ))}
+    </div>
+  );
+}
+
+function DayMeta({ day }: { day: Day }) {
+  const totalEx = totalExercisesInDay(day);
+  return (
+    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+      <span>
+        {day.blocks.length} {day.blocks.length === 1 ? "bloque" : "bloques"}
+      </span>
+      <span className="text-muted-foreground/30">·</span>
+      <span>{totalEx} ejercicios</span>
     </div>
   );
 }
@@ -111,14 +124,22 @@ function RoutineView({
 
   return (
     <div className="space-y-4">
-      <DaySelector
-        days={days}
-        activeIndex={activeDayIndex}
-        completedDays={completedDays}
-        onSelect={setActiveDayIndex}
-      />
+      <div className="sticky top-0 z-10 -mx-4 bg-background px-4 pb-2 pt-0">
+        <DaySelector
+          days={days}
+          activeIndex={activeDayIndex}
+          completedDays={completedDays}
+          onSelect={setActiveDayIndex}
+        />
+      </div>
 
-      <FocusTags focus={activeDay.focus} />
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-base font-bold">{activeDay.session_name}</h2>
+          <DayMeta day={activeDay} />
+        </div>
+        <FocusTags focus={activeDay.focus} />
+      </div>
 
       <div className="space-y-3">
         {activeDay.blocks.map((block, blockIndex) => (

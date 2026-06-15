@@ -1,5 +1,5 @@
 import { CalendarDays, Dumbbell } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type TabId = "entrenamiento" | "progreso";
 
@@ -15,18 +15,25 @@ const TABS: { id: TabId; label: string; icon: typeof Dumbbell }[] = [
 
 function TabNav({ activeTab, onTabChange }: TabNavProps) {
   return (
-    <div className="flex gap-1 rounded-xl bg-muted p-1">
-      {TABS.map(({ id, label, icon: Icon }) => (
-        <Button
-          key={id}
-          variant={activeTab === id ? "default" : "ghost"}
-          onClick={() => onTabChange(id)}
-          className="flex-1"
-        >
-          <Icon className="size-4" />
-          {label}
-        </Button>
-      ))}
+    <div className="flex gap-1 rounded-2xl bg-muted p-1">
+      {TABS.map(({ id, label, icon: Icon }) => {
+        const isActive = activeTab === id;
+        return (
+          <button
+            key={id}
+            onClick={() => onTabChange(id)}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200",
+              isActive
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Icon className="size-4" />
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }

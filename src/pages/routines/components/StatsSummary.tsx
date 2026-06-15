@@ -1,5 +1,4 @@
-import { TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Flame, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Day } from "../types";
 
@@ -19,65 +18,76 @@ function StatsSummary({
   percentage,
 }: StatsSummaryProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <TrendingUp className="size-4" />
-          Estadísticas
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <div className="flex-1 rounded-2xl border-2 border-border bg-card p-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Días completados
-          </span>
-          <span className="text-2xl font-bold">
-            {completedCount}
-            <span className="text-sm font-normal text-muted-foreground">
-              /{totalDays}
+          </p>
+          <div className="mt-1 flex items-baseline gap-1">
+            <span className="text-3xl font-bold">{completedCount}</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              / {totalDays}
             </span>
-          </span>
-        </div>
-
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Progreso del programa</span>
-            <span className="font-medium">{percentage}%</span>
-          </div>
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
-              style={{ width: `${percentage}%` }}
-            />
           </div>
         </div>
+        <div className="flex-1 rounded-2xl border-2 border-border bg-card p-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Racha actual
+          </p>
+          <div className="mt-1 flex items-center gap-1.5">
+            <Flame className="size-5 text-primary" />
+            <span className="text-3xl font-bold">{completedCount}</span>
+          </div>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-1">
+      <div className="rounded-2xl border-2 border-border bg-card p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="size-4 text-primary" />
+            <span className="text-sm font-medium">Progreso del programa</span>
+          </div>
+          <span className="text-sm font-bold">{percentage}%</span>
+        </div>
+
+        <div className="mb-4 h-3 overflow-hidden rounded-full bg-muted">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-500 ease-out"
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
           {days.map((day) => {
             const isCompleted = dayStatusMap[day.day] ?? false;
             return (
               <div
                 key={day.day}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm",
+                  "flex items-center gap-2.5 rounded-xl border-2 px-3.5 py-2.5 text-sm font-medium transition-all",
                   isCompleted
-                    ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300"
+                    ? "border-emerald-200/60 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/30 dark:text-emerald-300"
                     : "border-border text-muted-foreground",
                 )}
               >
                 <span
                   className={cn(
-                    "size-2 rounded-full shrink-0",
-                    isCompleted ? "bg-emerald-500" : "bg-muted-foreground/30",
+                    "flex size-5 shrink-0 items-center justify-center rounded-md text-xs font-bold",
+                    isCompleted
+                      ? "bg-emerald-500 text-white"
+                      : "bg-muted-foreground/20 text-muted-foreground",
                   )}
-                />
+                >
+                  {isCompleted ? "✓" : days.indexOf(day) + 1}
+                </span>
                 <span className="truncate">{day.day}</span>
               </div>
             );
           })}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 

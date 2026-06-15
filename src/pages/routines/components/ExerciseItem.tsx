@@ -1,4 +1,4 @@
-import { Check, Clock, Dumbbell, Timer } from "lucide-react";
+import { Check, ChevronRight, Clock, Dumbbell, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Exercise } from "../types";
 
@@ -10,7 +10,7 @@ interface ExerciseItemProps {
 
 function formatReps(
   reps: string | number | undefined,
-  sets: number | undefined
+  sets: number | undefined,
 ): string | null {
   if (!sets && !reps) return null;
   const parts: string[] = [];
@@ -21,7 +21,7 @@ function formatReps(
 
 function formatDuration(
   seconds: string | number | undefined,
-  minutes: number | undefined
+  minutes: number | undefined,
 ): string | null {
   if (minutes) return `${minutes} min`;
   if (seconds) return `${seconds} s`;
@@ -32,81 +32,96 @@ function ExerciseItem({ exercise, checked, onToggle }: ExerciseItemProps) {
   const repInfo = formatReps(exercise.reps, exercise.sets);
   const durationInfo = formatDuration(
     exercise.duration_seconds,
-    exercise.duration_minutes
+    exercise.duration_minutes,
   );
 
   return (
-    <label
+    <button
+      type="button"
+      onClick={onToggle}
       className={cn(
-        "flex items-start gap-3 rounded-xl border p-3.5 cursor-pointer transition-all",
+        "group flex w-full items-start gap-3 rounded-2xl border-2 p-4 text-left transition-all duration-200 active:scale-[0.98]",
         checked
-          ? "border-primary/30 bg-primary/5"
-          : "border-border bg-card hover:border-muted-foreground/30"
+          ? "border-primary/25 bg-primary/[0.06]"
+          : "border-border bg-card hover:border-primary/20 hover:bg-primary/[0.03]",
       )}
     >
       <div className="relative mt-0.5">
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={onToggle}
-          className="peer sr-only"
-        />
         <div
           className={cn(
-            "flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-all",
+            "flex size-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-200",
             checked
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-muted-foreground/30 bg-background"
+              ? "border-primary bg-primary text-primary-foreground shadow-sm"
+              : "border-muted-foreground/30 bg-background group-hover:border-muted-foreground/50",
           )}
         >
-          {checked && <Check className="size-3.5" />}
+          {checked ? (
+            <Check className="size-4" />
+          ) : (
+            <span className="size-2 rounded-sm bg-muted-foreground/20" />
+          )}
         </div>
       </div>
 
       <div className="flex-1 min-w-0">
-        <p
-          className={cn(
-            "text-sm font-medium leading-tight",
-            checked && "text-muted-foreground line-through"
-          )}
-        >
-          {exercise.name}
-          {exercise.side && (
-            <span className="text-muted-foreground font-normal">
-              {" "}
-              ({exercise.side})
-            </span>
-          )}
-        </p>
+        <div className="flex items-start justify-between gap-2">
+          <p
+            className={cn(
+              "text-sm font-semibold leading-tight",
+              checked && "text-muted-foreground line-through decoration-2",
+            )}
+          >
+            {exercise.name}
+            {exercise.side && (
+              <span className="text-muted-foreground font-normal">
+                {" "}
+                ({exercise.side})
+              </span>
+            )}
+          </p>
+          <ChevronRight
+            className={cn(
+              "mt-0.5 size-4 shrink-0 transition-all duration-200",
+              checked
+                ? "text-primary/40"
+                : "text-muted-foreground/30 group-hover:text-muted-foreground/50",
+            )}
+          />
+        </div>
 
-        <div className="mt-1.5 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-1.5">
           {repInfo && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-              <Dumbbell className="size-3" />
+            <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              <Dumbbell className="size-3" aria-hidden="true" />
               {repInfo}
             </span>
           )}
           {durationInfo && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-              <Clock className="size-3" />
+            <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              <Clock className="size-3" aria-hidden="true" />
               {durationInfo}
             </span>
           )}
           {exercise.equipment && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-              <Timer className="size-3" />
+            <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              <Timer className="size-3" aria-hidden="true" />
               {exercise.equipment}
+            </span>
+          )}
+          {exercise.rpe && (
+            <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              RPE {exercise.rpe}
             </span>
           )}
         </div>
 
         {exercise.notes && (
-          <p className="mt-1 text-xs text-muted-foreground/70 italic leading-relaxed">
+          <p className="mt-1.5 text-xs text-muted-foreground/60 leading-relaxed">
             {exercise.notes}
           </p>
         )}
       </div>
-    </label>
+    </button>
   );
 }
 

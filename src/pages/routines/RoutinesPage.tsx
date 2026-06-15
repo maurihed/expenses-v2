@@ -16,21 +16,29 @@ function RoutinesPageInner() {
     getDayProgress,
     toggleExercise,
     isDayComplete,
+    completedDayCount,
+    totalDayCount,
   } = useRoutineProgress(activeUser);
 
   const [tab, setTab] = useState<TabId>("entrenamiento");
 
   return (
-    <div className="space-y-4">
-      <UserSelector
-        users={users}
-        activeUser={activeUser}
-        onSelect={setActiveUser}
-      />
+    <div className="space-y-3 pb-4">
+      <header className="space-y-3">
+        <UserSelector
+          users={users}
+          activeUser={activeUser}
+          onSelect={setActiveUser}
+        />
 
-      <TabNav activeTab={tab} onTabChange={setTab} />
+        <TabNav activeTab={tab} onTabChange={setTab} />
 
-      <ProgramHeader user={activeUser} />
+        <ProgramHeader
+          user={activeUser}
+          completedCount={completedDayCount}
+          totalDays={totalDayCount}
+        />
+      </header>
 
       {tab === "entrenamiento" ? (
         <RoutineView

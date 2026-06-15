@@ -1,4 +1,4 @@
-import { CalendarCheck } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Day } from "../types";
 
@@ -20,7 +20,7 @@ interface WeekGridProps {
 
 function WeekGrid({ days, dayStatusMap }: WeekGridProps) {
   return (
-    <div className="grid grid-cols-7 gap-2">
+    <div className="grid grid-cols-7 gap-2.5">
       {DAY_LABELS.map((label, i) => {
         const dayName = DAY_NAMES[i];
         const programDay = days.find((d) => d.day === dayName);
@@ -31,25 +31,25 @@ function WeekGrid({ days, dayStatusMap }: WeekGridProps) {
 
         return (
           <div key={label} className="flex flex-col items-center gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               {label}
             </span>
             <div
               className={cn(
-                "flex size-10 items-center justify-center rounded-full text-sm font-semibold transition-all",
+                "flex size-11 items-center justify-center rounded-2xl text-sm font-bold transition-all duration-200",
                 isCompleted
-                  ? "bg-emerald-500 text-white shadow-sm"
+                  ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/30"
                   : hasProgram
-                    ? "bg-muted text-muted-foreground"
-                    : "bg-transparent text-muted-foreground/30",
+                    ? "bg-muted text-muted-foreground ring-1 ring-border"
+                    : "bg-transparent text-muted-foreground/20",
               )}
             >
               {isCompleted ? (
-                <CalendarCheck className="size-5" />
+                <Check className="size-5" />
               ) : hasProgram ? (
-                "—"
+                <span className="text-lg font-bold">{i + 1}</span>
               ) : (
-                "·"
+                <span className="text-lg">·</span>
               )}
             </div>
           </div>

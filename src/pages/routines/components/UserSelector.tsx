@@ -1,19 +1,3 @@
-import { useState } from "react";
-import { Check, ChevronsUpDown, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { User as UserType } from "../types";
 
@@ -23,54 +7,42 @@ interface UserSelectorProps {
   onSelect: (user: UserType) => void;
 }
 
-function UserSelector({ users, activeUser, onSelect }: UserSelectorProps) {
-  const [open, setOpen] = useState(false);
+const AVATARS: Record<string, string> = {
+  lupita: "L",
+  mauricio: "M",
+};
 
+function UserSelector({ users, activeUser, onSelect }: UserSelectorProps) {
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-        >
-          <span className="flex items-center gap-2 truncate">
-            <User className="size-4 shrink-0 text-muted-foreground" />
-            <span>{activeUser.name}</span>
-          </span>
-          <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="p-0" align="start" style={{ width: 'var(--radix-popover-trigger-width)' }}>
-        <Command>
-          <CommandInput placeholder="Buscar usuario..." />
-          <CommandList>
-            <CommandEmpty>Sin resultados</CommandEmpty>
-            <CommandGroup>
-              {users.map((user) => (
-                <CommandItem
-                  key={user.id}
-                  value={user.name}
-                  onSelect={() => {
-                    onSelect(user);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 size-4",
-                      activeUser.id === user.id ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                  {user.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <div className="flex gap-1.5 rounded-2xl bg-muted p-1">
+      {users.map((user) => {
+        const isActive = activeUser.id === user.id;
+        return (
+          <button
+            key={user.id}
+            onClick={() => onSelect(user)}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+              isActive
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <span
+              className={cn(
+                "flex size-6 items-center justify-center rounded-full text-xs font-bold",
+                isActive
+                  ? "bg-primary-foreground/20 text-primary-foreground"
+                  : "bg-muted-foreground/20 text-muted-foreground",
+              )}
+            >
+              {AVATARS[user.id] ?? user.name[0]}
+            </span>
+            {user.name}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
