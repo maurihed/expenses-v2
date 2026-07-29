@@ -1,55 +1,51 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Day } from "../types";
-
-const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
-const DAY_NAMES = [
-  "Lunes",
-  "Martes",
-  "Miércoles",
-  "Jueves",
-  "Viernes",
-  "Sábado",
-  "Domingo",
-];
+import type { ScheduledDay } from "../types";
 
 interface WeekGridProps {
-  days: Day[];
+  days: ScheduledDay[];
   dayStatusMap: Record<string, boolean>;
 }
 
 function WeekGrid({ days, dayStatusMap }: WeekGridProps) {
   return (
     <div className="grid grid-cols-7 gap-2.5">
-      {DAY_LABELS.map((label, i) => {
-        const dayName = DAY_NAMES[i];
-        const programDay = days.find((d) => d.day === dayName);
-        const isCompleted = programDay
-          ? dayStatusMap[programDay.day] ?? false
+      {days.map((day) => {
+        const isCompleted = day.hasWorkout
+          ? (dayStatusMap[day.date] ?? false)
           : false;
-        const hasProgram = !!programDay;
+        const hasProgram = day.hasWorkout;
 
         return (
-          <div key={label} className="flex flex-col items-center gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              {label}
+          <div key={day.date} className="flex flex-col items-center gap-1.5">
+            <span
+              className={cn(
+                "text-[11px] font-semibold uppercase tracking-wider",
+                day.isToday ? "text-primary" : "text-muted-foreground",
+              )}
+            >
+              {day.dayName.slice(0, 1)}
             </span>
             <div
               className={cn(
                 "flex size-11 items-center justify-center rounded-2xl text-sm font-bold transition-all duration-200",
                 isCompleted
                   ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/30"
-                  : hasProgram
-                    ? "bg-muted text-muted-foreground ring-1 ring-border"
-                    : "bg-transparent text-muted-foreground/20",
+                  : day.isToday && hasProgram
+                    ? "bg-primary/15 text-primary ring-2 ring-primary/40"
+                    : hasProgram
+                      ? "bg-muted text-muted-foreground ring-1 ring-border"
+                      : "bg-transparent text-muted-foreground/20",
               )}
             >
               {isCompleted ? (
                 <Check className="size-5" />
               ) : hasProgram ? (
-                <span className="text-lg font-bold">{i + 1}</span>
+                <span className="text-lg font-bold">{day.dayNumber}</span>
               ) : (
-                <span className="text-lg">·</span>
+                <span className="text-sm font-medium opacity-40">
+                  {day.dayNumber}
+                </span>
               )}
             </div>
           </div>

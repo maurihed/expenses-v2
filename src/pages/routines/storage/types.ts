@@ -1,5 +1,6 @@
 import type { DayProgress } from "../types";
 
+/** Progress for one user, keyed by YYYY-MM-DD */
 export type AllUserProgress = Record<string, DayProgress>;
 
 export interface IWorkoutRepository {
@@ -9,14 +10,14 @@ export interface IWorkoutRepository {
 
   setExerciseCompleted(
     userId: string,
-    dayName: string,
+    dateKey: string,
     exerciseKey: string,
     completed: boolean,
   ): Promise<void>;
 
   setDayCompleted(
     userId: string,
-    dayName: string,
+    dateKey: string,
     completed: boolean,
   ): Promise<void>;
 

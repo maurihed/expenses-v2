@@ -1,13 +1,23 @@
 import { useMemo } from "react";
-import { CalendarCheck } from "lucide-react";
-import type { User } from "../types";
+import { CalendarCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import type { Day, ScheduledDay } from "../types";
+import { useWeekSchedule } from "../hooks/useWeekSchedule";
 import WeekGrid from "./WeekGrid";
 import StatsSummary from "./StatsSummary";
+import { cn } from "@/lib/utils";
 
 interface ProgressViewProps {
-  user: User;
+  templateDays: Day[];
   loading?: boolean;
-  isDayComplete: (userId: string, dayName: string, totalExercises: number) => boolean;
+  weekStats: (workoutDays: ScheduledDay[]) => {
+    statusMap: Record<string, boolean>;
+    completedCount: number;
+    totalDays: number;
+    percentage: number;
+  };
+  trainingStreak: number;
+  totalHistoricalCompletions: number;
+  completedDateKeys: string[];
 }
 
 function LoadingSkeleton() {
@@ -38,47 +48,92 @@ function LoadingSkeleton() {
   );
 }
 
-function ProgressView({ user, loading, isDayComplete }: ProgressViewProps) {
-  const days = user.program.week.days;
+function ProgressView({
+  templateDays,
+  loading,
+  weekStats,
+  trainingStreak,
+  totalHistoricalCompletions,
+  completedDateKeys,
+}: ProgressViewProps) {
+  const {
+    schedule,
+    goToPreviousWeek,
+    goToNextWeek,
+    goToCurrentWeek,
+    canGoNext,
+  } = useWeekSchedule(templateDays);
 
-  const { dayStatusMap, completedCount, totalDays, percentage } = useMemo(() => {
-    const total = days.length;
-    let completed = 0;
-    const statusMap: Record<string, boolean> = {};
-
-    for (const day of days) {
-      const totalEx = day.blocks.reduce((s, b) => s + b.exercises.length, 0);
-      const complete = isDayComplete(user.id, day.day, totalEx);
-      statusMap[day.day] = complete;
-      if (complete) completed++;
-    }
-
-    return {
-      dayStatusMap: statusMap,
-      completedCount: completed,
-      totalDays: total,
-      percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
-    };
-  }, [days, user.id, isDayComplete]);
+  const { statusMap, completedCount, totalDays, percentage } = useMemo(
+    () => weekStats(schedule.workoutDays),
+    [weekStats, schedule.workoutDays],
+  );
 
   if (loading) return <LoadingSkeleton />;
 
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border-2 border-border bg-card p-5">
-        <div className="mb-4 flex items-center gap-2">
-          <CalendarCheck className="size-5 text-primary" />
-          <h3 className="text-sm font-bold">Progreso semanal</h3>
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <CalendarCheck className="size-5 shrink-0 text-primary" />
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold leading-tight">
+                {schedule.isCurrentWeek ? "Semana actual" : "Historial"}
+              </h3>
+              <p className="text-xs text-muted-foreground truncate">
+                {schedule.label}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={goToPreviousWeek}
+              className="flex size-8 items-center justify-center rounded-xl bg-muted text-muted-foreground transition hover:text-foreground"
+              aria-label="Semana anterior"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            {!schedule.isCurrentWeek && (
+              <button
+                type="button"
+                onClick={goToCurrentWeek}
+                className="rounded-xl bg-primary/10 px-2.5 py-1.5 text-[11px] font-semibold text-primary"
+              >
+                Hoy
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={goToNextWeek}
+              disabled={!canGoNext}
+              className={cn(
+                "flex size-8 items-center justify-center rounded-xl bg-muted transition",
+                canGoNext
+                  ? "text-muted-foreground hover:text-foreground"
+                  : "cursor-not-allowed text-muted-foreground/30",
+              )}
+              aria-label="Semana siguiente"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
         </div>
-        <WeekGrid days={days} dayStatusMap={dayStatusMap} />
+
+        <WeekGrid days={schedule.days} dayStatusMap={statusMap} />
       </div>
 
       <StatsSummary
-        days={days}
-        dayStatusMap={dayStatusMap}
+        workoutDays={schedule.workoutDays}
+        dayStatusMap={statusMap}
         completedCount={completedCount}
         totalDays={totalDays}
         percentage={percentage}
+        trainingStreak={trainingStreak}
+        totalHistoricalCompletions={totalHistoricalCompletions}
+        completedDateKeys={completedDateKeys}
       />
     </div>
   );

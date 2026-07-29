@@ -1,17 +1,18 @@
 import type { AllUserProgress, IWorkoutRepository } from "./types";
 
 const DB_NAME = "workout_tracker";
-const DB_VERSION = 1;
+/** v2: progress keyed by calendar date (YYYY-MM-DD) instead of weekday name */
+const DB_VERSION = 2;
 
 interface EjercicioRow {
   userId: string;
-  dayName: string;
+  dateKey: string;
   exerciseKey: string;
 }
 
 interface DiaRow {
   userId: string;
-  dayName: string;
+  dateKey: string;
 }
 
 export class IndexedDBWorkoutRepository implements IWorkoutRepository {
@@ -22,20 +23,29 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
     this.db = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-      request.onupgradeneeded = () => {
+      request.onupgradeneeded = (event) => {
         const db = request.result;
+        const oldVersion = event.oldVersion;
 
-        if (!db.objectStoreNames.contains("ejercicios_completados")) {
-          const store = db.createObjectStore("ejercicios_completados", {
-            keyPath: ["userId", "dayName", "exerciseKey"],
-          });
-          store.createIndex("userDay", ["userId", "dayName"]);
-        }
+        // Fresh install or upgrade from v1 (weekday keys) → recreate stores
+        if (oldVersion < 2) {
+          if (db.objectStoreNames.contains("ejercicios_completados")) {
+            db.deleteObjectStore("ejercicios_completados");
+          }
+          if (db.objectStoreNames.contains("dias_completados")) {
+            db.deleteObjectStore("dias_completados");
+          }
 
-        if (!db.objectStoreNames.contains("dias_completados")) {
-          db.createObjectStore("dias_completados", {
-            keyPath: ["userId", "dayName"],
+          const exerciseStore = db.createObjectStore("ejercicios_completados", {
+            keyPath: ["userId", "dateKey", "exerciseKey"],
           });
+          exerciseStore.createIndex("userDate", ["userId", "dateKey"]);
+          exerciseStore.createIndex("byUser", "userId");
+
+          const dayStore = db.createObjectStore("dias_completados", {
+            keyPath: ["userId", "dateKey"],
+          });
+          dayStore.createIndex("byUser", "userId");
         }
       };
 
@@ -66,12 +76,8 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
       "ejercicios_completados",
       "readonly",
       (store) => {
-        const index = store.index("userDay");
-        const range = IDBKeyRange.bound(
-          [userId, ""],
-          [userId, "\uffff"],
-        );
-        return index.getAll(range);
+        const index = store.index("byUser");
+        return index.getAll(IDBKeyRange.only(userId));
       },
     );
 
@@ -79,30 +85,25 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
       "dias_completados",
       "readonly",
       (store) => {
-        const range = IDBKeyRange.bound(
-          [userId, ""],
-          [userId, "\uffff"],
-        );
-        return store.getAll(range);
+        const index = store.index("byUser");
+        return index.getAll(IDBKeyRange.only(userId));
       },
     );
 
     const progress: AllUserProgress = {};
 
-    for (const row of ejercicios as unknown as Array<
-      EjercicioRow & { completed: boolean }
-    >) {
-      if (!progress[row.dayName]) {
-        progress[row.dayName] = { completed: false, exercises: {} };
+    for (const row of ejercicios as unknown as EjercicioRow[]) {
+      if (!progress[row.dateKey]) {
+        progress[row.dateKey] = { completed: false, exercises: {} };
       }
-      progress[row.dayName].exercises[row.exerciseKey] = true;
+      progress[row.dateKey].exercises[row.exerciseKey] = true;
     }
 
     for (const row of dias as unknown as DiaRow[]) {
-      if (!progress[row.dayName]) {
-        progress[row.dayName] = { completed: false, exercises: {} };
+      if (!progress[row.dateKey]) {
+        progress[row.dateKey] = { completed: false, exercises: {} };
       }
-      progress[row.dayName].completed = true;
+      progress[row.dateKey].completed = true;
     }
 
     return progress;
@@ -110,7 +111,7 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
 
   async setExerciseCompleted(
     userId: string,
-    dayName: string,
+    dateKey: string,
     exerciseKey: string,
     completed: boolean,
   ): Promise<void> {
@@ -119,7 +120,7 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
         "ejercicios_completados",
         "readwrite",
         (store) =>
-          store.put({ userId, dayName, exerciseKey }) as unknown as IDBRequest<
+          store.put({ userId, dateKey, exerciseKey }) as unknown as IDBRequest<
             IDBValidKey
           >,
       );
@@ -128,7 +129,7 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
         "ejercicios_completados",
         "readwrite",
         (store) =>
-          store.delete([userId, dayName, exerciseKey]) as unknown as IDBRequest<
+          store.delete([userId, dateKey, exerciseKey]) as unknown as IDBRequest<
             undefined
           >,
       );
@@ -137,7 +138,7 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
 
   async setDayCompleted(
     userId: string,
-    dayName: string,
+    dateKey: string,
     completed: boolean,
   ): Promise<void> {
     if (completed) {
@@ -145,16 +146,14 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
         "dias_completados",
         "readwrite",
         (store) =>
-          store.put({ userId, dayName }) as unknown as IDBRequest<
-            IDBValidKey
-          >,
+          store.put({ userId, dateKey }) as unknown as IDBRequest<IDBValidKey>,
       );
     } else {
       await this.withStore(
         "dias_completados",
         "readwrite",
         (store) =>
-          store.delete([userId, dayName]) as unknown as IDBRequest<undefined>,
+          store.delete([userId, dateKey]) as unknown as IDBRequest<undefined>,
       );
     }
   }
@@ -163,6 +162,7 @@ export class IndexedDBWorkoutRepository implements IWorkoutRepository {
     const progress = await this.getUserProgress(userId);
     return Object.entries(progress)
       .filter(([, p]) => p.completed)
-      .map(([day]) => day);
+      .map(([dateKey]) => dateKey)
+      .sort();
   }
 }

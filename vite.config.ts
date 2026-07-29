@@ -52,7 +52,7 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [react(), tailwindcss(), VitePWA(manifestForPlugIn) as PluginOption[]],
   resolve: {
     alias: {

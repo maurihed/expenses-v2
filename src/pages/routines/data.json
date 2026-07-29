@@ -9,7 +9,11 @@
         "postpartum_week": 8,
         "duration_minutes": 40,
         "frequency": 5,
-        "training_style": ["Fuerza", "Core profundo", "Acondicionamiento suave"],
+        "training_style": [
+          "Fuerza",
+          "Core profundo",
+          "Acondicionamiento suave"
+        ],
         "intensity": {
           "target_rpe": "6-7",
           "reps_in_reserve": "3-4",
@@ -43,7 +47,11 @@
           {
             "day": "Lunes",
             "session_name": "Full Body A",
-            "focus": ["Pierna", "Empuje", "Core profundo"],
+            "focus": [
+              "Pierna",
+              "Empuje",
+              "Core profundo"
+            ],
             "blocks": [
               {
                 "name": "Calentamiento",
@@ -142,7 +150,11 @@
           {
             "day": "Martes",
             "session_name": "Full Body B",
-            "focus": ["Glúteo", "Espalda alta", "Postura"],
+            "focus": [
+              "Glúteo",
+              "Espalda alta",
+              "Postura"
+            ],
             "blocks": [
               {
                 "name": "Fuerza",
@@ -200,7 +212,11 @@
           {
             "day": "Miércoles",
             "session_name": "Recuperación activa",
-            "focus": ["Movilidad", "Core profundo", "Recuperación"],
+            "focus": [
+              "Movilidad",
+              "Core profundo",
+              "Recuperación"
+            ],
             "blocks": [
               {
                 "name": "Acondicionamiento",
@@ -240,7 +256,10 @@
           {
             "day": "Jueves",
             "session_name": "Full Body C",
-            "focus": ["Fuerza funcional", "Estabilidad"],
+            "focus": [
+              "Fuerza funcional",
+              "Estabilidad"
+            ],
             "blocks": [
               {
                 "name": "Fuerza",
@@ -296,7 +315,10 @@
           {
             "day": "Viernes",
             "session_name": "Full Body D",
-            "focus": ["Hipertrofia ligera", "Acondicionamiento"],
+            "focus": [
+              "Hipertrofia ligera",
+              "Acondicionamiento"
+            ],
             "blocks": [
               {
                 "name": "Circuito fuerza",
@@ -361,37 +383,42 @@
     "name": "Mauricio",
     "program": {
       "details": {
-        "name": "Hipertrofia funcional + movilidad - Fase 1",
-        "phase": "Construcción muscular con recomposición metabólica",
-        "duration_minutes": 40,
-        "frequency": 5,
+        "name": "Recomposición + protección lumbar - Fase 1",
+        "phase": "Pérdida de grasa y construcción muscular con control lumbar",
+        "duration_minutes": 65,
+        "frequency": 4,
         "duration_weeks": 12,
         "training_style": [
-          "Hipertrofia funcional",
           "Fuerza progresiva",
-          "Movilidad correctiva",
-          "Acondicionamiento metabólico sostenible"
+          "Hipertrofia controlada",
+          "Core anti-extensión",
+          "Acondicionamiento zona 2"
         ],
         "athlete": {
           "name": "Mauricio",
           "age": 30,
-          "height_cm": 179,
-          "weight_kg": 88,
-          "occupation": "Desarrollador de software",
-          "primary_goal": "Ganar masa muscular y mejorar movilidad manteniendo una composición corporal saludable"
+          "height_cm": 180,
+          "weight_kg": 88.85,
+          "body_fat_percent": 30.7,
+          "skeletal_muscle_kg": 32.8,
+          "visceral_fat": 13,
+          "bmr_kcal": 1699,
+          "occupation": "Desarrollador de software (home office)",
+          "primary_goal": "Bajar grasa corporal y construir músculo sin prisa, protegiendo la zona lumbar"
         },
         "training_philosophy": {
-          "main_priority": "Estimular crecimiento muscular sin comprometer recuperación",
+          "main_priority": "Progresar en fuerza preservando la lumbar y elevando el gasto con pasos diarios",
           "strength_percentage": 70,
-          "mobility_percentage": 20,
-          "conditioning_percentage": 10
+          "mobility_percentage": 15,
+          "conditioning_percentage": 15
         },
         "limitations": [
-          "Sueño promedio de 6 horas por cuidado del bebé",
-          "Alta cantidad de tiempo sentado durante el día",
-          "Acortamiento de flexores de cadera",
-          "Debilidad relativa de glúteos por sedentarismo",
-          "Tendencia a hombros adelantados y rigidez torácica"
+          "Contractura lumbar hace 6 meses; molestia al levantar al bebé de la cuna",
+          "Home office: muchas horas sentado",
+          "Sueño irregular por cuidado del bebé",
+          "Fuerza de empuje baja (fondos asistidos 1, lagartijas 5)",
+          "Dominadas solo con asistencia (6 reps)",
+          "Grasa visceral elevada (13) — priorizar caminata diaria"
         ],
         "intensity": {
           "target_rpe": "7-8/10",
@@ -402,132 +429,179 @@
         },
         "progression_model": {
           "method": "Doble progresión",
-          "rule": "Cuando se complete el máximo de repeticiones con RPE menor a 8, aumentar ligeramente la carga",
-          "weekly_progression": "2-5% de incremento cuando sea posible"
+          "rule": "Cuando completes el rango alto de reps en todas las series con RPE ≤8, sube 2 kg en mancuernas o reduce un nivel de liga",
+          "weekly_progression": "1 variable a la vez (reps o carga). Semanas 1-2 solo técnica."
         },
         "equipment": [
-          "Mancuernas",
-          "Barra con discos hasta 60kg",
-          "Banco ajustable",
           "Barra de dominadas",
-          "Bandas de resistencia",
-          "Kettlebell 20 lb",
-          "Caminadora",
-          "Rueda abdominal",
-          "Tapete de yoga"
+          "Mancuernas de todos los pesos",
+          "Barra plana y barra Z",
+          "Barras paralelas para fondos",
+          "Soportes para lagartijas",
+          "Ligas de resistencia",
+          "Rueda abdominal (restringida en fase 1)",
+          "Cuerda para saltar",
+          "Caminadora mecánica",
+          "Tapete"
         ],
         "main_objectives": [
-          "Aumentar masa muscular principalmente en torso y cadena posterior",
-          "Mejorar fuerza relativa",
-          "Corregir postura de escritorio",
-          "Incrementar movilidad de cadera y columna torácica",
-          "Mejorar energía diaria"
+          "Reducir grasa corporal y grasa visceral",
+          "Ganar músculo en torso y cadena posterior",
+          "Proteger y fortalecer la zona lumbar",
+          "Subir fuerza en empuje y dominadas",
+          "Consolidar hábito de 4 días de fuerza + 8-10k pasos"
+        ],
+        "goals": [
+          "Bajar % grasa con déficit moderado (~1950-2050 kcal)",
+          "Proteína 170-180 g/día",
+          "Mantener o subir masa muscular esquelética",
+          "Llevar grasa visceral de 13 hacia <10",
+          "Dominadas y fondos con menos asistencia"
+        ],
+        "medical_considerations": [
+          "Historial de contractura lumbar",
+          "Dolor puntual al levantar carga con flexión de tronco (bebé ~7 kg)",
+          "Evitar redondear la espalda en bisagras y remos",
+          "No entrenar con dolor agudo o punzante"
+        ],
+        "forbidden_exercises": [
+          "Rueda abdominal (hasta semana 5+ sin dolor)",
+          "Buenos días con barra",
+          "Peso muerto convencional pesado",
+          "Remo con barra inclinado agresivo",
+          "Crunch / sit-up pesado",
+          "Saltos de alto impacto y HIIT agresivo (primeras 4 semanas)"
         ]
       },
       "week": {
         "number": 1,
-        "focus": "Base de hipertrofia, técnica y movilidad",
+        "focus": "Adaptación, técnica lumbar-safe y base de hipertrofia",
         "days": [
           {
             "day": "Lunes",
-            "session_name": "Torso hipertrofia A",
-            "focus": ["Pecho", "Espalda", "Hombro", "Postura escapular"],
+            "session_name": "Empuje + core A",
+            "focus": [
+              "Pecho",
+              "Hombros",
+              "Tríceps",
+              "Core anti-extensión"
+            ],
             "blocks": [
               {
-                "name": "Calentamiento y movilidad postural",
+                "name": "Calentamiento",
                 "duration_minutes": 5,
                 "exercises": [
                   {
-                    "name": "Respiración diafragmática 360 grados",
+                    "name": "Cuerda suave o movilidad de hombros",
                     "sets": 1,
-                    "duration_seconds": 60,
-                    "notes": "Reducir tensión cervical y preparar control del core."
+                    "duration_seconds": 180,
+                    "equipment": "Cuerda o tapete",
+                    "notes": "Sin impacto. Solo elevar temperatura."
                   },
                   {
                     "name": "Rotación torácica en cuadrupedia",
                     "sets": 1,
-                    "reps": "10 por lado",
-                    "notes": "Mejorar extensión y rotación dorsal."
+                    "reps": "8 por lado",
+                    "equipment": "Tapete"
                   },
                   {
                     "name": "Band pull apart",
                     "equipment": "Liga",
                     "sets": 2,
                     "reps": 15,
-                    "notes": "Activación de trapecio medio y romboides."
+                    "notes": "Activar espalda alta antes de presses."
                   },
                   {
                     "name": "Scapular push ups",
                     "sets": 1,
-                    "reps": 12,
-                    "notes": "Control escapular antes de presses."
+                    "reps": 10,
+                    "notes": "Solo movimiento escapular, codos extendidos."
                   }
                 ]
               },
               {
-                "name": "Fuerza/Hipertrofia",
-                "duration_minutes": 25,
+                "name": "Fuerza",
+                "duration_minutes": 35,
                 "exercises": [
                   {
                     "order": 1,
-                    "name": "Press banca con mancuernas",
-                    "equipment": "Banco + mancuernas",
+                    "name": "Press de piso con mancuernas",
+                    "equipment": "Mancuernas + tapete",
                     "sets": 4,
                     "reps": "8-10",
                     "rpe": 8,
-                    "notes": "Mantener escápulas retraídas y recorrido controlado."
+                    "notes": "Carga inicial 18-20 kg c/u. Escápulas estables. Descanso 90 s."
                   },
                   {
                     "order": 2,
-                    "name": "Remo con mancuerna apoyado en banco",
-                    "equipment": "Banco + mancuerna",
-                    "sets": 4,
-                    "reps": "10 por lado",
+                    "name": "Fondos asistidos en paralelas",
+                    "equipment": "Barras paralelas + liga fuerte",
+                    "sets": 3,
+                    "reps": "5-8",
                     "rpe": 8,
-                    "notes": "Pausa arriba para maximizar activación dorsal."
+                    "notes": "Liga que permita 5+ reps limpias. Alternativa: negativos lentos 3-4 s."
                   },
                   {
                     "order": 3,
-                    "name": "Press militar sentado con mancuernas",
-                    "equipment": "Banco + mancuernas",
+                    "name": "Press media genuflexión con mancuerna",
+                    "equipment": "Mancuerna + tapete",
                     "sets": 3,
-                    "reps": "8-10",
+                    "reps": "8-10 por lado",
                     "rpe": 7,
-                    "notes": "Evitar compensación lumbar."
+                    "side": "cada lado",
+                    "notes": "Rodilla en tapete. Carga inicial 10-12 kg. Menos estrés lumbar que press de pie."
                   },
                   {
                     "order": 4,
-                    "name": "Dominadas asistidas con liga",
-                    "equipment": "Barra + liga",
+                    "name": "Lagartijas en soportes",
+                    "equipment": "Soportes para lagartijas",
                     "sets": 3,
-                    "reps": "6-8",
-                    "rpe": 8,
-                    "notes": "Enfocarse en depresión escapular y control."
+                    "reps": "5-10",
+                    "rpe": 7,
+                    "notes": "Rodillas apoyadas si hace falta. Déficit ligero con soportes."
+                  },
+                  {
+                    "order": 5,
+                    "name": "Extensión de tríceps con mancuerna a dos manos",
+                    "equipment": "Mancuerna",
+                    "sets": 3,
+                    "reps": "12-15",
+                    "rpe": 7,
+                    "notes": "En piso, mancuerna sobre el pecho. Carga 12-16 kg."
                   }
                 ]
               },
               {
-                "name": "Core/Movilidad final",
+                "name": "Core lumbar-safe",
                 "duration_minutes": 10,
                 "exercises": [
                   {
-                    "name": "Pallof press",
-                    "equipment": "Liga",
+                    "name": "Dead bug",
                     "sets": 3,
-                    "reps": "12 por lado",
-                    "notes": "Core anti rotación para estabilidad."
+                    "reps": "8 por lado",
+                    "equipment": "Tapete",
+                    "notes": "Lumbar pegada al piso. Lento y controlado."
                   },
                   {
-                    "name": "Wall slides",
+                    "name": "Plancha frontal",
                     "sets": 3,
-                    "reps": 12,
-                    "notes": "Mejorar posición de hombros."
-                  },
+                    "duration_seconds": "20-40",
+                    "equipment": "Tapete",
+                    "notes": "Calidad > tiempo. Pelvis neutra, sin hundir lumbar."
+                  }
+                ]
+              },
+              {
+                "name": "Finisher zona 2",
+                "duration_minutes": 10,
+                "exercises": [
                   {
-                    "name": "Estiramiento pectoral en marco de puerta",
-                    "sets": 2,
-                    "duration_seconds": 30,
-                    "notes": "Reducir postura cerrada por computadora."
+                    "name": "Caminadora mecánica",
+                    "equipment": "Caminadora",
+                    "duration_minutes": 10,
+                    "intensity": "Suave-moderado conversacional",
+                    "rpe": 5,
+                    "notes": "No sprint. Solo cerrar sesión y sumar gasto."
                   }
                 ]
               }
@@ -535,91 +609,116 @@
           },
           {
             "day": "Martes",
-            "session_name": "Pierna hipertrofia A",
-            "focus": ["Glúteo", "Cuádriceps", "Isquiotibiales", "Movilidad de cadera"],
+            "session_name": "Pierna anterior + glúteo B",
+            "focus": [
+              "Cuádriceps",
+              "Glúteo",
+              "Estabilidad de cadera"
+            ],
             "blocks": [
               {
-                "name": "Calentamiento y movilidad postural",
+                "name": "Calentamiento",
                 "duration_minutes": 5,
                 "exercises": [
                   {
                     "name": "Movilidad 90/90 de cadera",
                     "sets": 1,
                     "duration_seconds": 60,
-                    "notes": "Mejorar rotación interna y externa."
+                    "equipment": "Tapete",
+                    "notes": "Rotación interna y externa sin forzar."
                   },
                   {
                     "name": "Estiramiento dinámico de flexor de cadera",
                     "sets": 1,
                     "duration_seconds": "45 por lado",
-                    "notes": "No buscar dolor, solo movilidad."
+                    "notes": "Compensa horas sentado. Sin dolor."
                   },
                   {
                     "name": "Puente de glúteo activación",
                     "sets": 2,
                     "reps": 15,
+                    "equipment": "Tapete",
                     "notes": "Activar glúteos antes de cargar."
                   }
                 ]
               },
               {
-                "name": "Fuerza/Hipertrofia",
-                "duration_minutes": 25,
+                "name": "Fuerza",
+                "duration_minutes": 35,
                 "exercises": [
                   {
                     "order": 1,
-                    "name": "Sentadilla con barra",
-                    "equipment": "Barra + discos",
+                    "name": "Sentadilla goblet",
+                    "equipment": "Mancuerna",
                     "sets": 4,
-                    "reps": "6-10",
+                    "reps": "10-12",
                     "rpe": 8,
-                    "notes": "Carga moderada. Priorizar profundidad cómoda y técnica."
+                    "notes": "Carga inicial 16-20 kg. Torso erguido. Sin barra a la espalda en esta fase."
                   },
                   {
                     "order": 2,
-                    "name": "Peso muerto rumano con barra",
-                    "equipment": "Barra + discos",
+                    "name": "Puente de glúteo con carga",
+                    "equipment": "Barra o mancuerna sobre cadera + tapete",
                     "sets": 4,
-                    "reps": "8-10",
+                    "reps": "12-15",
                     "rpe": 8,
-                    "notes": "Control excéntrico de 2-3 segundos."
+                    "notes": "Carga 20-30 kg total. Empujar con talones, no hiperextender lumbar."
                   },
                   {
                     "order": 3,
-                    "name": "Split squat con mancuerna",
+                    "name": "Zancada estática (split squat)",
                     "equipment": "Mancuernas",
                     "sets": 3,
                     "reps": "8-10 por pierna",
                     "rpe": 8,
-                    "notes": "Excelente para estabilidad de cadera."
+                    "side": "cada pierna",
+                    "notes": "Carga 8-12 kg c/u. Tronco alto. Paso estable."
                   },
                   {
                     "order": 4,
-                    "name": "Caminata lateral con liga",
-                    "equipment": "Liga",
+                    "name": "Step-up a superficie baja",
+                    "equipment": "Silla/cajón estable + mancuernas opcionales",
                     "sets": 3,
-                    "reps": "15 pasos por lado",
+                    "reps": "8-10 por pierna",
                     "rpe": 7,
-                    "notes": "Activar glúteo medio."
+                    "side": "cada pierna",
+                    "notes": "8-10 kg c/u o solo cuerpo. Subir con control, sin impulsarte."
+                  },
+                  {
+                    "order": 5,
+                    "name": "Elevación de talones",
+                    "equipment": "Mancuerna",
+                    "sets": 3,
+                    "reps": "15-20",
+                    "rpe": 7,
+                    "notes": "Carga 12-16 kg. Pausar 1 s arriba."
                   }
                 ]
               },
               {
-                "name": "Core/Acondicionamiento final",
-                "duration_minutes": 10,
+                "name": "Core lumbar-safe",
+                "duration_minutes": 8,
                 "exercises": [
                   {
-                    "name": "Dead bug",
+                    "name": "Bird dog",
                     "sets": 3,
-                    "reps": "10 por lado",
-                    "notes": "Controlar respiración y pelvis."
-                  },
+                    "reps": "8 por lado",
+                    "equipment": "Tapete",
+                    "notes": "Pausa 2 s arriba. Cadera cuadrada, sin rotar."
+                  }
+                ]
+              },
+              {
+                "name": "Finisher zona 2",
+                "duration_minutes": 12,
+                "exercises": [
                   {
-                    "name": "Caminadora inclinada",
+                    "name": "Caminadora mecánica",
                     "equipment": "Caminadora",
-                    "duration_minutes": 6,
-                    "intensity": "Zona aeróbica moderada",
-                    "notes": "Ritmo sostenible, no llegar a fatiga extrema."
+                    "duration_minutes": 12,
+                    "intensity": "Ritmo conversacional zona 2",
+                    "rpe": 5,
+                    "notes": "Clave para grasa visceral. Mantén respiración cómoda."
                   }
                 ]
               }
@@ -627,75 +726,70 @@
           },
           {
             "day": "Miércoles",
-            "session_name": "Movilidad activa + zona 2",
+            "session_name": "Recuperación activa + zona 2",
             "focus": [
-              "Recuperación muscular",
-              "Movilidad de cadera",
-              "Movilidad torácica",
-              "Capacidad aeróbica"
+              "Caminata",
+              "Movilidad lumbar",
+              "Movilidad de cadera"
             ],
             "blocks": [
               {
-                "name": "Calentamiento y movilidad postural",
-                "duration_minutes": 5,
+                "name": "Acondicionamiento zona 2",
+                "duration_minutes": 40,
+                "exercises": [
+                  {
+                    "order": 1,
+                    "name": "Caminata en caminadora o exterior",
+                    "equipment": "Caminadora mecánica",
+                    "duration_minutes": 40,
+                    "intensity": "Zona 2 (puedes mantener conversación)",
+                    "rpe": 5,
+                    "notes": "Sesión prioritaria para grasa visceral. Meta diaria total 8-10k pasos."
+                  }
+                ]
+              },
+              {
+                "name": "Movilidad y core suave",
+                "duration_minutes": 15,
                 "exercises": [
                   {
                     "name": "Respiración diafragmática 360 grados",
                     "sets": 1,
                     "duration_seconds": 90,
-                    "notes": "Reducir tono simpático y mejorar recuperación."
+                    "equipment": "Tapete",
+                    "notes": "Bajar tono simpático y preparar recuperación."
                   },
                   {
-                    "name": "Cat cow controlado",
+                    "name": "Cat-cow controlado",
                     "sets": 1,
                     "reps": 10,
+                    "equipment": "Tapete",
                     "notes": "Movilizar columna sin buscar rango máximo."
                   },
                   {
                     "name": "Rotación torácica en cuadrupedia",
                     "sets": 1,
                     "reps": "10 por lado",
-                    "notes": "Abrir zona dorsal afectada por trabajo sentado."
-                  }
-                ]
-              },
-              {
-                "name": "Acondicionamiento cardiovascular zona 2",
-                "duration_minutes": 25,
-                "exercises": [
-                  {
-                    "order": 1,
-                    "name": "Caminadora inclinada",
-                    "equipment": "Caminadora",
-                    "duration_minutes": 25,
-                    "intensity": "Zona 2 (puedes mantener conversación)",
-                    "rpe": 6,
-                    "notes": "Objetivo: mejorar capacidad aeróbica sin generar fatiga excesiva."
-                  }
-                ]
-              },
-              {
-                "name": "Core/Movilidad final",
-                "duration_minutes": 10,
-                "exercises": [
+                    "equipment": "Tapete"
+                  },
                   {
                     "name": "90/90 hip switches",
                     "sets": 2,
                     "reps": 10,
-                    "notes": "Mejorar movilidad activa de cadera."
+                    "equipment": "Tapete",
+                    "notes": "Movilidad activa de cadera."
                   },
                   {
-                    "name": "Estiramiento flexor de cadera con contracción activa",
+                    "name": "Estiramiento flexor de cadera",
                     "sets": 2,
                     "duration_seconds": "45 por lado",
-                    "notes": "Mejorar extensión de cadera después de muchas horas sentado."
+                    "notes": "Compensar home office."
                   },
                   {
-                    "name": "Dead hang",
-                    "equipment": "Barra de dominadas",
+                    "name": "Dead bug suave",
                     "sets": 2,
-                    "duration_seconds": 30,
-                    "notes": "Descompresión de columna y apertura de hombros."
+                    "reps": "8 por lado",
+                    "equipment": "Tapete"
                   }
                 ]
               }
@@ -703,11 +797,16 @@
           },
           {
             "day": "Jueves",
-            "session_name": "Torso fuerza B",
-            "focus": ["Fuerza superior", "Espalda", "Pecho", "Brazos"],
+            "session_name": "Jalón + core C",
+            "focus": [
+              "Espalda",
+              "Bíceps",
+              "Postura",
+              "Estabilidad"
+            ],
             "blocks": [
               {
-                "name": "Calentamiento y movilidad postural",
+                "name": "Calentamiento",
                 "duration_minutes": 5,
                 "exercises": [
                   {
@@ -715,7 +814,7 @@
                     "equipment": "Liga",
                     "sets": 2,
                     "reps": 20,
-                    "notes": "Activar espalda alta antes de cargas."
+                    "notes": "Activar trapecio medio y romboides."
                   },
                   {
                     "name": "Rotación externa de hombro con liga",
@@ -729,70 +828,80 @@
                     "equipment": "Barra de dominadas",
                     "sets": 2,
                     "reps": 8,
-                    "notes": "Activación escapular sin fatigar."
+                    "notes": "Solo depresión escapular, sin flexionar codos del todo."
                   }
                 ]
               },
               {
-                "name": "Fuerza/Hipertrofia",
-                "duration_minutes": 25,
+                "name": "Fuerza",
+                "duration_minutes": 35,
                 "exercises": [
                   {
                     "order": 1,
-                    "name": "Press banca con barra",
-                    "equipment": "Barra + discos + banco",
+                    "name": "Dominadas asistidas con liga",
+                    "equipment": "Barra de dominadas + liga",
                     "sets": 4,
-                    "reps": "6-8",
+                    "reps": "5-8",
                     "rpe": 8,
-                    "notes": "Movimiento principal de fuerza. Mantener 2 repeticiones en reserva."
+                    "notes": "Liga para 5-8 reps limpias. Enfoque en depresión escapular."
                   },
                   {
                     "order": 2,
-                    "name": "Dominadas asistidas o libres",
-                    "equipment": "Barra + liga opcional",
+                    "name": "Remo con mancuerna a un brazo",
+                    "equipment": "Mancuerna + silla/mesa firme de apoyo",
                     "sets": 4,
-                    "reps": "6-10",
+                    "reps": "10-12 por lado",
                     "rpe": 8,
-                    "notes": "Priorizar control escapular."
+                    "side": "cada lado",
+                    "notes": "Carga 16-20 kg. Mano apoyada. Sin rotar el tronco. Protege lumbar."
                   },
                   {
                     "order": 3,
-                    "name": "Remo con barra",
-                    "equipment": "Barra + discos",
+                    "name": "Face pull con liga",
+                    "equipment": "Liga",
                     "sets": 3,
-                    "reps": "8-10",
-                    "rpe": 8,
-                    "notes": "Mantener columna neutra y evitar impulso."
+                    "reps": "15-20",
+                    "rpe": 7,
+                    "notes": "Codos altos, a la cara. Salud de hombro y postura de escritorio."
                   },
                   {
                     "order": 4,
-                    "name": "Elevaciones laterales",
-                    "equipment": "Mancuernas",
+                    "name": "Remo con liga sentado",
+                    "equipment": "Liga anclada",
                     "sets": 3,
                     "reps": "12-15",
-                    "rpe": 8,
-                    "notes": "Movimiento controlado para hipertrofia del deltoides."
+                    "rpe": 7,
+                    "notes": "Torso erguido. Buena opción sin carga axial."
+                  },
+                  {
+                    "order": 5,
+                    "name": "Curl con barra Z",
+                    "equipment": "Barra Z",
+                    "sets": 3,
+                    "reps": "10-12",
+                    "rpe": 7,
+                    "notes": "Carga total 15-20 kg. Sin balanceo."
                   }
                 ]
               },
               {
-                "name": "Core/Acondicionamiento final",
+                "name": "Core lumbar-safe",
                 "duration_minutes": 10,
                 "exercises": [
                   {
-                    "name": "Farmer carry pesado",
-                    "equipment": "Mancuernas",
-                    "sets": 4,
-                    "duration_seconds": 40,
-                    "rpe": 8,
-                    "notes": "Trabajar agarre, core y postura."
+                    "name": "Side plank",
+                    "sets": 3,
+                    "duration_seconds": "20-30",
+                    "side": "cada lado",
+                    "equipment": "Tapete",
+                    "notes": "Rodilla apoyada si hace falta."
                   },
                   {
-                    "name": "Pallof press",
-                    "equipment": "Liga",
+                    "name": "Dead bug",
                     "sets": 3,
-                    "reps": "12 por lado",
-                    "notes": "Anti rotación para estabilidad lumbar."
+                    "reps": "8 por lado",
+                    "equipment": "Tapete",
+                    "notes": "Control total de pelvis."
                   }
                 ]
               }
@@ -800,100 +909,120 @@
           },
           {
             "day": "Viernes",
-            "session_name": "Pierna posterior + acondicionamiento",
+            "session_name": "Posterior + bisagra D",
             "focus": [
+              "Cadena posterior",
               "Glúteos",
               "Isquiotibiales",
-              "Cadena posterior",
-              "Core funcional",
-              "Capacidad metabólica"
+              "Bisagra de cadera"
             ],
             "blocks": [
               {
-                "name": "Calentamiento y movilidad postural",
+                "name": "Calentamiento",
                 "duration_minutes": 5,
                 "exercises": [
                   {
                     "name": "Movilidad 90/90 de cadera",
                     "sets": 1,
                     "reps": "10 por lado",
-                    "notes": "Mejorar rotación de cadera antes del trabajo unilateral."
+                    "equipment": "Tapete"
                   },
                   {
-                    "name": "Good morning sin peso",
+                    "name": "Bisagra de cadera sin peso (ensayo)",
                     "sets": 2,
-                    "reps": 15,
-                    "notes": "Preparar patrón de bisagra de cadera."
+                    "reps": 12,
+                    "notes": "Empuja cadera atrás, espinillas casi verticales, espalda neutra. Patrón clave."
                   },
                   {
                     "name": "Puente de glúteo con pausa",
                     "sets": 2,
                     "reps": 12,
-                    "notes": "Mantener 2 segundos de contracción arriba."
+                    "equipment": "Tapete",
+                    "notes": "2 s de contracción arriba."
                   }
                 ]
               },
               {
-                "name": "Fuerza/Hipertrofia",
-                "duration_minutes": 25,
+                "name": "Fuerza",
+                "duration_minutes": 35,
                 "exercises": [
                   {
                     "order": 1,
-                    "name": "Peso muerto rumano con mancuernas o barra",
-                    "equipment": "Barra + discos o mancuernas",
+                    "name": "Peso muerto rumano con mancuernas",
+                    "equipment": "Mancuernas",
                     "sets": 4,
                     "reps": "8-10",
                     "rpe": 8,
-                    "notes": "Ejercicio principal. Buscar tensión constante en isquios y glúteos."
+                    "notes": "Carga 14-18 kg c/u. NO barra aún. Excéntrico 2-3 s. Para si redondeas lumbar."
                   },
                   {
                     "order": 2,
-                    "name": "Hip thrust con barra",
-                    "equipment": "Banco + barra",
-                    "sets": 4,
-                    "reps": "8-12",
+                    "name": "Sentadilla búlgara",
+                    "equipment": "Mancuernas + silla baja",
+                    "sets": 3,
+                    "reps": "8-10 por pierna",
                     "rpe": 8,
-                    "notes": "Controlar la pelvis y evitar hiperextensión lumbar."
+                    "side": "cada pierna",
+                    "notes": "Carga 8-12 kg c/u. Pie trasero apoyado. Torso estable."
                   },
                   {
                     "order": 3,
-                    "name": "Step up con mancuerna",
-                    "equipment": "Banco + mancuerna",
+                    "name": "Hip hinge con liga (pull-through)",
+                    "equipment": "Liga anclada atrás",
                     "sets": 3,
-                    "reps": "10 por pierna",
+                    "reps": "12-15",
                     "rpe": 7,
-                    "notes": "Subir con control usando principalmente glúteo."
+                    "notes": "Empuja cadera hacia la liga y extiende. Enseña bisagra sin compresión axial alta."
                   },
                   {
                     "order": 4,
-                    "name": "Curl femoral con banda",
-                    "equipment": "Liga",
+                    "name": "Curl femoral con liga",
+                    "equipment": "Liga al tobillo",
                     "sets": 3,
                     "reps": "12-15",
                     "rpe": 8,
-                    "notes": "Trabajo accesorio para isquiotibiales."
+                    "notes": "Tumbado boca abajo. Control total."
+                  },
+                  {
+                    "order": 5,
+                    "name": "Elevación de talones",
+                    "equipment": "Mancuerna",
+                    "sets": 3,
+                    "reps": "15-20",
+                    "rpe": 7,
+                    "notes": "Carga 12-16 kg."
                   }
                 ]
               },
               {
-                "name": "Core/Acondicionamiento final",
-                "duration_minutes": 10,
+                "name": "Core lumbar-safe",
+                "duration_minutes": 8,
                 "exercises": [
                   {
-                    "name": "Rueda abdominal",
-                    "equipment": "Rueda abdominal",
+                    "name": "Plancha frontal",
                     "sets": 3,
-                    "reps": "6-10",
-                    "rpe": 7,
-                    "notes": "Solo si puedes mantener pelvis neutra. Evitar extensión lumbar."
+                    "duration_seconds": "20-40",
+                    "equipment": "Tapete"
                   },
                   {
-                    "name": "Caminadora inclinada intervalos moderados",
-                    "equipment": "Caminadora",
-                    "duration_minutes": 6,
-                    "protocol": "30 segundos ritmo alto / 60 segundos ritmo moderado",
-                    "rpe": 7,
-                    "notes": "No buscar máximo esfuerzo. Finalizar con energía."
+                    "name": "Bird dog",
+                    "sets": 3,
+                    "reps": "8 por lado",
+                    "equipment": "Tapete"
+                  }
+                ]
+              },
+              {
+                "name": "Finisher opcional",
+                "duration_minutes": 8,
+                "exercises": [
+                  {
+                    "name": "Cuerda suave o caminadora",
+                    "equipment": "Cuerda o caminadora",
+                    "duration_minutes": 8,
+                    "intensity": "Suave",
+                    "rpe": 5,
+                    "notes": "Cuerda SOLO si la lumbar está bien ese día. Si hay molestia: solo caminadora 10 min."
                   }
                 ]
               }
@@ -905,50 +1034,70 @@
         "strength_progression": {
           "method": "Doble progresión",
           "example": {
-            "exercise": "Press banca 4x8-10",
-            "week_1": "Usar carga con RPE 7-8",
-            "progression": "Cuando logres 4x10 manteniendo RPE <=8, subir peso"
+            "exercise": "Press de piso 4x8-10",
+            "week_1": "18-20 kg c/u con RPE 7-8 y 1-2 reps en recámara",
+            "progression": "Cuando logres 4x10 con RPE ≤8, sube ~2 kg"
           }
         },
         "weekly_targets": [
-          "Aumentar 1-2 repeticiones antes de aumentar peso",
-          "Mantener técnica perfecta",
-          "Evitar compensaciones por fatiga"
+          "Semanas 1-2: solo técnica y cargas de la tabla",
+          "Aumentar 1-2 reps antes de subir peso",
+          "Nunca subir peso y reps el mismo día",
+          "Mantener técnica lumbar neutra siempre"
         ],
+        "phase_gates": {
+          "week_5_plus_if_pain_free": [
+            "Introducir RDL con barra desde 40 kg (no desde 60)",
+            "Reducir asistencia en dominadas y fondos",
+            "Valorar rueda abdominal solo con pelvis neutra"
+          ]
+        },
         "deload": {
-          "frequency": "Cada 5-6 semanas si existe acumulación de fatiga",
+          "frequency": "Cada 5-6 semanas si hay fatiga acumulada o sueño muy pobre",
           "adjustment": [
             "Reducir volumen 40-50%",
             "Mantener movimientos principales",
-            "Trabajar movilidad adicional"
+            "Más caminata y movilidad"
           ]
         }
       },
       "fatigue_management": {
         "poor_sleep_adjustment": {
-          "condition": "Dormiste menos de 5 horas o tienes fatiga elevada",
+          "condition": "Dormiste menos de 5 horas o fatiga elevada por el bebé",
           "changes": [
-            "Mantener ejercicios principales",
-            "Reducir una serie por ejercicio",
-            "Mantener RPE máximo en 7"
+            "Mantener 2-3 ejercicios principales",
+            "Quitar 1 serie por ejercicio",
+            "RPE máximo 7",
+            "No hacer finisher HIIT"
+          ]
+        },
+        "lumbar_flare_adjustment": {
+          "condition": "Molestia lumbar ese día",
+          "changes": [
+            "Cancelar RDL y zancadas profundas",
+            "Priorizar puente de glúteo, bird dog, dead bug y caminata",
+            "Revisar técnica al levantar al bebé (acercar al cuerpo, empujar con piernas)"
           ]
         },
         "normal_day": {
-          "condition": "Dormiste aproximadamente 6 horas y tienes buena energía",
-          "changes": ["Seguir rutina completa", "Buscar progresión gradual"]
+          "condition": "Buenas sensaciones y ~6 h de sueño",
+          "changes": [
+            "Seguir rutina completa",
+            "Buscar progresión gradual"
+          ]
         }
       },
       "daily_mobility_habit": {
         "duration_minutes": 5,
         "frequency": "Diario",
-        "purpose": "Compensar 8+ horas sentado frente al ordenador",
+        "purpose": "Compensar home office y cuidar lumbar/cadera",
         "routine": [
           {
             "exercise": "Estiramiento flexor de cadera",
             "duration": "45 segundos por lado"
           },
           {
-            "exercise": "Wall slides",
+            "exercise": "Wall slides o band pull apart",
             "reps": 15
           },
           {
@@ -956,28 +1105,39 @@
             "reps": "10 por lado"
           },
           {
-            "exercise": "Band pull apart",
-            "reps": 20
+            "exercise": "Respiración 360 grados",
+            "duration": "60 segundos"
           }
         ]
       },
+      "nutrition_targets": {
+        "calories_kcal": "1950-2050",
+        "protein_g": "170-180",
+        "fats_g_min": 60,
+        "carbs_g": "160-190",
+        "water_l": "3-3.5",
+        "weigh_in": "Ayunas, 2-3 mañanas/semana, promediar"
+      },
       "tracking_metrics": {
         "body_composition": [
-          "Peso semanal promedio",
-          "Circunferencia de cintura",
+          "Peso en ayunas (promedio semanal)",
+          "% grasa y grasa visceral (tendencia, no el día a día)",
+          "Masa muscular esquelética",
+          "Circunferencia de cintura 1x/semana",
           "Fotos cada 4 semanas"
         ],
         "strength_markers": [
-          "Carga utilizada en sentadilla",
-          "Carga utilizada en press banca",
-          "Número de dominadas",
-          "Carga en peso muerto rumano"
+          "Carga en press de piso",
+          "Nivel de liga / reps en dominadas",
+          "Nivel de asistencia en fondos",
+          "Carga en RDL con mancuernas",
+          "Carga en sentadilla goblet"
         ],
-        "mobility_markers": [
-          "Mayor rango en sentadilla",
-          "Menor rigidez al levantarse del escritorio",
-          "Mejor posición de hombros",
-          "Menor tensión cervical"
+        "recovery_markers": [
+          "Dolor lumbar (0-10) al despertar",
+          "FC en reposo (meta hacia 65-75)",
+          "Horas de sueño",
+          "Pasos diarios (meta 8-10k)"
         ]
       }
     }

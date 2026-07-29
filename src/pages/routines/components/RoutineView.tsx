@@ -1,27 +1,36 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Flame } from "lucide-react";
-import type { Day, User } from "../types";
+import type { ScheduledDay, User, WeekSchedule } from "../types";
 import DaySelector from "./DaySelector";
 import BlockCard from "./BlockCard";
 import DayCompleteBanner from "./DayCompleteBanner";
 
 interface RoutineViewProps {
   user: User;
+  schedule: WeekSchedule;
+  initialWorkoutIndex: number;
   loading?: boolean;
-  getDayProgress: (userId: string, dayName: string) => {
+  getDayProgress: (
+    userId: string,
+    dateKey: string,
+  ) => {
     completed: boolean;
     exercises: Record<string, boolean>;
   };
   toggleExercise: (
     userId: string,
-    dayName: string,
+    dateKey: string,
     exerciseKey: string,
     totalExercises: number,
   ) => void;
-  isDayComplete: (userId: string, dayName: string, totalExercises: number) => boolean;
+  isDayComplete: (
+    userId: string,
+    dateKey: string,
+    totalExercises: number,
+  ) => boolean;
 }
 
-function totalExercisesInDay(day: Day): number {
+function totalExercisesInDay(day: ScheduledDay): number {
   return day.blocks.reduce((sum, b) => sum + b.exercises.length, 0);
 }
 
@@ -34,15 +43,24 @@ function LoadingSkeleton() {
     <div className="space-y-4">
       <div className="flex gap-2">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-14 w-[72px] animate-pulse rounded-2xl bg-muted" />
+          <div
+            key={i}
+            className="h-14 w-[72px] animate-pulse rounded-2xl bg-muted"
+          />
         ))}
       </div>
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="rounded-2xl border-2 border-border bg-card p-4">
+        <div
+          key={i}
+          className="rounded-2xl border-2 border-border bg-card p-4"
+        >
           <div className="mb-4 h-5 w-32 animate-pulse rounded-lg bg-muted" />
           <div className="space-y-2">
             {[...Array(3)].map((_, j) => (
-              <div key={j} className="h-[72px] animate-pulse rounded-2xl bg-muted" />
+              <div
+                key={j}
+                className="h-[72px] animate-pulse rounded-2xl bg-muted"
+              />
             ))}
           </div>
         </div>
@@ -68,10 +86,15 @@ function FocusTags({ focus }: { focus: string[] }) {
   );
 }
 
-function DayMeta({ day }: { day: Day }) {
+function DayMeta({ day }: { day: ScheduledDay }) {
   const totalEx = totalExercisesInDay(day);
   return (
     <div className="flex items-center gap-3 text-xs text-muted-foreground">
+      <span>
+        {day.dayName} {day.dayNumber}
+        {day.isToday ? " · Hoy" : ""}
+      </span>
+      <span className="text-muted-foreground/30">·</span>
       <span>
         {day.blocks.length} {day.blocks.length === 1 ? "bloque" : "bloques"}
       </span>
@@ -83,52 +106,68 @@ function DayMeta({ day }: { day: Day }) {
 
 function RoutineView({
   user,
+  schedule,
+  initialWorkoutIndex,
   loading,
   getDayProgress,
   toggleExercise,
   isDayComplete,
 }: RoutineViewProps) {
-  const days = user.program.week.days;
-  const [activeDayIndex, setActiveDayIndex] = useState(0);
-  const activeDay = days[activeDayIndex];
+  const workoutDays = schedule.workoutDays;
+  const [activeDayIndex, setActiveDayIndex] = useState(initialWorkoutIndex);
+
+  useEffect(() => {
+    setActiveDayIndex(initialWorkoutIndex);
+  }, [schedule.weekStart, initialWorkoutIndex]);
+
+  const activeDay = workoutDays[activeDayIndex] ?? workoutDays[0];
 
   const totalExercises = useMemo(
-    () => totalExercisesInDay(activeDay),
+    () => (activeDay ? totalExercisesInDay(activeDay) : 0),
     [activeDay],
   );
 
-  const dayComplete = useMemo(
-    () => isDayComplete(user.id, activeDay.day, totalExercises),
-    [user.id, activeDay.day, totalExercises, isDayComplete],
-  );
+  const dayComplete = useMemo(() => {
+    if (!activeDay) return false;
+    return isDayComplete(user.id, activeDay.date, totalExercises);
+  }, [user.id, activeDay, totalExercises, isDayComplete]);
 
-  const completedDays = useMemo(() => {
+  const completedDates = useMemo(() => {
     const set = new Set<string>();
-    for (const day of days) {
+    for (const day of workoutDays) {
       const total = totalExercisesInDay(day);
-      if (isDayComplete(user.id, day.day, total)) {
-        set.add(day.day);
+      if (isDayComplete(user.id, day.date, total)) {
+        set.add(day.date);
       }
     }
     return set;
-  }, [days, user.id, isDayComplete]);
+  }, [workoutDays, user.id, isDayComplete]);
 
   const handleToggle = useCallback(
     (exerciseKey: string) => {
-      toggleExercise(user.id, activeDay.day, exerciseKey, totalExercises);
+      if (!activeDay) return;
+      toggleExercise(user.id, activeDay.date, exerciseKey, totalExercises);
     },
-    [user.id, activeDay.day, totalExercises, toggleExercise],
+    [user.id, activeDay, totalExercises, toggleExercise],
   );
 
   if (loading) return <LoadingSkeleton />;
+
+  if (!activeDay || workoutDays.length === 0) {
+    return (
+      <div className="rounded-2xl border-2 border-border bg-card p-6 text-center text-sm text-muted-foreground">
+        No hay entrenamientos programados esta semana.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
       <div className="sticky top-0 z-10 -mx-4 bg-background px-4 pb-2 pt-0">
         <DaySelector
-          days={days}
+          days={workoutDays}
           activeIndex={activeDayIndex}
-          completedDays={completedDays}
+          completedDates={completedDates}
           onSelect={setActiveDayIndex}
         />
       </div>
@@ -144,17 +183,19 @@ function RoutineView({
       <div className="space-y-3">
         {activeDay.blocks.map((block, blockIndex) => (
           <BlockCard
-            key={block.name}
+            key={`${activeDay.date}-${block.name}`}
             block={block}
             blockIndex={blockIndex}
             getExerciseKey={getExerciseKey}
-            progress={getDayProgress(user.id, activeDay.day)}
+            progress={getDayProgress(user.id, activeDay.date)}
             onToggle={handleToggle}
           />
         ))}
       </div>
 
-      {dayComplete && <DayCompleteBanner sessionName={activeDay.session_name} />}
+      {dayComplete && (
+        <DayCompleteBanner sessionName={activeDay.session_name} />
+      )}
     </div>
   );
 }

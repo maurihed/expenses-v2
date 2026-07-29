@@ -1,33 +1,41 @@
 import { CalendarCheck, Dumbbell } from "lucide-react";
-import type { User } from "../types";
+import type { WeekSchedule } from "../types";
 
 interface ProgramHeaderProps {
-  user: User;
+  programName: string;
+  weekFocus: string;
+  durationMinutes: number;
+  schedule: WeekSchedule;
   completedCount: number;
   totalDays: number;
 }
 
-function ProgramHeader({ user, completedCount, totalDays }: ProgramHeaderProps) {
-  const percentage = totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
+function ProgramHeader({
+  programName,
+  weekFocus,
+  durationMinutes,
+  schedule,
+  completedCount,
+  totalDays,
+}: ProgramHeaderProps) {
+  const percentage =
+    totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
 
   return (
     <div className="rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 p-4 dark:from-primary/15 dark:to-primary/5">
       <div className="flex items-start justify-between">
         <div className="space-y-0.5">
           <p className="text-xs font-medium text-primary">
-            Semana {user.program.week.number}
+            {schedule.isCurrentWeek ? "Semana actual" : "Semana"} ·{" "}
+            {schedule.label}
           </p>
-          <h2 className="text-lg font-bold leading-tight">
-            {user.program.details.name}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {user.program.week.focus}
-          </p>
+          <h2 className="text-lg font-bold leading-tight">{programName}</h2>
+          <p className="text-sm text-muted-foreground">{weekFocus}</p>
         </div>
         <div className="flex flex-col items-end gap-1">
           <div className="flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
             <Dumbbell className="size-3" />
-            {user.program.details.duration_minutes} min
+            {durationMinutes} min
           </div>
         </div>
       </div>

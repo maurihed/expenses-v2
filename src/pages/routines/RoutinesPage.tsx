@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StorageProvider } from "./storage/StorageContext";
 import { useActiveUser } from "./hooks/useActiveUser";
 import { useRoutineProgress } from "./hooks/useRoutineProgress";
+import { useCurrentWeekSchedule } from "./hooks/useWeekSchedule";
 import UserSelector from "./components/UserSelector";
 import TabNav from "./components/TabNav";
 import type { TabId } from "./components/TabNav";
@@ -11,14 +12,26 @@ import ProgressView from "./components/ProgressView";
 
 function RoutinesPageInner() {
   const { users, activeUser, setActiveUser } = useActiveUser();
+  const templateDays = activeUser.program.week.days;
+
+  const { schedule, initialWorkoutIndex } =
+    useCurrentWeekSchedule(templateDays);
+
   const {
     loading,
     getDayProgress,
     toggleExercise,
     isDayComplete,
-    completedDayCount,
-    totalDayCount,
+    weekStats,
+    trainingStreak,
+    completedDateKeys,
+    totalHistoricalCompletions,
   } = useRoutineProgress(activeUser);
+
+  const { completedCount, totalDays } = useMemo(
+    () => weekStats(schedule.workoutDays),
+    [weekStats, schedule.workoutDays],
+  );
 
   const [tab, setTab] = useState<TabId>("entrenamiento");
 
@@ -34,15 +47,20 @@ function RoutinesPageInner() {
         <TabNav activeTab={tab} onTabChange={setTab} />
 
         <ProgramHeader
-          user={activeUser}
-          completedCount={completedDayCount}
-          totalDays={totalDayCount}
+          programName={activeUser.program.details.name}
+          weekFocus={activeUser.program.week.focus}
+          durationMinutes={activeUser.program.details.duration_minutes}
+          schedule={schedule}
+          completedCount={completedCount}
+          totalDays={totalDays}
         />
       </header>
 
       {tab === "entrenamiento" ? (
         <RoutineView
           user={activeUser}
+          schedule={schedule}
+          initialWorkoutIndex={initialWorkoutIndex}
           loading={loading}
           getDayProgress={getDayProgress}
           toggleExercise={toggleExercise}
@@ -50,9 +68,12 @@ function RoutinesPageInner() {
         />
       ) : (
         <ProgressView
-          user={activeUser}
+          templateDays={templateDays}
           loading={loading}
-          isDayComplete={isDayComplete}
+          weekStats={weekStats}
+          trainingStreak={trainingStreak}
+          totalHistoricalCompletions={totalHistoricalCompletions}
+          completedDateKeys={completedDateKeys}
         />
       )}
     </div>

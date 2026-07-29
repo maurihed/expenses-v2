@@ -10,6 +10,7 @@ export interface Exercise {
   order?: number;
   rpe?: number;
   intensity?: string;
+  protocol?: string;
 }
 
 export interface Block {
@@ -24,6 +25,28 @@ export interface Day {
   session_name: string;
   focus: string[];
   blocks: Block[];
+}
+
+/** Program day bound to a real calendar date. */
+export interface ScheduledDay extends Day {
+  date: string;
+  dayName: string;
+  dayNumber: string;
+  isToday: boolean;
+  isPast: boolean;
+  isFuture: boolean;
+  hasWorkout: boolean;
+}
+
+export interface WeekSchedule {
+  weekStart: string;
+  weekEnd: string;
+  label: string;
+  isCurrentWeek: boolean;
+  /** Mon–Sun */
+  days: ScheduledDay[];
+  /** Only days that have a program workout */
+  workoutDays: ScheduledDay[];
 }
 
 export interface Week {
@@ -53,6 +76,7 @@ export interface ProgramDetails {
   progression_model?: Record<string, unknown>;
   equipment?: string[];
   main_objectives?: string[];
+  duration_weeks?: number;
 }
 
 export interface Program {
@@ -71,4 +95,5 @@ export interface DayProgress {
   exercises: Record<string, boolean>;
 }
 
+/** Progress keyed by YYYY-MM-DD */
 export type RoutineProgress = Record<string, Record<string, DayProgress>>;
