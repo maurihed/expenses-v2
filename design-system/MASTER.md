@@ -31,13 +31,13 @@ azul/navy aunque la recomendación automática lo sugiriera.
 | Role | Hex | CSS Variable | Notas |
 |------|-----|--------------|-------|
 | Primary (brand) | `#F8359B` | `--primary` | Relleno de botones, chips activos, acentos |
-| Primary foreground | `#111111` (near-black) | `--primary-foreground` | Contraste 5.66:1 sobre `#F8359B` → AA ✔ |
+| Primary foreground | `oklch(0.145 0 0)` (≈ `#0A0A0A`) | `--primary-foreground` | Contraste 5.63:1 sobre `#F8359B` → AA ✔ |
 | Ring / focus | `#F8359B` | `--ring` | 3.5:1 sobre blanco → AA non-text ✔ |
 
 **Por qué foreground oscuro y no blanco:** blanco sobre `#F8359B` da **3.52:1**,
-que falla WCAG AA para texto normal. `#111111` sobre `#F8359B` da **5.66:1** y
-pasa AA. Por eso los botones primarios son rosa con texto casi negro (look
-"loud pink" moderno) en lugar de blanco.
+que falla WCAG AA para texto normal. `oklch(0.145 0 0)` (≈ `#0A0A0A`) sobre
+`#F8359B` da **5.63:1** y pasa AA. Por eso los botones primarios son rosa con
+texto casi negro (look "loud pink" moderno) en lugar de blanco.
 
 ### Escala rosa (útil para superficies, hover y estados)
 
@@ -50,7 +50,7 @@ pasa AA. Por eso los botones primarios son rosa con texto casi negro (look
 | `--color-primary-400` | `#FF5FAE` | Acento claro |
 | `--color-primary-500` | `#F8359B` | **Marca / primary** |
 | `--color-primary-600` | `#DB0E85` | Texto de enlace sobre claro (4.76:1) |
-| `--color-primary-700` | `#B50B6D` | Texto pequeño sobre claro (6.0:1) |
+| `--color-primary-700` | `#B50B6D` | Texto pequeño sobre claro (6.49:1) |
 | `--color-primary-800` | `#8F0A57` | Énfasis oscuro |
 | `--color-primary-900` | `#6B0842` | Fondos oscuros |
 | `--color-primary-950` | `#430527` | Casi negro con tinte rosa |
@@ -71,7 +71,7 @@ Se conservan los neutros shadcn ya definidos (`--background`, `--foreground`,
 - `--primary` como **texto** sobre blanco da 3.5:1 → prohibido para texto
   normal. Usar `--color-primary-700` para enlaces/textos pequeños en claro.
   `--primary` sí es válido como relleno con `--primary-foreground` oscuro, y
-  como texto sobre fondos oscuros (5.66:1).
+  como texto sobre fondos oscuros (5.63:1).
 
 ---
 

@@ -69,7 +69,7 @@ export default function TopExpenses() {
                   labels: {
                     font: {
                       size: 14,
-                      family: "Moderustic",
+                      family: "Inter",
                     },
                   },
                 },

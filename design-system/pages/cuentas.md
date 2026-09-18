@@ -17,7 +17,7 @@
 
 - Mobile-first single column, `w-full`, `gap-3` (`--space-sm`/`md`).
 - Account cards: `--card` surface, `border-border`, `--radius-lg`, `shadow-sm`.
-- Card header: account name + type badge; body: balance (Sora? no, Inter) + last 4 digits.
+- Card header: account name + type badge; body: balance (Inter) + last 4 digits.
 - No fixed pixel widths; never exceed viewport. Desktop: optional 2-column grid
   at `md:` with `max-w-3xl` centered (no wider).
 

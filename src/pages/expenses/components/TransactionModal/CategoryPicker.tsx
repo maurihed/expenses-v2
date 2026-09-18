@@ -33,7 +33,7 @@ export default function CategoryPicker({ value, onChange }: Props) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <div className="flex items-center p-1 bg-primary-foreground border rounded-md cursor-pointer w-full gap-4">
+        <div className="flex items-center p-1 bg-background border rounded-md cursor-pointer w-full gap-4">
           <CategoryIcon size="md" category={value as Categories} />
           <span>{value}</span>
         </div>

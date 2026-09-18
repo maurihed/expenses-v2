@@ -3,7 +3,8 @@ import { CircleDollarSign, Dumbbell } from "lucide-react";
 import { NavLink } from "react-router";
 
 function MobileLayout({ children }: { children: React.ReactNode }) {
-  const buttonCommonClasses = "inline-flex items-center py-2 px-3 rounded-lg hover:bg-primary";
+  const buttonCommonClasses =
+    "inline-flex items-center py-2 px-3 rounded-lg hover:bg-primary hover:text-primary-foreground";
 
   return (
     <div>
@@ -13,7 +14,7 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
           <li>
             <NavLink
               className={({ isActive }) =>
-                cn(buttonCommonClasses, { "bg-primary text-white": isActive })
+                cn(buttonCommonClasses, { "bg-primary text-primary-foreground": isActive })
               }
               to="/expenses"
             >
@@ -33,7 +34,7 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
           <li>
             <NavLink
               className={({ isActive }) =>
-                cn(buttonCommonClasses, { "bg-primary text-white": isActive })
+                cn(buttonCommonClasses, { "bg-primary text-primary-foreground": isActive })
               }
               to="/workouts"
             >
