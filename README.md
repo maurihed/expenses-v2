@@ -2,6 +2,13 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Environment variables
+
+Copy `.env.example` to `.env` and fill in the values. `VITE_API_BASE_URL` is required — it is the base URL of the backend API (e.g. `https://api.expenses.maurihed.com/api/v1`). Without it, requests are built against `undefined` (e.g. `undefined/transactions`).
+
+- Set `VITE_API_BASE_URL` locally in `.env` and in Vercel's project environment settings for deployments.
+- `VITE_GO_BASE_URL` was replaced by `VITE_API_BASE_URL`.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
