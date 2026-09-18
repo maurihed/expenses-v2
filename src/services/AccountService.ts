@@ -1,7 +1,7 @@
 import type { Account } from "@/types";
 
-const { VITE_GO_BASE_URL } = import.meta.env;
-const ACCOUNTS_URL = `${VITE_GO_BASE_URL}/accounts`;
+const { VITE_API_BASE_URL } = import.meta.env;
+const ACCOUNTS_URL = `${VITE_API_BASE_URL}/accounts`;
 
 class AccountService {
   public async addAccount(account: Account): Promise<Account> {

@@ -15,7 +15,7 @@ import DrawerSelector from "@/components/ui/drawer-selector";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { cn, getDateString } from "@/lib/utils";
+import { cn, getDateString, parseDateOnly } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import { Categories, type Account, type Transaction } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,7 +60,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
       type: transactionToEdit?.type ?? "expense",
       amount: transactionToEdit?.amount ?? 0,
       description: transactionToEdit?.description ?? "",
-      date: transactionToEdit?.date ? new Date(transactionToEdit.date) : new Date(),
+      date: transactionToEdit?.date ? parseDateOnly(transactionToEdit.date) : new Date(),
       category: transactionToEdit?.category ?? "",
       accountId: accountId ?? transactionToEdit?.accountId ?? "",
     },
