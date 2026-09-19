@@ -3,9 +3,13 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import MobileLayout from "./components/layouts/mobile-layout";
 import BakeryPage from "./pages/bakery/BakeryPage";
+import AccountsPage from "./pages/expenses/AccountsPage";
 import CategoriesPage from "./pages/expenses/CategoriesPage";
-import ExpensesPage from "./pages/expenses/ExpensesPage";
-import RoutinesPage from "./pages/routines/RoutinesPage";
+import HomePage from "./pages/expenses/HomePage";
+import MorePage from "./pages/expenses/MorePage";
+import MovementsPage from "./pages/expenses/MovementsPage";
+import PersonsPage from "./pages/expenses/PersonsPage";
+import RecurringPage from "./pages/expenses/RecurringPage";
 
 function App() {
   useEffect(() => {
@@ -25,13 +29,16 @@ function App() {
       <BrowserRouter>
         <MobileLayout>
           <Routes>
-            <Route path="/" element={<Navigate to="/expenses" />} />
-            <Route path="/expenses" element={<ExpensesPage />} />
-            <Route path="/expenses/categories" element={<CategoriesPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/movimientos" element={<MovementsPage />} />
+            <Route path="/cuentas" element={<AccountsPage />} />
+            <Route path="/mas" element={<MorePage />} />
+            <Route path="/categorias" element={<CategoriesPage />} />
+            <Route path="/recurrentes" element={<RecurringPage />} />
+            <Route path="/personas" element={<PersonsPage />} />
             <Route path="/bakery" element={<BakeryPage />} />
-            <Route path="/workouts" element={<Navigate to="/workouts/mauricio" />} />
-            <Route path="/workouts/:id" element={<RoutinesPage />} />
-            <Route path="*" element={<Navigate to="/expenses" />} />
+            <Route path="/expenses/*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </MobileLayout>
       </BrowserRouter>

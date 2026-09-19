@@ -25,8 +25,8 @@ function CategoriesPage() {
           variant="ghost"
           size="icon"
           className="cursor-pointer"
-          aria-label="Volver a gastos"
-          onClick={() => navigate("/expenses")}
+          aria-label="Volver a Más"
+          onClick={() => navigate("/mas")}
         >
           <ArrowLeft />
         </Button>

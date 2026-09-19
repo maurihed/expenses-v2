@@ -20,7 +20,7 @@ function ExpensesHeader() {
         size="icon"
         className="absolute right-2 top-2 cursor-pointer"
         aria-label="Administrar categorías"
-        onClick={() => navigate("/expenses/categories")}
+        onClick={() => navigate("/categorias")}
       >
         <Tags />
       </Button>
