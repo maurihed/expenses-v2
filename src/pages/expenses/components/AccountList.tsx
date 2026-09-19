@@ -2,11 +2,13 @@ import { Button } from "@/components/ui/button";
 import { ExpenseSection } from "@/components/ui/expense-section";
 import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
+import { netTotalsByCurrency, toMxn } from "@/lib/accountTotals";
 import { cn, formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
-import type { AccountType, Currency } from "@/types";
+import type { AccountType } from "@/types";
 import { Pencil, Plus, Wallet } from "lucide-react";
 import { useAccounts } from "../hooks/useAccounts";
+import { useFxRate } from "../hooks/useFxRate";
 import AccountModal from "./AccountModal";
 import CreditSummary from "./AccountList/CreditSummary";
 import PayCardDrawer from "./AccountList/PayCardDrawer";
@@ -24,20 +26,10 @@ function AccountList() {
   const openNewAccountModal = useExpensesStore((state) => state.openNewAccountModal);
   const openEditAccountModal = useExpensesStore((state) => state.openEditAccountModal);
   const openPayCardDrawer = useExpensesStore((state) => state.openPayCardDrawer);
+  const { fx } = useFxRate();
+  const usdRate = fx?.rate ?? null;
 
-  const totalsByCurrency = accounts.reduce<{ currency: Currency; total: number }[]>(
-    (totals, account) => {
-      const signedBalance = account.type === "CREDIT" ? -account.balance : account.balance;
-      const group = totals.find((total) => total.currency === account.currency);
-      if (group) {
-        group.total += signedBalance;
-      } else {
-        totals.push({ currency: account.currency, total: signedBalance });
-      }
-      return totals;
-    },
-    []
-  );
+  const totalsByCurrency = netTotalsByCurrency(accounts);
 
   return (
     <>
@@ -106,14 +98,21 @@ function AccountList() {
                         </span>
                       </span>
                       {!isCredit && (
-                        <span
-                          className={cn(
-                            "font-semibold tabular-nums",
-                            account.balance < 0 && "text-destructive"
+                        <>
+                          <span
+                            className={cn(
+                              "font-semibold tabular-nums",
+                              account.balance < 0 && "text-destructive"
+                            )}
+                          >
+                            {formatMoney(account.balance, account.currency)}
+                          </span>
+                          {account.currency === "USD" && usdRate != null && (
+                            <span className="text-xs text-muted-foreground tabular-nums">
+                              ≈ {formatMoney(toMxn(account.balance, "USD", usdRate) ?? 0, "MXN")}
+                            </span>
                           )}
-                        >
-                          {formatMoney(account.balance, account.currency)}
-                        </span>
+                        </>
                       )}
                     </button>
 
