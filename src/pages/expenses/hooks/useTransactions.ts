@@ -22,6 +22,8 @@ export const useTransactions = (enabled = true) => {
     queryClient.invalidateQueries(["accounts"]);
     queryClient.invalidateQueries(["persons"]);
     queryClient.invalidateQueries(["person-summary"]);
+    // MSI purchases change the committed installments shown in credit summary.
+    queryClient.invalidateQueries(["credit-summary"]);
   };
   const {
     data: transactions,

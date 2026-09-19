@@ -15,7 +15,7 @@ import DrawerSelector from "@/components/ui/drawer-selector";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { cn, getDateString, parseDateOnly } from "@/lib/utils";
+import { cn, formatMoney, getDateString, parseDateOnly } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import { Categories, type Account, type Person, type Transaction } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,6 +70,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
       scope: transactionToEdit?.scope ?? "joint",
       personId: transactionToEdit?.personId ?? "",
       toAccountId: transactionToEdit?.toAccountId ?? "",
+      installments: transactionToEdit?.installments ?? null,
     },
   });
 
@@ -77,9 +78,33 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   const selectedType = form.watch("type");
   const selectedScope = form.watch("scope");
   const selectedAccountId = form.watch("accountId");
+  const selectedInstallments = form.watch("installments");
+  const amountValue = form.watch("amount");
 
   const isTransfer = selectedType === "transfer";
   const isPersonal = selectedScope === "personal";
+
+  const selectedAccount = useMemo(
+    () => accounts.find((account: Account) => account.id === selectedAccountId),
+    [accounts, selectedAccountId]
+  );
+  const showMsi = selectedType === "expense" && selectedAccount?.type === "CREDIT";
+
+  const msiItems = useMemo(
+    () => [
+      { key: "1", value: "Normal (1 pago)" },
+      ...Array.from({ length: 47 }, (_, index) => {
+        const months = index + 2;
+        return { key: String(months), value: `${months} meses` };
+      }),
+    ],
+    []
+  );
+
+  const monthlyEstimate =
+    showMsi && selectedInstallments != null && selectedInstallments >= 2 && amountValue > 0
+      ? Math.round((amountValue / selectedInstallments) * 100) / 100
+      : null;
 
   const categoryItems = useMemo(() => {
     const items = categories.map((category) => ({
@@ -112,10 +137,24 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
     }
   }, [isTransfer, selectedAccountId, form]);
 
+  useEffect(() => {
+    // Drop MSI when it no longer applies (other type or non-credit account).
+    if (!showMsi && form.getValues("installments") != null) {
+      form.setValue("installments", null);
+    }
+  }, [showMsi, form]);
+
   function onSubmit(values: z.infer<typeof transactionFormSchema>) {
+    const installments =
+      showMsi && values.installments != null && values.installments >= 2
+        ? values.installments
+        : null;
+
     const payload = {
       ...values,
       category: (values.category ?? "") as Categories,
+      // On edit null clears the plan; on create we omit it when there is none.
+      installments: transactionToEdit ? installments : installments ?? undefined,
     };
 
     if (transactionToEdit) {
@@ -380,6 +419,38 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
             </FormItem>
           )}
         />
+
+        {showMsi && (
+          <FormField
+            control={form.control}
+            name="installments"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>Meses sin intereses</FormLabel>
+                <FormControl>
+                  <DrawerSelector
+                    items={msiItems}
+                    value={value != null && value >= 2 ? String(value) : "1"}
+                    onChange={(next) => {
+                      const months = Number(next);
+                      onChange(months >= 2 ? months : null);
+                    }}
+                    renderItem={(item) => <span>{item.value}</span>}
+                  />
+                </FormControl>
+                <FormMessage />
+                {monthlyEstimate != null && (
+                  <p className="text-xs text-muted-foreground">
+                    Mensualidad estimada:{" "}
+                    <span className="font-semibold tabular-nums">
+                      {formatMoney(monthlyEstimate, selectedAccount?.currency ?? "MXN")}
+                    </span>
+                  </p>
+                )}
+              </FormItem>
+            )}
+          />
+        )}
 
         {isTransfer && (
           <FormField

@@ -28,6 +28,7 @@ export type CreditSummary = {
   totalDebt: number;
   periodPayment: number;
   available: number | null;
+  msiCommitted: number;
 };
 
 export type TransferInput = {
@@ -95,6 +96,7 @@ export type Transaction = {
   category: Categories;
   scope?: TransactionScope;
   personId?: string | null;
+  installments?: number | null;
 };
 
 export type Person = {
