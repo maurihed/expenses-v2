@@ -1,13 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { ExpenseSection } from "@/components/ui/expense-section";
-import { netTotalsByCurrency } from "@/lib/accountTotals";
+import {
+  convertTotalsToMxn,
+  netTotalsByCurrency,
+  sumInvestments,
+} from "@/lib/accountTotals";
 import { formatMoney, getDateString, getMonthName } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import clsx from "clsx";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAccounts } from "./hooks/useAccounts";
+import { useFxRate } from "./hooks/useFxRate";
 import { useTransactions } from "./hooks/useTransactions";
 import TopExpenses from "./components/TopExpenses";
 
@@ -15,9 +20,15 @@ function HomePage() {
   const navigate = useNavigate();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
+  const { fx } = useFxRate();
   const { month, year } = useExpensesStore((state) => state.monthYear);
 
+  const usdRate = fx?.rate ?? null;
   const totals = netTotalsByCurrency(accounts);
+  const totalMxn = convertTotalsToMxn(totals, usdRate);
+  const investmentsMxn = sumInvestments(accounts, usdRate);
+  const hasForeign = totals.some((entry) => entry.currency !== "MXN");
+
   const spentThisMonth = transactions
     .filter((transaction) => transaction.type === "expense")
     .reduce((acc, transaction) => acc + transaction.amount, 0);
@@ -26,18 +37,48 @@ function HomePage() {
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <ExpenseSection className="p-4">
           <p className="text-sm text-muted-foreground">Dinero total</p>
-          {totals.length === 0 ? (
-            <p className="mt-1 text-2xl font-bold tabular-nums">{formatMoney(0, "MXN")}</p>
-          ) : (
-            totals.map(({ currency, total }) => (
-              <p key={currency} className="mt-1 text-2xl font-bold tabular-nums">
-                {formatMoney(total, currency)}
+          {totalMxn != null ? (
+            <>
+              <p className="mt-1 text-2xl font-bold tabular-nums">
+                {formatMoney(totalMxn, "MXN")}
               </p>
-            ))
+              {hasForeign && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {totals
+                    .map(({ currency, total }) => formatMoney(total, currency))
+                    .join(" · ")}
+                </p>
+              )}
+            </>
+          ) : (
+            <div className="mt-1">
+              {totals.length === 0 ? (
+                <p className="text-2xl font-bold tabular-nums">{formatMoney(0, "MXN")}</p>
+              ) : (
+                totals.map(({ currency, total }) => (
+                  <p key={currency} className="text-2xl font-bold tabular-nums">
+                    {formatMoney(total, currency)}
+                  </p>
+                ))
+              )}
+            </div>
           )}
+          {fx && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              1 USD = {formatMoney(fx.rate, "MXN")}
+              {fx.stale ? " (en caché)" : ""} · {getDateString(new Date(fx.fetchedAt))}
+            </p>
+          )}
+        </ExpenseSection>
+
+        <ExpenseSection className="p-4">
+          <p className="text-sm text-muted-foreground">Inversiones</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums">
+            {investmentsMxn != null ? formatMoney(investmentsMxn, "MXN") : "—"}
+          </p>
         </ExpenseSection>
 
         <ExpenseSection className="p-4">
