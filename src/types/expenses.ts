@@ -223,3 +223,18 @@ export type DebtPaymentPayload = {
   accountId?: string | null;
   notes?: string | null;
 };
+
+export type Budget = {
+  id: string;
+  year: number;
+  month: number;
+  amount: number;
+  currency: Currency;
+};
+
+export type BudgetPayload = {
+  year: number;
+  month: number;
+  amount: number;
+  currency?: Currency;
+};
