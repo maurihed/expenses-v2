@@ -92,3 +92,31 @@ export type Transaction = {
   date: Date;
   category: Categories;
 };
+
+export type Person = {
+  id: string;
+  name: string;
+  weeklyAllowance: number;
+  allowanceStartDate: string;
+  balance: number;
+  spent: number;
+};
+
+export type PersonSummary = {
+  accrued: number;
+  adjustmentTotal: number;
+  spent: number;
+  balance: number;
+};
+
+export type PersonAdjustmentPayload = {
+  amount: number;
+  reason: string;
+  date: string;
+};
+
+export type PersonPayload = {
+  name?: string;
+  weeklyAllowance?: number;
+  allowanceStartDate?: string;
+};
