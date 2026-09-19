@@ -1,5 +1,5 @@
 import { ExpenseSection } from "@/components/ui/expense-section";
-import { ChevronRight, Repeat, Tags, Users } from "lucide-react";
+import { ChevronRight, HandCoins, Repeat, Tags, Users } from "lucide-react";
 import type { ForwardRefExoticComponent, RefAttributes } from "react";
 import type { LucideProps } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -35,6 +35,12 @@ const links: MoreLink[] = [
     label: "Personas",
     description: "Presupuesto personal de cada quien",
     icon: Users,
+  },
+  {
+    to: "/deudas",
+    label: "Deudas",
+    description: "Por cobrar y por pagar, con abonos",
+    icon: HandCoins,
   },
 ];
 

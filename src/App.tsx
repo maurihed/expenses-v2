@@ -5,6 +5,7 @@ import MobileLayout from "./components/layouts/mobile-layout";
 import BakeryPage from "./pages/bakery/BakeryPage";
 import AccountsPage from "./pages/expenses/AccountsPage";
 import CategoriesPage from "./pages/expenses/CategoriesPage";
+import DebtsPage from "./pages/expenses/DebtsPage";
 import HomePage from "./pages/expenses/HomePage";
 import MorePage from "./pages/expenses/MorePage";
 import MovementsPage from "./pages/expenses/MovementsPage";
@@ -35,6 +36,7 @@ function App() {
             <Route path="/mas" element={<MorePage />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route path="/recurrentes" element={<RecurringPage />} />
+            <Route path="/deudas" element={<DebtsPage />} />
             <Route path="/personas" element={<PersonsPage />} />
             <Route path="/bakery" element={<BakeryPage />} />
             <Route path="/expenses/*" element={<Navigate to="/" replace />} />
