@@ -40,6 +40,20 @@ export type TransferInput = {
 
 export type TransactionType = "income" | "expense";
 
+export type Category = {
+  id: string;
+  name: string;
+  icon: string | null;
+  color: string | null;
+  archived: boolean;
+};
+
+export type CategoryPayload = {
+  name: string;
+  icon?: string | null;
+  color?: string | null;
+};
+
 export enum Categories {
   DESPENSA = "Despensa",
   GAEL = "Gael",

@@ -20,10 +20,11 @@ import { useExpensesStore } from "@/stores/expenses.store";
 import { Categories, type Account, type Transaction } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, LoaderCircle, Wallet } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAccounts } from "../../hooks/useAccounts";
+import { useCategories } from "../../hooks/useCategories";
 import { useTransactions } from "../../hooks/useTransactions";
 import { transactionFormSchema } from "../../schemas/transactionSchema";
 
@@ -32,16 +33,10 @@ type Props = {
   transactionToEdit: Transaction | null;
 };
 
-const cactegoryItems = Object.values(Categories).map((_category) => {
-  return {
-    key: _category,
-    value: _category,
-  };
-});
-
 function TransactionForm({ accountId, transactionToEdit }: Props) {
   const [dateOpen, setDateOpen] = useState(false);
   const { accounts } = useAccounts(false);
+  const { categories } = useCategories();
   const { newTransaction, editTransaction, mutationLoading } = useTransactions(false);
   const autoSelectElementRef = useRef<HTMLInputElement>(null);
 
@@ -65,6 +60,27 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
       accountId: accountId ?? transactionToEdit?.accountId ?? "",
     },
   });
+
+  const selectedCategory = form.watch("category");
+
+  const categoryItems = useMemo(() => {
+    const items = categories.map((category) => ({
+      key: category.name,
+      value: category.name,
+    }));
+    // Keep legacy transaction categories (not present in the API) selectable.
+    if (selectedCategory && !items.some((item) => item.key === selectedCategory)) {
+      items.unshift({ key: selectedCategory, value: selectedCategory });
+    }
+    return items;
+  }, [categories, selectedCategory]);
+
+  useEffect(() => {
+    // Default to the first API category once they are loaded.
+    if (!form.getValues("category") && categories.length > 0) {
+      form.setValue("category", categories[0].name);
+    }
+  }, [categories, form]);
 
   function onSubmit(values: z.infer<typeof transactionFormSchema>) {
     if (transactionToEdit) {
@@ -225,15 +241,23 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
               <FormLabel>Categoria</FormLabel>
               <FormControl>
                 <DrawerSelector
-                  items={cactegoryItems}
+                  items={categoryItems}
                   value={value}
                   onChange={onChange}
-                  renderItem={(item) => (
-                    <>
-                      <CategoryIcon category={item.key as Categories} size="md" />
-                      <span>{item.value}</span>
-                    </>
-                  )}
+                  renderItem={(item) => {
+                    const category = categories.find((option) => option.name === item.key);
+                    return (
+                      <>
+                        <CategoryIcon
+                          category={item.key}
+                          icon={category?.icon}
+                          color={category?.color}
+                          size="md"
+                        />
+                        <span>{item.value}</span>
+                      </>
+                    );
+                  }}
                 />
               </FormControl>
               <FormMessage />

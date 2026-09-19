@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import MobileLayout from "./components/layouts/mobile-layout";
 import BakeryPage from "./pages/bakery/BakeryPage";
+import CategoriesPage from "./pages/expenses/CategoriesPage";
 import ExpensesPage from "./pages/expenses/ExpensesPage";
 import RoutinesPage from "./pages/routines/RoutinesPage";
 
@@ -26,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/expenses" />} />
             <Route path="/expenses" element={<ExpensesPage />} />
+            <Route path="/expenses/categories" element={<CategoriesPage />} />
             <Route path="/bakery" element={<BakeryPage />} />
             <Route path="/workouts" element={<Navigate to="/workouts/mauricio" />} />
             <Route path="/workouts/:id" element={<RoutinesPage />} />

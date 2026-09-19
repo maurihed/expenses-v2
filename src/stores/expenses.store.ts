@@ -1,4 +1,4 @@
-import type { Account, Transaction } from "@/types";
+import type { Account, Category, Transaction } from "@/types";
 import { create } from "zustand";
 
 type FilterType = {
@@ -13,6 +13,8 @@ interface AuthState {
   transactionToEdit: Transaction | null;
   accountModalOpen: boolean;
   accountToEdit: Account | null;
+  categoryModalOpen: boolean;
+  categoryToEdit: Category | null;
   payCardAccountId: string | null;
   filters: FilterType;
   setFilters: (filters: FilterType) => void;
@@ -23,6 +25,9 @@ interface AuthState {
   openNewAccountModal: () => void;
   openEditAccountModal: (account: Account) => void;
   closeAccountModal: () => void;
+  openNewCategoryModal: () => void;
+  openEditCategoryModal: (category: Category) => void;
+  closeCategoryModal: () => void;
   openPayCardDrawer: (accountId: string) => void;
   closePayCardDrawer: () => void;
 }
@@ -39,6 +44,8 @@ export const useExpensesStore = create<AuthState>((set) => {
     transactionToEdit: null,
     accountModalOpen: false,
     accountToEdit: null,
+    categoryModalOpen: false,
+    categoryToEdit: null,
     payCardAccountId: null,
     filters: { search: "", categories: new Set() },
     setMonthYear: (monthYear) => set({ monthYear }),
@@ -59,6 +66,10 @@ export const useExpensesStore = create<AuthState>((set) => {
     openEditAccountModal: (account: Account) =>
       set({ accountToEdit: account, accountModalOpen: true }),
     closeAccountModal: () => set({ accountModalOpen: false }),
+    openNewCategoryModal: () => set({ categoryToEdit: null, categoryModalOpen: true }),
+    openEditCategoryModal: (category: Category) =>
+      set({ categoryToEdit: category, categoryModalOpen: true }),
+    closeCategoryModal: () => set({ categoryModalOpen: false }),
     openPayCardDrawer: (accountId: string) => set({ payCardAccountId: accountId }),
     closePayCardDrawer: () => set({ payCardAccountId: null }),
     setFilters: (filters: FilterType) => set({ filters }),

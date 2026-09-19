@@ -30,11 +30,11 @@ export default function DrawerSelector({ items, value, onChange, renderItem }: P
   );
 
   useEffect(() => {
-    // Set default value if no value is selected
-    if (!value) {
+    // Set default value if no value is selected and options are available
+    if (!value && items.length > 0) {
       onChange(items[0].key);
     }
-  }, [value]);
+  }, [value, items, onChange]);
 
   const selectedItem = items.find((item) => item.key === value);
 
