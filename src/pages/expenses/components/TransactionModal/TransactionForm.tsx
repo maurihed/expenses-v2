@@ -37,7 +37,8 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   const [dateOpen, setDateOpen] = useState(false);
   const { accounts } = useAccounts(false);
   const { categories } = useCategories();
-  const { newTransaction, editTransaction, mutationLoading } = useTransactions(false);
+  const { newTransaction, editTransaction, mutationLoading, transactionMutationError } =
+    useTransactions(false);
   const autoSelectElementRef = useRef<HTMLInputElement>(null);
 
   const closeModal = useExpensesStore((state) => state.closeTransactionModal);
@@ -104,10 +105,10 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   }
 
   useEffect(() => {
-    if (form.formState.isSubmitSuccessful && !mutationLoading) {
+    if (form.formState.isSubmitSuccessful && !mutationLoading && !transactionMutationError) {
       closeModal();
     }
-  }, [form.formState.isSubmitSuccessful, mutationLoading]);
+  }, [form.formState.isSubmitSuccessful, mutationLoading, transactionMutationError, closeModal]);
 
   useEffect(() => {
     if (isModalOpen && autoSelectElementRef.current) {
@@ -291,22 +292,29 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
           )}
         />
         <DialogFooter className="mt-auto">
-          <div className="flex justify-end gap-4">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => {
-                form.reset();
-                closeModal();
-              }}
-              disabled={mutationLoading}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" className="bg-primary" disabled={mutationLoading}>
-              {mutationLoading && <LoaderCircle className="animate-spin mr-2" />}
-              {transactionToEdit ? "Actualizar" : "Crear"}
-            </Button>
+          <div className="flex flex-col gap-2">
+            {transactionMutationError && (
+              <p role="alert" className="text-sm text-destructive">
+                {transactionMutationError.message}
+              </p>
+            )}
+            <div className="flex justify-end gap-4">
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={() => {
+                  form.reset();
+                  closeModal();
+                }}
+                disabled={mutationLoading}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" className="bg-primary" disabled={mutationLoading}>
+                {mutationLoading && <LoaderCircle className="animate-spin mr-2" />}
+                {transactionToEdit ? "Actualizar" : "Crear"}
+              </Button>
+            </div>
           </div>
         </DialogFooter>
       </form>

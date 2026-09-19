@@ -45,12 +45,12 @@ class CategoryService {
     }
   }
 
-  public async archiveCategory(id: string): Promise<Category> {
+  public async archiveCategory(id: string): Promise<void> {
     try {
       const response = await fetch(`${CATEGORIES_URL}/${id}`, {
         method: "DELETE",
       });
-      return await parseJsonResponse<Category>(response);
+      await parseJsonResponse<unknown>(response);
     } catch (error) {
       return Promise.reject(error);
     }

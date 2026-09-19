@@ -125,6 +125,12 @@ function PayCardDrawer() {
               </Button>
             )}
           </div>
+
+          {payCard.error && (
+            <p role="alert" className="text-sm text-destructive">
+              {payCard.error.message}
+            </p>
+          )}
         </div>
 
         <DrawerFooter>

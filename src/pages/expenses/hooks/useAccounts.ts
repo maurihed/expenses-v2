@@ -59,7 +59,7 @@ export const useAccountMutations = () => {
     { onSuccess: invalidateAccountData }
   );
 
-  const archiveAccount = useMutation<Account, Error, string>(
+  const archiveAccount = useMutation<void, Error, string>(
     (id: string) => AccountService.archiveAccount(id),
     { onSuccess: invalidateAccountData }
   );

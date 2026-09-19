@@ -45,12 +45,12 @@ class AccountService {
     }
   }
 
-  public async archiveAccount(id: string): Promise<Account> {
+  public async archiveAccount(id: string): Promise<void> {
     try {
       const response = await fetch(`${ACCOUNTS_URL}/${id}`, {
         method: "DELETE",
       });
-      return await parseJsonResponse<Account>(response);
+      await parseJsonResponse<unknown>(response);
     } catch (error) {
       return Promise.reject(error);
     }

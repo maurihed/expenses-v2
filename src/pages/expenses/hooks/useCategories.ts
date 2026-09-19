@@ -38,7 +38,7 @@ export const useCategoryMutations = () => {
     { onSuccess: invalidateCategories }
   );
 
-  const archiveCategory = useMutation<Category, Error, string>(
+  const archiveCategory = useMutation<void, Error, string>(
     (id: string) => CategoryService.archiveCategory(id),
     { onSuccess: invalidateCategories }
   );
