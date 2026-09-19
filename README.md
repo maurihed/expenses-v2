@@ -3,12 +3,25 @@
 Aplicación de gastos compartidos (mobile-first). React 19 + Vite + Tailwind 4 +
 shadcn, contra el backend NestJS (`express/expenses-api`).
 
+## Navegación (mobile)
+
+Barra inferior con 4 tabs: **Inicio · Movimientos · Cuentas · Más**.
+
+- `/`: **Inicio** — dinero total (por moneda), gasto del mes, gráfica de
+  categorías y movimientos recientes.
+- `/movimientos`: selector de mes/año, filtros y lista completa de movimientos.
+- `/cuentas`: cuentas (tipo, moneda, crédito con deuda/pago/disponible, botón
+  **Pagar tarjeta** y MSI).
+- `/mas`: accesos a Categorías, Recurrentes y Personas.
+- `/categorias`: categorías dinámicas con alta/edición/archivado.
+- `/recurrentes`: suscripciones, ingresos e intereses.
+- `/personas`: presupuesto personal (Mauricio y Maria).
+
+> Gym se movió a su propio repositorio (`../gym`); ya no vive en esta app.
+
 ## Fase 1 — flujo
 
-- `/expenses`: cuentas (tipo, moneda, crédito con deuda/pago/disponible y botón
-  **Pagar tarjeta**), personas (Mauricio y Maria, presupuesto semanal acumulable
-  con ajustes) y movimientos.
-- `/expenses/categories`: categorías dinámicas con alta/edición/archivado.
+- Cuentas, personas y movimientos repartidos en las páginas de arriba.
 - Modal de movimiento: tipo ingreso/gasto/**transferencia** (`toAccountId`) y
   alcance **Conjunto / Personal** (`scope` + `personId`).
 - El backend calcula los saldos; el frontend sólo consume:
@@ -20,7 +33,7 @@ shadcn, contra el backend NestJS (`express/expenses-api`).
 
 ## Fase 2 — flujo
 
-- **Recurrentes** en `/expenses`: suscripciones, ingresos (p. ej. salario) e
+- **Recurrentes** en `/recurrentes`: suscripciones, ingresos (p. ej. salario) e
   intereses por tramos; lista con tipo, cuenta, monto, frecuencia, próxima
   ejecución y estado, con alta/edición en bottom-sheet, activar/desactivar y
   botón **Ejecutar ahora**.
