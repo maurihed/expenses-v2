@@ -3,11 +3,9 @@ import { useExpensesStore } from "@/stores/expenses.store";
 import type { MonthYearType, Transaction } from "@/types";
 import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useAccounts } from "./useAccounts";
 
 export const useTransactions = (enabled = true) => {
   const { month, year } = useExpensesStore((state) => state.monthYear) as MonthYearType;
-  const { refreshAccounts } = useAccounts(false);
 
   const getTransactions = useMemo(() => {
     const searchParams = new URLSearchParams();
@@ -18,6 +16,13 @@ export const useTransactions = (enabled = true) => {
 
   const queryId = ["transactions", month, year];
   const queryClient = useQueryClient();
+
+  const invalidateTransactionData = () => {
+    queryClient.invalidateQueries(queryId);
+    queryClient.invalidateQueries(["accounts"]);
+    queryClient.invalidateQueries(["persons"]);
+    queryClient.invalidateQueries(["person-summary"]);
+  };
   const {
     data: transactions,
     isLoading,
@@ -38,7 +43,7 @@ export const useTransactions = (enabled = true) => {
         addedTransaction,
         ...(prevTransactions ?? []),
       ]);
-      refreshAccounts();
+      invalidateTransactionData();
     },
   });
 
@@ -61,7 +66,7 @@ export const useTransactions = (enabled = true) => {
               : prevTransaction
           ) ?? []
       );
-      refreshAccounts();
+      invalidateTransactionData();
     },
   });
 
@@ -76,7 +81,7 @@ export const useTransactions = (enabled = true) => {
         (prevTransactions) =>
           prevTransactions?.filter((transaction) => transaction.id !== id) ?? []
       );
-      refreshAccounts();
+      invalidateTransactionData();
     },
   });
 

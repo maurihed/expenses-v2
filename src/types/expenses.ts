@@ -38,7 +38,9 @@ export type TransferInput = {
   description?: string;
 };
 
-export type TransactionType = "income" | "expense";
+export type TransactionType = "income" | "expense" | "transfer";
+
+export type TransactionScope = "joint" | "personal";
 
 export type Category = {
   id: string;
@@ -91,6 +93,8 @@ export type Transaction = {
   description: string;
   date: Date;
   category: Categories;
+  scope?: TransactionScope;
+  personId?: string | null;
 };
 
 export type Person = {

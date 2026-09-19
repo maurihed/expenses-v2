@@ -5,6 +5,14 @@ import type { Transaction, TransferInput } from "@/types";
 const { VITE_API_BASE_URL } = import.meta.env;
 const TRANSACTION_URL = `${VITE_API_BASE_URL}/transactions`;
 
+const toPayload = (transaction: Transaction) => ({
+  ...transaction,
+  category: transaction.type === "transfer" ? undefined : transaction.category,
+  toAccountId: transaction.type === "transfer" ? transaction.toAccountId : undefined,
+  personId: transaction.scope === "personal" ? transaction.personId : undefined,
+  date: formatDateOnly(transaction.date),
+});
+
 class TransactionService {
   public async addTransaction(newTransaction: Transaction): Promise<Transaction> {
     try {
@@ -13,10 +21,7 @@ class TransactionService {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...newTransaction,
-          date: formatDateOnly(newTransaction.date),
-        }),
+        body: JSON.stringify(toPayload(newTransaction)),
       });
       const { id } = await parseJsonResponse<{ id: string }>(response);
       const transaction = { ...newTransaction, id };
@@ -67,10 +72,7 @@ class TransactionService {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...transaction,
-          date: formatDateOnly(transaction.date),
-        }),
+        body: JSON.stringify(toPayload(transaction)),
       });
       await parseJsonResponse<Transaction>(response);
 
@@ -100,6 +102,8 @@ class TransactionService {
         transactions?.map((transaction: Transaction) => ({
           ...transaction,
           date: parseDateOnly(transaction.date),
+          scope: transaction.scope ?? "joint",
+          personId: transaction.personId ?? null,
         })) ?? []
       );
     } catch (error) {

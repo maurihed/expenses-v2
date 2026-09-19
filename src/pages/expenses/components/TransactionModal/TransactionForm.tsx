@@ -17,14 +17,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn, getDateString, parseDateOnly } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
-import { Categories, type Account, type Transaction } from "@/types";
+import { Categories, type Account, type Person, type Transaction } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, LoaderCircle, Wallet } from "lucide-react";
+import { ArrowLeftRight, CalendarIcon, LoaderCircle, Wallet } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAccounts } from "../../hooks/useAccounts";
 import { useCategories } from "../../hooks/useCategories";
+import { usePersons } from "../../hooks/usePersons";
 import { useTransactions } from "../../hooks/useTransactions";
 import { transactionFormSchema } from "../../schemas/transactionSchema";
 
@@ -37,6 +38,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   const [dateOpen, setDateOpen] = useState(false);
   const { accounts } = useAccounts(false);
   const { categories } = useCategories();
+  const { persons } = usePersons();
   const { newTransaction, editTransaction, mutationLoading, transactionMutationError } =
     useTransactions(false);
   const autoSelectElementRef = useRef<HTMLInputElement>(null);
@@ -49,6 +51,11 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
     value: account.name,
   }));
 
+  const personItems = persons.map((person: Person) => ({
+    key: person.id,
+    value: person.name,
+  }));
+
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -59,10 +66,19 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
       date: transactionToEdit?.date ? parseDateOnly(transactionToEdit.date) : new Date(),
       category: transactionToEdit?.category ?? "",
       accountId: accountId ?? transactionToEdit?.accountId ?? "",
+      scope: transactionToEdit?.scope ?? "joint",
+      personId: transactionToEdit?.personId ?? "",
+      toAccountId: transactionToEdit?.toAccountId ?? "",
     },
   });
 
   const selectedCategory = form.watch("category");
+  const selectedType = form.watch("type");
+  const selectedScope = form.watch("scope");
+  const selectedAccountId = form.watch("accountId");
+
+  const isTransfer = selectedType === "transfer";
+  const isPersonal = selectedScope === "personal";
 
   const categoryItems = useMemo(() => {
     const items = categories.map((category) => ({
@@ -76,6 +92,11 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
     return items;
   }, [categories, selectedCategory]);
 
+  const destinationAccountItems = useMemo(
+    () => accountItems.filter((item) => item.key !== selectedAccountId),
+    [accountItems, selectedAccountId]
+  );
+
   useEffect(() => {
     // Default to the first API category once they are loaded.
     if (!form.getValues("category") && categories.length > 0) {
@@ -83,23 +104,33 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
     }
   }, [categories, form]);
 
+  useEffect(() => {
+    // The destination account must never be the same as the source.
+    if (isTransfer && form.getValues("toAccountId") === selectedAccountId) {
+      form.setValue("toAccountId", "");
+    }
+  }, [isTransfer, selectedAccountId, form]);
+
   function onSubmit(values: z.infer<typeof transactionFormSchema>) {
+    const payload = {
+      ...values,
+      category: (values.category ?? "") as Categories,
+    };
+
     if (transactionToEdit) {
       // Edit transaction
       editTransaction({
         transactionToEdit,
         transactionEdited: {
-          ...values,
+          ...payload,
           id: transactionToEdit.id,
-          category: values.category as Categories,
         },
       });
     } else {
       // Create new transaction
       newTransaction({
-        ...values,
+        ...payload,
         id: "",
-        category: values.category as Categories,
       });
     }
   }
@@ -117,6 +148,15 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
     }
   }, [isModalOpen]);
 
+  const renderAccountItem = (item: { key: string; value: string }) => (
+    <>
+      <span className="bg-green-700 rounded-full p-2 flex items-center justify-center w-8 h-8">
+        <Wallet size={24} />
+      </span>
+      <span>{item.value}</span>
+    </>
+  );
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col">
@@ -128,12 +168,12 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex justify-end"
+                  value={field.value}
+                  className="flex flex-wrap justify-end gap-2"
                 >
                   <FormItem
                     className={cn([
-                      "flex items-center border p-2 border-slate-200 rounded-sm",
+                      "flex items-center border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
                       {
                         "border-green-500": field.value === "income",
                       },
@@ -142,11 +182,11 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                     <FormControl>
                       <RadioGroupItem value="income" />
                     </FormControl>
-                    <FormLabel className="font-normal">Ingreso</FormLabel>
+                    <FormLabel className="font-normal cursor-pointer">Ingreso</FormLabel>
                   </FormItem>
                   <FormItem
                     className={cn([
-                      "flex items-center border p-2 border-slate-200 rounded-sm",
+                      "flex items-center border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
                       {
                         "border-red-500": field.value === "expense",
                       },
@@ -155,7 +195,21 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                     <FormControl>
                       <RadioGroupItem value="expense" />
                     </FormControl>
-                    <FormLabel className="font-normal">Gasto</FormLabel>
+                    <FormLabel className="font-normal cursor-pointer">Gasto</FormLabel>
+                  </FormItem>
+                  <FormItem
+                    className={cn([
+                      "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                      {
+                        "border-primary": field.value === "transfer",
+                      },
+                    ])}
+                  >
+                    <FormControl>
+                      <RadioGroupItem value="transfer" />
+                    </FormControl>
+                    <FormLabel className="font-normal cursor-pointer">Transferencia</FormLabel>
+                    <ArrowLeftRight className="h-4 w-4" />
                   </FormItem>
                 </RadioGroup>
               </FormControl>
@@ -163,6 +217,79 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="scope"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>Alcance</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex flex-wrap gap-2"
+                >
+                  <FormItem
+                    className={cn([
+                      "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                      {
+                        "border-primary": field.value === "joint",
+                      },
+                    ])}
+                  >
+                    <FormControl>
+                      <RadioGroupItem value="joint" />
+                    </FormControl>
+                    <FormLabel className="font-normal cursor-pointer">Conjunto</FormLabel>
+                  </FormItem>
+                  <FormItem
+                    className={cn([
+                      "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                      {
+                        "border-primary": field.value === "personal",
+                      },
+                    ])}
+                  >
+                    <FormControl>
+                      <RadioGroupItem value="personal" />
+                    </FormControl>
+                    <FormLabel className="font-normal cursor-pointer">Personal</FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {isPersonal && (
+          <FormField
+            control={form.control}
+            name="personId"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>Persona</FormLabel>
+                <FormControl>
+                  <DrawerSelector
+                    items={personItems}
+                    value={value ?? ""}
+                    onChange={onChange}
+                    renderItem={(item) => (
+                      <>
+                        <span className="bg-primary-100 text-primary-700 rounded-full flex items-center justify-center w-8 h-8 font-semibold">
+                          {item.value.charAt(0).toUpperCase()}
+                        </span>
+                        <span>{item.value}</span>
+                      </>
+                    )}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -202,7 +329,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
           name="date"
           render={({ field: { value, onChange } }) => (
             <FormItem>
-              <FormLabel>Descripcion</FormLabel>
+              <FormLabel>Fecha</FormLabel>
               <FormControl>
                 <Popover open={dateOpen} onOpenChange={setDateOpen}>
                   <PopoverTrigger asChild>
@@ -236,29 +363,16 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
 
         <FormField
           control={form.control}
-          name="category"
+          name="accountId"
           render={({ field: { value, onChange } }) => (
             <FormItem>
-              <FormLabel>Categoria</FormLabel>
+              <FormLabel>{isTransfer ? "Cuenta origen" : "Cuenta"}</FormLabel>
               <FormControl>
                 <DrawerSelector
-                  items={categoryItems}
+                  items={accountItems}
                   value={value}
                   onChange={onChange}
-                  renderItem={(item) => {
-                    const category = categories.find((option) => option.name === item.key);
-                    return (
-                      <>
-                        <CategoryIcon
-                          category={item.key}
-                          icon={category?.icon}
-                          color={category?.color}
-                          size="md"
-                        />
-                        <span>{item.value}</span>
-                      </>
-                    );
-                  }}
+                  renderItem={renderAccountItem}
                 />
               </FormControl>
               <FormMessage />
@@ -266,31 +380,61 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="accountId"
-          render={({ field: { value, onChange } }) => (
-            <FormItem>
-              <FormLabel>Cuenta</FormLabel>
-              <FormControl>
-                <DrawerSelector
-                  items={accountItems}
-                  value={value}
-                  onChange={onChange}
-                  renderItem={(item) => (
-                    <>
-                      <span className="bg-green-700 rounded-full p-2 flex items-center justify-center w-8 h-8">
-                        <Wallet size={24} />
-                      </span>
-                      <span>{item.value}</span>
-                    </>
-                  )}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {isTransfer && (
+          <FormField
+            control={form.control}
+            name="toAccountId"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>Cuenta destino</FormLabel>
+                <FormControl>
+                  <DrawerSelector
+                    items={destinationAccountItems}
+                    value={value ?? ""}
+                    onChange={onChange}
+                    renderItem={renderAccountItem}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {!isTransfer && (
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>Categoria</FormLabel>
+                <FormControl>
+                  <DrawerSelector
+                    items={categoryItems}
+                    value={value ?? ""}
+                    onChange={onChange}
+                    renderItem={(item) => {
+                      const category = categories.find((option) => option.name === item.key);
+                      return (
+                        <>
+                          <CategoryIcon
+                            category={item.key}
+                            icon={category?.icon}
+                            color={category?.color}
+                            size="md"
+                          />
+                          <span>{item.value}</span>
+                        </>
+                      );
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <DialogFooter className="mt-auto">
           <div className="flex flex-col gap-2">
             {transactionMutationError && (
