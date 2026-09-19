@@ -124,3 +124,55 @@ export type PersonPayload = {
   weeklyAllowance?: number;
   allowanceStartDate?: string;
 };
+
+export type RecurringType = "subscription" | "income" | "interest";
+
+export type RecurringFrequency = "weekly" | "biweekly" | "monthly";
+
+export type InterestTier = {
+  upTo: number | null;
+  annualRate: number;
+};
+
+export type RecurringRule = {
+  id: string;
+  name: string;
+  type: RecurringType;
+  accountId: string;
+  categoryId: string | null;
+  scope: TransactionScope;
+  personId: string | null;
+  amount: number | null;
+  frequency: RecurringFrequency;
+  dayOfMonth: number | null;
+  dayOfWeek: number | null;
+  startDate: string;
+  endDate: string | null;
+  nextRunDate: string;
+  lastRunDate: string | null;
+  interestTiers: InterestTier[] | null;
+  active: boolean;
+};
+
+export type RecurringRulePayload = {
+  name: string;
+  type: RecurringType;
+  accountId: string;
+  categoryId?: string | null;
+  scope?: TransactionScope;
+  personId?: string | null;
+  amount?: number | null;
+  frequency: RecurringFrequency;
+  dayOfMonth?: number | null;
+  dayOfWeek?: number | null;
+  startDate: string;
+  endDate?: string | null;
+  interestTiers?: InterestTier[] | null;
+  active?: boolean;
+};
+
+export type RecurringRunResult = {
+  created: number;
+  skipped: number;
+  failed?: number;
+};
