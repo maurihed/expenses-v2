@@ -7,8 +7,9 @@ Fecha: 2026-09-19
 | Suite | Resultado |
 |---|---|
 | Backend `pnpm test` | 49/49 ✅ (8 suites) |
-| Backend `pnpm test:e2e` | 108/108 ✅ (14 suites) |
+| Backend `pnpm test:e2e` | 109/109 ✅ (14 suites, 3 corridas) |
 | Backend `pnpm build` | ✅ |
+| Frontend `pnpm test` (Vitest) | 10/10 ✅ (`accountTotals`) |
 | Frontend `pnpm build` | ✅ |
 | Frontend `pnpm lint` | 0 errores (3 warnings preexistentes) |
 
