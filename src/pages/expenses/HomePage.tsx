@@ -26,6 +26,7 @@ function HomePage() {
   const usdRate = fx?.rate ?? null;
   const totals = netTotalsByCurrency(accounts);
   const totalMxn = convertTotalsToMxn(totals, usdRate);
+  const investmentAccounts = accounts.filter((account) => account.type === "INVESTMENT");
   const investmentsMxn = sumInvestments(accounts, usdRate);
   const hasForeign = totals.some((entry) => entry.currency !== "MXN");
 
@@ -77,7 +78,11 @@ function HomePage() {
         <ExpenseSection className="p-4">
           <p className="text-sm text-muted-foreground">Inversiones</p>
           <p className="mt-1 text-2xl font-bold tabular-nums">
-            {investmentsMxn != null ? formatMoney(investmentsMxn, "MXN") : "—"}
+            {investmentAccounts.length === 0
+              ? "—"
+              : investmentsMxn != null
+                ? formatMoney(investmentsMxn, "MXN")
+                : "—"}
           </p>
         </ExpenseSection>
 
