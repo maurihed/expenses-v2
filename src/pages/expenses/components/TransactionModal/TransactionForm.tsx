@@ -88,7 +88,13 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
     () => accounts.find((account: Account) => account.id === selectedAccountId),
     [accounts, selectedAccountId]
   );
-  const showMsi = selectedType === "expense" && selectedAccount?.type === "CREDIT";
+  const isExpense = selectedType === "expense";
+  const isAccountResolved = selectedAccount != null;
+  const showMsi = isExpense && selectedAccount?.type === "CREDIT";
+  // Only treat MSI as removable when we are certain it does not apply. If the
+  // account has not loaded, an edit must preserve the existing plan.
+  const msiDefinitelyNotApplicable =
+    !isExpense || (isAccountResolved && selectedAccount.type !== "CREDIT");
 
   const msiItems = useMemo(
     () => [
@@ -138,17 +144,22 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   }, [isTransfer, selectedAccountId, form]);
 
   useEffect(() => {
-    // Drop MSI when it no longer applies (other type or non-credit account).
-    if (!showMsi && form.getValues("installments") != null) {
+    // Drop MSI only when it clearly no longer applies (other type or a known
+    // non-credit account). An unresolved account must not clear the plan.
+    if (msiDefinitelyNotApplicable && form.getValues("installments") != null) {
       form.setValue("installments", null);
     }
-  }, [showMsi, form]);
+  }, [msiDefinitelyNotApplicable, form]);
 
   function onSubmit(values: z.infer<typeof transactionFormSchema>) {
-    const installments =
-      showMsi && values.installments != null && values.installments >= 2
+    const installments = showMsi
+      ? values.installments != null && values.installments >= 2
         ? values.installments
-        : null;
+        : null
+      : msiDefinitelyNotApplicable
+        ? null
+        : // Expense with an unresolved account: preserve the existing plan on edit.
+          transactionToEdit?.installments ?? null;
 
     const payload = {
       ...values,
