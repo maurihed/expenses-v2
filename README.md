@@ -18,6 +18,25 @@ shadcn, contra el backend NestJS (`express/expenses-api`).
   tipografía por sección, checklist mobile). Resultados de aceptación en
   `docs/superpowers/plans/2026-09-18-expenses-fase1-acceptance.md`.
 
+## Fase 2 — flujo
+
+- **Recurrentes** en `/expenses`: suscripciones, ingresos (p. ej. salario) e
+  intereses por tramos; lista con tipo, cuenta, monto, frecuencia, próxima
+  ejecución y estado, con alta/edición en bottom-sheet, activar/desactivar y
+  botón **Ejecutar ahora**.
+- El backend materializa de forma **idempotente** las ocurrencias vencidas
+  (`RecurringService.runDue`) vía scheduler (cada 60 min) o `POST /recurring/run`;
+  los intereses se calculan por tramos marginales (`{ upTo, annualRate }`).
+- **MSI**: en gasto sobre cuenta de crédito el modal ofrece "Meses sin
+  intereses" (1 = normal, 2–48) con mensualidad estimada; la deuda total se
+  reconoce al momento y el resumen de crédito muestra `periodPayment`,
+  `totalDebt`, `available` y `msiCommitted`.
+- Endpoints nuevos: `/recurring` (GET/POST/PUT/DELETE) y `POST /recurring/run`;
+  `POST /transactions` acepta `installments` (2–48) y
+  `/accounts/:id/credit-summary` incluye `msiCommitted`.
+- Resultados de aceptación en
+  `docs/superpowers/plans/2026-09-18-expenses-fase2-acceptance.md`.
+
 ## Environment variables
 
 Copy `.env.example` to `.env` and fill in the values. `VITE_API_BASE_URL` is required — it is the base URL of the backend API (e.g. `https://api.expenses.maurihed.com/api/v1`). Without it, requests are built against `undefined` (e.g. `undefined/transactions`).

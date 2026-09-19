@@ -104,6 +104,7 @@ class TransactionService {
           date: parseDateOnly(transaction.date),
           scope: transaction.scope ?? "joint",
           personId: transaction.personId ?? null,
+          installments: transaction.installments ?? null,
         })) ?? []
       );
     } catch (error) {

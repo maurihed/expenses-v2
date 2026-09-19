@@ -26,8 +26,24 @@ export const transactionFormSchema = z
     scope: z.enum(["joint", "personal"]),
     personId: z.string().optional(),
     toAccountId: z.string().optional(),
+    // Only meaningful for expenses on a CREDIT account; the form hides it otherwise.
+    installments: z
+      .number({ invalid_type_error: "Los meses deben de ser un numero" })
+      .int("Los meses deben de ser un numero entero")
+      .min(2, "El minimo es 2 meses")
+      .max(48, "El maximo es 48 meses")
+      .nullable()
+      .optional(),
   })
   .superRefine((values, ctx) => {
+    if (values.installments != null && values.type !== "expense") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["installments"],
+        message: "Los meses sin intereses solo aplican a gastos",
+      });
+    }
+
     if (values.type !== "transfer" && !values.category) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
