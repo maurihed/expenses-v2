@@ -4,7 +4,7 @@ import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
 import { cn, formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
-import type { AccountType } from "@/types";
+import type { AccountType, Currency } from "@/types";
 import { Pencil, Plus, Wallet } from "lucide-react";
 import { useAccounts } from "../hooks/useAccounts";
 import AccountModal from "./AccountModal";
@@ -25,10 +25,18 @@ function AccountList() {
   const openEditAccountModal = useExpensesStore((state) => state.openEditAccountModal);
   const openPayCardDrawer = useExpensesStore((state) => state.openPayCardDrawer);
 
-  const netTotal = accounts.reduce(
-    (total, account) =>
-      total + (account.type === "CREDIT" ? -account.balance : account.balance),
-    0
+  const totalsByCurrency = accounts.reduce<{ currency: Currency; total: number }[]>(
+    (totals, account) => {
+      const signedBalance = account.type === "CREDIT" ? -account.balance : account.balance;
+      const group = totals.find((total) => total.currency === account.currency);
+      if (group) {
+        group.total += signedBalance;
+      } else {
+        totals.push({ currency: account.currency, total: signedBalance });
+      }
+      return totals;
+    },
+    []
   );
 
   return (
@@ -151,9 +159,15 @@ function AccountList() {
         {!loadingAccounts && !error && accounts.length > 0 && (
           <>
             <Separator className="my-4" />
-            <div className="flex items-center justify-between px-1">
-              <span className="text-sm text-muted-foreground">Total neto</span>
-              <span className="font-semibold tabular-nums">{formatMoney(netTotal)}</span>
+            <div className="flex flex-col gap-2 px-1">
+              {totalsByCurrency.map(({ currency, total }) => (
+                <div key={currency} className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Total {currency}</span>
+                  <span className="font-semibold tabular-nums">
+                    {formatMoney(total, currency)}
+                  </span>
+                </div>
+              ))}
             </div>
           </>
         )}
