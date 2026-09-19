@@ -335,7 +335,10 @@ model PersonalAdjustment {
    borrar.
 2. Categorías dinámicas con archivar; los movimientos existentes conservan su
    categoría.
-3. Dos personas con presupuesto semanal acumulable, ajustes e historial.
+3. Dos personas con presupuesto semanal acumulable y ajustes. En Fase 1 los
+   ajustes se exponen **solo como agregado** (`adjustmentTotal` en
+   `GET /persons/:id/summary`); navegar/leer el historial de ajustes queda como
+   follow-up.
 4. Transferencias y botón "Pagar tarjeta" funcionando, con saldos correctos.
 5. Los movimientos distinguen conjunto vs. personal.
 6. Design system persistido aplicado con rosa primario y tipografía por sección.
