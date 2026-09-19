@@ -169,7 +169,11 @@ function CategoryForm({ category, onClose, onArchived }: Props) {
                             : "hover:opacity-90"
                         )}
                       >
-                        {isSelected && <Check size={16} className="text-white" />}
+                        {isSelected && (
+                          <span className="flex size-6 items-center justify-center rounded-full bg-background text-foreground shadow-sm">
+                            <Check size={14} strokeWidth={3} className="shrink-0" />
+                          </span>
+                        )}
                       </button>
                     );
                   })}
