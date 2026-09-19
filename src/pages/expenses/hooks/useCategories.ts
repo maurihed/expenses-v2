@@ -27,20 +27,21 @@ export const useCategoryMutations = () => {
     queryClient.invalidateQueries(["categories"]);
   };
 
-  const createCategory = useMutation(
+  const createCategory = useMutation<Category, Error, CategoryPayload>(
     (category: CategoryPayload) => CategoryService.createCategory(category),
     { onSuccess: invalidateCategories }
   );
 
-  const updateCategory = useMutation(
+  const updateCategory = useMutation<Category, Error, { id: string; category: CategoryPayload }>(
     ({ id, category }: { id: string; category: CategoryPayload }) =>
       CategoryService.updateCategory(id, category),
     { onSuccess: invalidateCategories }
   );
 
-  const archiveCategory = useMutation((id: string) => CategoryService.archiveCategory(id), {
-    onSuccess: invalidateCategories,
-  });
+  const archiveCategory = useMutation<Category, Error, string>(
+    (id: string) => CategoryService.archiveCategory(id),
+    { onSuccess: invalidateCategories }
+  );
 
   return {
     createCategory,

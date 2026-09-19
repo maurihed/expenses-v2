@@ -1,3 +1,4 @@
+import { parseJsonResponse } from "@/lib/http";
 import type { Account, AccountPayload, CreditSummary } from "@/types";
 
 const { VITE_API_BASE_URL } = import.meta.env;
@@ -8,8 +9,7 @@ class AccountService {
     try {
       const url = includeArchived ? `${ACCOUNTS_URL}?includeArchived=true` : ACCOUNTS_URL;
       const response = await fetch(url);
-      const accounts = await response.json();
-      return Promise.resolve(accounts);
+      return await parseJsonResponse<Account[]>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -24,8 +24,7 @@ class AccountService {
         },
         body: JSON.stringify(account),
       });
-      const newAccount = await response.json();
-      return Promise.resolve(newAccount);
+      return await parseJsonResponse<Account>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -40,8 +39,7 @@ class AccountService {
         },
         body: JSON.stringify(account),
       });
-      const updatedAccount = await response.json();
-      return Promise.resolve(updatedAccount);
+      return await parseJsonResponse<Account>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -52,8 +50,7 @@ class AccountService {
       const response = await fetch(`${ACCOUNTS_URL}/${id}`, {
         method: "DELETE",
       });
-      const archivedAccount = await response.json();
-      return Promise.resolve(archivedAccount);
+      return await parseJsonResponse<Account>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -62,8 +59,7 @@ class AccountService {
   public async getCreditSummary(id: string): Promise<CreditSummary> {
     try {
       const response = await fetch(`${ACCOUNTS_URL}/${id}/credit-summary`);
-      const summary = await response.json();
-      return Promise.resolve(summary);
+      return await parseJsonResponse<CreditSummary>(response);
     } catch (error) {
       return Promise.reject(error);
     }

@@ -66,6 +66,8 @@ function CategoryForm({ category, onClose, onArchived }: Props) {
   const selectedColor = form.watch("color");
   const PreviewIcon = CATEGORY_ICONS[selectedIcon] ?? CATEGORY_ICONS[DEFAULT_CATEGORY_ICON];
 
+  const mutationError = createCategory.error ?? updateCategory.error ?? archiveCategory.error;
+
   function onSubmit(values: CategoryFormValues) {
     const payload: CategoryPayload = {
       name: values.name,
@@ -189,6 +191,11 @@ function CategoryForm({ category, onClose, onArchived }: Props) {
         </div>
 
         <div className="flex flex-col gap-2">
+          {mutationError && (
+            <p role="alert" className="text-sm text-destructive">
+              {mutationError.message}
+            </p>
+          )}
           <div className="flex justify-end gap-3">
             <Button
               type="button"

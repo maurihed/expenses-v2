@@ -99,6 +99,7 @@ function AccountForm({ account, onClose, onArchived }: Props) {
 
   const selectedType = form.watch("type");
   const isCredit = selectedType === "CREDIT";
+  const mutationError = createAccount.error ?? updateAccount.error ?? archiveAccount.error;
 
   function onSubmit(values: AccountFormValues) {
     const payload: AccountPayload = {
@@ -324,6 +325,11 @@ function AccountForm({ account, onClose, onArchived }: Props) {
         )}
 
         <div className="flex flex-col gap-2">
+          {mutationError && (
+            <p role="alert" className="text-sm text-destructive">
+              {mutationError.message}
+            </p>
+          )}
           <div className="flex justify-end gap-3">
             <Button type="button" variant="secondary" onClick={onClose} disabled={accountMutationLoading}>
               Cancelar

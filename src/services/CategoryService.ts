@@ -1,3 +1,4 @@
+import { parseJsonResponse } from "@/lib/http";
 import type { Category, CategoryPayload } from "@/types";
 
 const { VITE_API_BASE_URL } = import.meta.env;
@@ -8,8 +9,7 @@ class CategoryService {
     try {
       const url = includeArchived ? `${CATEGORIES_URL}?includeArchived=true` : CATEGORIES_URL;
       const response = await fetch(url);
-      const categories = await response.json();
-      return Promise.resolve(categories);
+      return await parseJsonResponse<Category[]>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -24,8 +24,7 @@ class CategoryService {
         },
         body: JSON.stringify(category),
       });
-      const newCategory = await response.json();
-      return Promise.resolve(newCategory);
+      return await parseJsonResponse<Category>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -40,8 +39,7 @@ class CategoryService {
         },
         body: JSON.stringify(category),
       });
-      const updatedCategory = await response.json();
-      return Promise.resolve(updatedCategory);
+      return await parseJsonResponse<Category>(response);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -52,8 +50,7 @@ class CategoryService {
       const response = await fetch(`${CATEGORIES_URL}/${id}`, {
         method: "DELETE",
       });
-      const archivedCategory = await response.json();
-      return Promise.resolve(archivedCategory);
+      return await parseJsonResponse<Category>(response);
     } catch (error) {
       return Promise.reject(error);
     }

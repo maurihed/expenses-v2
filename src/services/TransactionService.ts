@@ -1,4 +1,5 @@
 import { formatDateOnly, parseDateOnly } from "@/lib/DateUtils";
+import { parseJsonResponse } from "@/lib/http";
 import type { Transaction, TransferInput } from "@/types";
 
 const { VITE_API_BASE_URL } = import.meta.env;
@@ -17,7 +18,7 @@ class TransactionService {
           date: formatDateOnly(newTransaction.date),
         }),
       });
-      const { id } = await response.json();
+      const { id } = await parseJsonResponse<{ id: string }>(response);
       const transaction = { ...newTransaction, id };
 
       return Promise.resolve(transaction);
@@ -41,7 +42,7 @@ class TransactionService {
           description: transfer.description,
         }),
       });
-      const { id } = await response.json();
+      const { id } = await parseJsonResponse<{ id: string }>(response);
       return Promise.resolve({ id });
     } catch (error) {
       return Promise.reject(error);
@@ -60,24 +61,30 @@ class TransactionService {
       ...transactionEdited,
     };
 
-    await fetch(`${TRANSACTION_URL}/${transactionToEdit.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...transaction,
-        date: formatDateOnly(transaction.date),
-      }),
-    });
+    try {
+      const response = await fetch(`${TRANSACTION_URL}/${transactionToEdit.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...transaction,
+          date: formatDateOnly(transaction.date),
+        }),
+      });
+      await parseJsonResponse<Transaction>(response);
 
-    return Promise.resolve(transaction);
+      return Promise.resolve(transaction);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
   public async deleteTransaction(transaction: Transaction): Promise<string> {
     try {
-      await fetch(`${TRANSACTION_URL}/${transaction.id}`, {
+      const response = await fetch(`${TRANSACTION_URL}/${transaction.id}`, {
         method: "DELETE",
       });
+      await parseJsonResponse<unknown>(response);
 
       return Promise.resolve(transaction.id);
     } catch (error) {
@@ -88,7 +95,7 @@ class TransactionService {
   public async getTransactions(searchParams: URLSearchParams): Promise<Transaction[]> {
     try {
       const response = await fetch(`${TRANSACTION_URL}?${searchParams.toString()}`);
-      const transactions = await response.json();
+      const transactions = await parseJsonResponse<Transaction[]>(response);
       return Promise.resolve(
         transactions?.map((transaction: Transaction) => ({
           ...transaction,

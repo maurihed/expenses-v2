@@ -48,24 +48,26 @@ export const useAccountMutations = () => {
     queryClient.invalidateQueries(["credit-summary"]);
   };
 
-  const createAccount = useMutation(
+  const createAccount = useMutation<Account, Error, AccountPayload>(
     (account: AccountPayload) => AccountService.createAccount(account),
     { onSuccess: invalidateAccountData }
   );
 
-  const updateAccount = useMutation(
+  const updateAccount = useMutation<Account, Error, { id: string; account: AccountPayload }>(
     ({ id, account }: { id: string; account: AccountPayload }) =>
       AccountService.updateAccount(id, account),
     { onSuccess: invalidateAccountData }
   );
 
-  const archiveAccount = useMutation((id: string) => AccountService.archiveAccount(id), {
-    onSuccess: invalidateAccountData,
-  });
+  const archiveAccount = useMutation<Account, Error, string>(
+    (id: string) => AccountService.archiveAccount(id),
+    { onSuccess: invalidateAccountData }
+  );
 
-  const payCard = useMutation((transfer: TransferInput) => TransactionService.createTransfer(transfer), {
-    onSuccess: invalidateAccountData,
-  });
+  const payCard = useMutation<{ id: string }, Error, TransferInput>(
+    (transfer: TransferInput) => TransactionService.createTransfer(transfer),
+    { onSuccess: invalidateAccountData }
+  );
 
   return {
     createAccount,
