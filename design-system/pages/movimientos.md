@@ -29,7 +29,7 @@
 - Gasto: `--destructive`, con prefijo `−`.
 - El signo + la etiqueta de categoría son el indicador; **no** depender sólo del
   color.
-- Chip activo: `--primary` bg + `--primary-foreground` (oscuro). Chip inactivo:
+- Chip activo: `--primary` bg + `--primary-foreground` (blanco). Chip inactivo:
   `--muted` bg + `--muted-foreground`.
 
 ## Components

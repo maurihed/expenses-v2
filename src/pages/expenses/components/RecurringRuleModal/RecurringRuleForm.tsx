@@ -601,14 +601,14 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                   <span>{field.value ? "Activa" : "Inactiva"}</span>
                   <span
                     className={cn(
-                      "relative h-6 w-11 rounded-full transition-colors duration-200",
+                      "relative inline-block h-6 w-11 shrink-0 rounded-full transition-colors duration-200",
                       field.value ? "bg-primary" : "bg-muted"
                     )}
                   >
                     <span
                       className={cn(
-                        "absolute top-0.5 size-5 rounded-full bg-white shadow transition-transform duration-200",
-                        field.value ? "translate-x-5" : "translate-x-0.5"
+                        "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform duration-200",
+                        field.value ? "translate-x-5" : "translate-x-0"
                       )}
                     />
                   </span>

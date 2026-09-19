@@ -31,13 +31,15 @@ azul/navy aunque la recomendación automática lo sugiriera.
 | Role | Hex | CSS Variable | Notas |
 |------|-----|--------------|-------|
 | Primary (brand) | `#F8359B` | `--primary` | Relleno de botones, chips activos, acentos |
-| Primary foreground | `oklch(0.145 0 0)` (≈ `#0A0A0A`) | `--primary-foreground` | Contraste 5.63:1 sobre `#F8359B` → AA ✔ |
+| Primary foreground | `oklch(0.985 0 0)` (≈ blanco `#FAFAFA`) | `--primary-foreground` | Contraste 3.52:1 sobre `#F8359B` → AA para texto grande/negrita; por debajo de AA en texto normal |
 | Ring / focus | `#F8359B` | `--ring` | 3.5:1 sobre blanco → AA non-text ✔ |
 
-**Por qué foreground oscuro y no blanco:** blanco sobre `#F8359B` da **3.52:1**,
-que falla WCAG AA para texto normal. `oklch(0.145 0 0)` (≈ `#0A0A0A`) sobre
-`#F8359B` da **5.63:1** y pasa AA. Por eso los botones primarios son rosa con
-texto casi negro (look "loud pink" moderno) en lugar de blanco.
+**Decisión de marca (revisada):** por preferencia de producto, el texto de los
+botones primarios es **blanco** sobre rosa (se percibe con mejor contraste visual
+que el casi-negro). Nota técnica: blanco sobre `#F8359B` es **3.52:1**, por
+debajo de WCAG AA para texto normal (<18.66px); se acepta porque los botones usan
+tamaño/negrita suficiente y el casi-negro (`oklch(0.145 0 0)`, 5.63:1) queda como
+alternativa si se requiere AA estricto en texto pequeño.
 
 ### Escala rosa (útil para superficies, hover y estados)
 
@@ -70,8 +72,8 @@ Se conservan los neutros shadcn ya definidos (`--background`, `--foreground`,
 - Oscuro: texto claro sobre `oklch(0.145 0 0)` ✔.
 - `--primary` como **texto** sobre blanco da 3.5:1 → prohibido para texto
   normal. Usar `--color-primary-700` para enlaces/textos pequeños en claro.
-  `--primary` sí es válido como relleno con `--primary-foreground` oscuro, y
-  como texto sobre fondos oscuros (5.63:1).
+  `--primary` sí es válido como relleno con `--primary-foreground` (blanco por
+  decisión de marca), y como texto sobre fondos oscuros (5.63:1).
 
 ---
 
@@ -184,7 +186,7 @@ Focus: `ring-2 ring-ring` (ring rosa). Labels siempre visibles.
 
 - ❌ Emojis como iconos (usar Lucide/SVG).
 - ❌ `--primary` (rosa 500) como texto sobre blanco (falla AA).
-- ❌ Blanco sobre rosa 500 (falla AA) — usar `--primary-foreground` oscuro.
+- ⚠️ Blanco sobre rosa 500 (3.52:1) — aceptado por decisión de marca para botones; usar texto grande/negrita o el casi-negro si se exige AA estricto en texto pequeño.
 - ❌ Gradientes rosa/púrpura tipo "AI" para superficies funcionales.
 - ❌ Hovers con `scale` que muevan layout.
 - ❌ Anchos fijos > viewport (rompe mobile).
