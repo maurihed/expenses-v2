@@ -2,22 +2,25 @@ import type { Debt } from "@/types";
 import { describe, expect, it } from "vitest";
 import { debtTotalsToMxn } from "./debtTotals";
 
-const debt = (over: Partial<Debt>): Debt =>
-  ({
+const debt = (over: Partial<Debt>): Debt => {
+  const amount = over.amount ?? 0;
+  const paid = over.paid ?? 0;
+  return {
     id: over.id ?? Math.random().toString(),
     type: "receivable",
     counterparty: "X",
-    amount: 0,
+    amount,
     currency: "MXN",
     date: "2026-01-01",
     dueDate: null,
     notes: null,
     archived: false,
-    paid: 0,
-    remaining: 0,
+    paid,
+    remaining: Math.max(0, amount - paid),
     status: "OPEN",
     ...over,
-  }) as Debt;
+  } as Debt;
+};
 
 describe("debtTotalsToMxn", () => {
   it("separa por pagar y por cobrar usando el pendiente", () => {

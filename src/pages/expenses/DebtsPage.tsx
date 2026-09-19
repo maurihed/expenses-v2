@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ExpenseSection } from "@/components/ui/expense-section";
 import { Loader } from "@/components/ui/loader";
 import { parseDateOnly } from "@/lib/DateUtils";
+import { debtTotalsToMxn } from "@/lib/debtTotals";
 import { cn, formatMoney, getDateString } from "@/lib/utils";
 import type { Debt, DebtType } from "@/types";
 import { HandCoins, Pencil, Plus } from "lucide-react";
@@ -9,6 +10,7 @@ import { useState } from "react";
 import DebtModal from "./components/DebtModal";
 import DebtPaymentDrawer from "./components/DebtPaymentDrawer";
 import { useDebts } from "./hooks/useDebts";
+import { useFxRate } from "./hooks/useFxRate";
 
 const typeLabels: Record<DebtType, string> = {
   receivable: "Por cobrar",
@@ -91,6 +93,7 @@ function DebtCard({
 function DebtsPage() {
   const [type, setType] = useState<DebtType>("receivable");
   const { debts, loadingDebts, error, refreshDebts } = useDebts(false, type);
+  const { fx } = useFxRate();
   const [modalOpen, setModalOpen] = useState(false);
   const [debtToEdit, setDebtToEdit] = useState<Debt | null>(null);
   const [paymentDebt, setPaymentDebt] = useState<Debt | null>(null);
@@ -104,7 +107,13 @@ function DebtsPage() {
     setModalOpen(true);
   };
 
-  const totalRemaining = debts.reduce((acc, debt) => acc + debt.remaining, 0);
+  const usdRate = fx?.rate ?? null;
+  const debtTotals = debtTotalsToMxn(debts, usdRate);
+  const totalRemaining = debtTotals
+    ? type === "payable"
+      ? debtTotals.payable
+      : debtTotals.receivable
+    : null;
 
   return (
     <div className="grid grid-cols-1 gap-4">
@@ -158,7 +167,7 @@ function DebtsPage() {
             <div className="mb-3 flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Total pendiente</span>
               <span className="font-semibold tabular-nums">
-                {formatMoney(totalRemaining, "MXN")}
+                {totalRemaining != null ? formatMoney(totalRemaining, "MXN") : "—"}
               </span>
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">

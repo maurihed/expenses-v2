@@ -34,7 +34,9 @@ function DebtPaymentDrawer({ debt, onClose }: { debt: Debt | null; onClose: () =
       setDate(new Date());
       setAccountId("");
       setNotes("");
+      addPayment.reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debt]);
 
   const parsedAmount = Number(amount);
@@ -45,9 +47,16 @@ function DebtPaymentDrawer({ debt, onClose }: { debt: Debt | null; onClose: () =
     parsedAmount <= debt.remaining + 0.001 &&
     !debtMutationLoading;
 
+  // Solo cuentas de la misma moneda que la deuda (el backend lo valida).
+  const matchingAccounts = debt
+    ? accounts.filter((account: Account) => account.currency === debt.currency)
+    : [];
   const accountItems = [
     { key: "", value: "Sin cuenta (solo registrar)" },
-    ...accounts.map((account: Account) => ({ key: account.id, value: account.name })),
+    ...matchingAccounts.map((account: Account) => ({
+      key: account.id,
+      value: `${account.name} (${account.currency})`,
+    })),
   ];
 
   const handleConfirm = () => {

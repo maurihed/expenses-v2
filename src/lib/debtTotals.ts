@@ -12,8 +12,7 @@ export const debtTotalsToMxn = (debts: Debt[], usdRate: number | null): DebtTota
   let receivable = 0;
 
   for (const debt of debts) {
-    const remaining = Math.max(0, debt.amount - debt.paid);
-    const converted = toMxn(remaining, debt.currency, usdRate);
+    const converted = toMxn(debt.remaining, debt.currency, usdRate);
     if (converted == null) return null;
     if (debt.type === "payable") {
       payable += converted;
