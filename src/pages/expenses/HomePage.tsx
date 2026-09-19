@@ -6,12 +6,14 @@ import {
   netTotalsByCurrency,
   sumInvestments,
 } from "@/lib/accountTotals";
+import { debtTotalsToMxn } from "@/lib/debtTotals";
 import { formatMoney, getDateString, getMonthName } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import clsx from "clsx";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAccounts } from "./hooks/useAccounts";
+import { useDebts } from "./hooks/useDebts";
 import { useFxRate } from "./hooks/useFxRate";
 import { useTransactions } from "./hooks/useTransactions";
 import TopExpenses from "./components/TopExpenses";
@@ -20,6 +22,7 @@ function HomePage() {
   const navigate = useNavigate();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
+  const { debts } = useDebts();
   const { fx } = useFxRate();
   const { month, year } = useExpensesStore((state) => state.monthYear);
 
@@ -28,6 +31,7 @@ function HomePage() {
   const totalMxn = convertTotalsToMxn(totals, usdRate);
   const investmentAccounts = accounts.filter((account) => account.type === "INVESTMENT");
   const investmentsMxn = sumInvestments(accounts, usdRate);
+  const debtTotals = debtTotalsToMxn(debts, usdRate);
   const hasForeign = totals.some((entry) => entry.currency !== "MXN");
 
   const spentThisMonth = transactions
@@ -38,7 +42,7 @@ function HomePage() {
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <ExpenseSection className="p-4">
           <p className="text-sm text-muted-foreground">Dinero total</p>
           {totalMxn != null ? (
@@ -84,6 +88,18 @@ function HomePage() {
                 ? formatMoney(investmentsMxn, "MXN")
                 : "—"}
           </p>
+        </ExpenseSection>
+
+        <ExpenseSection className="p-4">
+          <p className="text-sm text-muted-foreground">Deudas por pagar</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums">
+            {debtTotals != null ? formatMoney(debtTotals.payable, "MXN") : "—"}
+          </p>
+          {debtTotals != null && debtTotals.receivable > 0 && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Por cobrar: {formatMoney(debtTotals.receivable, "MXN")}
+            </p>
+          )}
         </ExpenseSection>
 
         <ExpenseSection className="p-4">

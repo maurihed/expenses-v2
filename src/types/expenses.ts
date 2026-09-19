@@ -178,3 +178,48 @@ export type RecurringRunResult = {
   skipped: number;
   failed?: number;
 };
+
+export type DebtType = "receivable" | "payable";
+export type DebtStatus = "OPEN" | "SETTLED";
+
+export type Debt = {
+  id: string;
+  type: DebtType;
+  counterparty: string;
+  amount: number;
+  currency: Currency;
+  date: string;
+  dueDate: string | null;
+  notes: string | null;
+  archived: boolean;
+  paid: number;
+  remaining: number;
+  status: DebtStatus;
+};
+
+export type DebtPayment = {
+  id: string;
+  debtId: string;
+  amount: number;
+  date: string;
+  accountId: string | null;
+  transactionId: string | null;
+  notes: string | null;
+};
+
+export type DebtPayload = {
+  type: DebtType;
+  counterparty: string;
+  amount: number;
+  currency: Currency;
+  date: string;
+  dueDate?: string | null;
+  notes?: string | null;
+};
+
+export type DebtPaymentPayload = {
+  amount: number;
+  date: string;
+  accountId?: string | null;
+  notes?: string | null;
+};
