@@ -10,12 +10,17 @@ import clsx from "clsx";
 import { ArrowLeftRight } from "lucide-react";
 import { useState } from "react";
 import { useAccounts } from "../hooks/useAccounts";
+import { usePersons } from "../hooks/usePersons";
 import { useTransactions } from "../hooks/useTransactions";
 import ExpensesFilters from "./ExpensesFilters";
 
 function ExpensesList() {
   const { transactions, loading, error, refetch } = useTransactions();
   const { accounts } = useAccounts(false);
+  const hasPersonal = transactions.some(
+    (transaction) => transaction.type !== "transfer" && transaction.scope === "personal"
+  );
+  const { persons } = usePersons(hasPersonal);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState(new Set<string>());
   const openEditTransactionModal = useExpensesStore((state) => state.openEditTransactionModal);
@@ -83,6 +88,11 @@ function ExpensesList() {
     return account?.name ?? "Pendiente";
   };
 
+  const getPersonName = (personId?: string | null) => {
+    if (!personId) return "";
+    return persons.find((person) => person.id === personId)?.name ?? "";
+  };
+
   return (
     <>
       <ExpensesFilters
@@ -117,6 +127,17 @@ function ExpensesList() {
                 const destinationName = transaction.toAccountId
                   ? getAccountName(transaction.toAccountId)
                   : "";
+                const personName =
+                  !isTransfer && transaction.scope === "personal"
+                    ? getPersonName(transaction.personId)
+                    : "";
+                const subtitle = isTransfer
+                  ? destinationName
+                    ? `Transferencia | ${destinationName}`
+                    : "Transferencia"
+                  : personName
+                    ? `${transaction.category} | ${getAccountName(transaction.accountId)} · Personal: ${personName}`
+                    : `${transaction.category} | ${getAccountName(transaction.accountId)}`;
                 return (
                   <li
                     className="flex items-center justify-between gap-4 cursor-pointer"
@@ -130,14 +151,10 @@ function ExpensesList() {
                     ) : (
                       <CategoryIcon category={transaction.category} />
                     )}
-                    <div className="grow grid grid-cols-1">
-                      <p className="font-bold">{transaction.description}</p>
-                      <p className="text-slate-600 dark:text-slate-400">
-                        {isTransfer
-                          ? destinationName
-                            ? `Transferencia | ${destinationName}`
-                            : "Transferencia"
-                          : `${transaction.category} | ${getAccountName(transaction.accountId)}`}
+                    <div className="grow min-w-0 grid grid-cols-1">
+                      <p className="font-bold truncate">{transaction.description}</p>
+                      <p className="text-slate-600 dark:text-slate-400 truncate" title={subtitle}>
+                        {subtitle}
                       </p>
                     </div>
 
