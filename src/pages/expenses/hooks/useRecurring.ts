@@ -34,6 +34,7 @@ export const useRecurringMutations = () => {
     queryClient.invalidateQueries(["recurring"]);
     queryClient.invalidateQueries(["accounts"]);
     queryClient.invalidateQueries(["transactions", month, year]);
+    queryClient.invalidateQueries(["credit-summary"]);
   };
 
   const createRule = useMutation<RecurringRule, Error, RecurringRulePayload>(

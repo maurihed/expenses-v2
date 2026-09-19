@@ -169,7 +169,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
   const [startOpen, setStartOpen] = useState(false);
   const [endOpen, setEndOpen] = useState(false);
 
-  const { accounts } = useAccounts();
+  const { accounts } = useAccounts(true, true);
   const { createRule, updateRule, recurringMutationLoading } = useRecurringMutations();
 
   const form = useForm<RecurringFormValues>({
