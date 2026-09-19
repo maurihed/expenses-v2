@@ -1,76 +1,181 @@
 import { Button } from "@/components/ui/button";
+import { ExpenseSection } from "@/components/ui/expense-section";
 import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
-
-import { ExpenseSection } from "@/components/ui/expense-section";
+import { cn, formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
-import { Plus, Wallet } from "lucide-react";
-import { formatMoney } from "../../../lib/utils";
+import type { AccountType, Currency } from "@/types";
+import { Pencil, Plus, Wallet } from "lucide-react";
 import { useAccounts } from "../hooks/useAccounts";
+import AccountModal from "./AccountModal";
+import CreditSummary from "./AccountList/CreditSummary";
+import PayCardDrawer from "./AccountList/PayCardDrawer";
+
+const typeLabels: Record<AccountType, string> = {
+  CASH: "Efectivo",
+  DEBIT: "Débito",
+  CREDIT: "Crédito",
+  INVESTMENT: "Inversión",
+};
 
 function AccountList() {
   const { accounts, loadingAccounts, error, refreshAccounts } = useAccounts();
   const openTransactionModal = useExpensesStore((state) => state.openNewTransactionModal);
+  const openNewAccountModal = useExpensesStore((state) => state.openNewAccountModal);
+  const openEditAccountModal = useExpensesStore((state) => state.openEditAccountModal);
+  const openPayCardDrawer = useExpensesStore((state) => state.openPayCardDrawer);
 
-  if (loadingAccounts) {
-    return (
-      <ExpenseSection>
-        <Loader />
-      </ExpenseSection>
-    );
-  }
-
-  if (error) {
-    return (
-      <ExpenseSection>
-        <div className="flex flex-col items-center justify-center gap-4 py-8">
-          <p className="text-destructive">Error al cargar cuentas</p>
-          <Button variant="outline" onClick={() => refreshAccounts()}>
-            Reintentar
-          </Button>
-        </div>
-      </ExpenseSection>
-    );
-  }
-
-  if (accounts.length === 0) {
-    return (
-      <ExpenseSection>
-        <p>No hay cuentas disponibles</p>
-      </ExpenseSection>
-    );
-  }
+  const totalsByCurrency = accounts.reduce<{ currency: Currency; total: number }[]>(
+    (totals, account) => {
+      const signedBalance = account.type === "CREDIT" ? -account.balance : account.balance;
+      const group = totals.find((total) => total.currency === account.currency);
+      if (group) {
+        group.total += signedBalance;
+      } else {
+        totals.push({ currency: account.currency, total: signedBalance });
+      }
+      return totals;
+    },
+    []
+  );
 
   return (
-    <ExpenseSection className="py-4 grid grid-cols-1 gap-4">
-      {accounts.map((account) => (
-        <div className="flex items-center justify-between px-4 gap-4" key={account.id}>
-          <div className="bg-green-700 rounded-full p-2 flex items-center justify-center">
-            <Wallet className="text-gray-300" />
-          </div>
-          <div className="grow">
-            <p className="font-bold">{account.name}</p>
-            <p className="text-slate-600 dark:text-slate-300">
-              {formatMoney(account.balance)}
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            className="grow-0 rounded-full w-[36px]"
-            onClick={() => openTransactionModal(account.id)}
-          >
+    <>
+      <ExpenseSection className="p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-display text-lg">Tus cuentas</h3>
+          <Button className="cursor-pointer" onClick={openNewAccountModal}>
             <Plus />
+            Agregar cuenta
           </Button>
         </div>
-      ))}
-      <Separator />
-      <div className="flex items-center justify-between px-4 gap-4">
-        <span>Total</span>
-        <span className="font-bold">
-          {formatMoney(accounts.reduce((acc, account) => acc + account.balance, 0))}
-        </span>
-      </div>
-    </ExpenseSection>
+
+        {loadingAccounts && <Loader />}
+
+        {!loadingAccounts && Boolean(error) && (
+          <div className="flex flex-col items-center justify-center gap-4 py-8">
+            <p className="text-destructive">Error al cargar cuentas</p>
+            <Button variant="outline" onClick={() => refreshAccounts()}>
+              Reintentar
+            </Button>
+          </div>
+        )}
+
+        {!loadingAccounts && !error && accounts.length === 0 && (
+          <div className="flex flex-col items-center gap-3 py-8 text-center">
+            <span className="rounded-full bg-primary-100 p-3">
+              <Wallet className="text-primary-700" aria-hidden="true" />
+            </span>
+            <p className="font-display text-lg">Sin cuentas</p>
+            <p className="text-sm text-muted-foreground">
+              Agrega tu primera cuenta para empezar.
+            </p>
+            <Button className="cursor-pointer" onClick={openNewAccountModal}>
+              <Plus />
+              Agregar cuenta
+            </Button>
+          </div>
+        )}
+
+        {!loadingAccounts && !error && accounts.length > 0 && (
+          <div className="mt-4 flex flex-col gap-3">
+            {accounts.map((account) => {
+              const isCredit = account.type === "CREDIT";
+              return (
+                <div
+                  key={account.id}
+                  className="rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow duration-200 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => openEditAccountModal(account)}
+                      className="flex min-w-0 grow flex-col items-start gap-1 text-left cursor-pointer"
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span className="truncate font-display font-semibold">{account.name}</span>
+                        <span
+                          className={cn(
+                            "shrink-0 rounded-full px-2 py-0.5 text-xs uppercase tracking-wide",
+                            isCredit
+                              ? "bg-primary-100 text-primary-700"
+                              : "bg-muted text-muted-foreground"
+                          )}
+                        >
+                          {typeLabels[account.type]}
+                        </span>
+                      </span>
+                      {!isCredit && (
+                        <span
+                          className={cn(
+                            "font-semibold tabular-nums",
+                            account.balance < 0 && "text-destructive"
+                          )}
+                        >
+                          {formatMoney(account.balance, account.currency)}
+                        </span>
+                      )}
+                    </button>
+
+                    <div className="flex shrink-0 items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="cursor-pointer"
+                        aria-label={`Editar ${account.name}`}
+                        onClick={() => openEditAccountModal(account)}
+                      >
+                        <Pencil />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="cursor-pointer"
+                        aria-label={`Agregar transacción a ${account.name}`}
+                        onClick={() => openTransactionModal(account.id)}
+                      >
+                        <Plus />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {isCredit && (
+                    <div className="mt-3 flex flex-col gap-3">
+                      <CreditSummary account={account} />
+                      <Button
+                        className="cursor-pointer"
+                        onClick={() => openPayCardDrawer(account.id)}
+                      >
+                        Pagar tarjeta
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!loadingAccounts && !error && accounts.length > 0 && (
+          <>
+            <Separator className="my-4" />
+            <div className="flex flex-col gap-2 px-1">
+              {totalsByCurrency.map(({ currency, total }) => (
+                <div key={currency} className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Total {currency}</span>
+                  <span className="font-semibold tabular-nums">
+                    {formatMoney(total, currency)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </ExpenseSection>
+
+      <AccountModal />
+      <PayCardDrawer />
+    </>
   );
 }
 

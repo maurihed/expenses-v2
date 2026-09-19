@@ -1,10 +1,21 @@
-import type { Account } from "@/types";
+import { parseJsonResponse } from "@/lib/http";
+import type { Account, AccountPayload, CreditSummary } from "@/types";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 const ACCOUNTS_URL = `${VITE_API_BASE_URL}/accounts`;
 
 class AccountService {
-  public async addAccount(account: Account): Promise<Account> {
+  public async getAccounts(includeArchived = false): Promise<Account[]> {
+    try {
+      const url = includeArchived ? `${ACCOUNTS_URL}?includeArchived=true` : ACCOUNTS_URL;
+      const response = await fetch(url);
+      return await parseJsonResponse<Account[]>(response);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async createAccount(account: AccountPayload): Promise<Account> {
     try {
       const response = await fetch(ACCOUNTS_URL, {
         method: "POST",
@@ -13,18 +24,42 @@ class AccountService {
         },
         body: JSON.stringify(account),
       });
-      const newAccount = await response.json();
-      return Promise.resolve(newAccount);
+      return await parseJsonResponse<Account>(response);
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
-  public async getAccounts(): Promise<Account[]> {
+  public async updateAccount(id: string, account: AccountPayload): Promise<Account> {
     try {
-      const response = await fetch(ACCOUNTS_URL);
-      const accounts = await response.json();
-      return Promise.resolve(accounts);
+      const response = await fetch(`${ACCOUNTS_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(account),
+      });
+      return await parseJsonResponse<Account>(response);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async archiveAccount(id: string): Promise<void> {
+    try {
+      const response = await fetch(`${ACCOUNTS_URL}/${id}`, {
+        method: "DELETE",
+      });
+      await parseJsonResponse<unknown>(response);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async getCreditSummary(id: string): Promise<CreditSummary> {
+    try {
+      const response = await fetch(`${ACCOUNTS_URL}/${id}/credit-summary`);
+      return await parseJsonResponse<CreditSummary>(response);
     } catch (error) {
       return Promise.reject(error);
     }

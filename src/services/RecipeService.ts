@@ -1,3 +1,4 @@
+import { parseJsonResponse } from "@/lib/http";
 import type { Recipe } from "@/types";
 
 const { VITE_BAKERY_URL, VITE_BAKERY_VERSION } = import.meta.env;
@@ -6,11 +7,10 @@ class RecipeService {
   async getAll(): Promise<Recipe[]> {
     try {
       const response = await fetch(RECIPE_URL);
-      const recipes = await response.json();
-      return (recipes ?? []) as Recipe[];
+      const recipes = await parseJsonResponse<Recipe[]>(response);
+      return recipes ?? [];
     } catch (error) {
-      console.error(error);
-      throw new Error("Error al cargar las recetas");
+      return Promise.reject(error);
     }
   }
 }

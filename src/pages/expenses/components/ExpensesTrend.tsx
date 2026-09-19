@@ -68,7 +68,7 @@ export default function ExpensesTrend() {
             color: textColor,
             font: {
               size: 14,
-              family: "Moderustic",
+              family: "Inter",
             },
             callback: (value) => `$${value}`,
           },
@@ -78,7 +78,7 @@ export default function ExpensesTrend() {
             color: textColor,
             font: {
               size: 14,
-              family: "Moderustic",
+              family: "Inter",
             },
           },
         },
@@ -91,7 +91,7 @@ export default function ExpensesTrend() {
           labels: {
             font: {
               size: 16,
-              family: "Moderustic",
+              family: "Inter",
             },
           },
         },

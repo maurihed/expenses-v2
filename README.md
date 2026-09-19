@@ -1,6 +1,22 @@
-# React + TypeScript + Vite
+# Expenses V2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación de gastos compartidos (mobile-first). React 19 + Vite + Tailwind 4 +
+shadcn, contra el backend NestJS (`express/expenses-api`).
+
+## Fase 1 — flujo
+
+- `/expenses`: cuentas (tipo, moneda, crédito con deuda/pago/disponible y botón
+  **Pagar tarjeta**), personas (Mauricio y Maria, presupuesto semanal acumulable
+  con ajustes) y movimientos.
+- `/expenses/categories`: categorías dinámicas con alta/edición/archivado.
+- Modal de movimiento: tipo ingreso/gasto/**transferencia** (`toAccountId`) y
+  alcance **Conjunto / Personal** (`scope` + `personId`).
+- El backend calcula los saldos; el frontend sólo consume:
+  `/accounts`, `/accounts/:id/credit-summary`, `/categories`, `/persons`,
+  `/persons/:id/summary`, `/persons/:id/adjustments`, `/transactions`.
+- Design system persistido en `design-system/MASTER.md` (rosa `#F8359B`,
+  tipografía por sección, checklist mobile). Resultados de aceptación en
+  `docs/superpowers/plans/2026-09-18-expenses-fase1-acceptance.md`.
 
 ## Environment variables
 
