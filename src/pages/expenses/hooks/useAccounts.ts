@@ -1,11 +1,13 @@
 import AccountService from "@/services/AccountService";
-import type { Account } from "@/types";
-import { useQuery } from "react-query";
+import TransactionService from "@/services/TransactionService";
+import { useExpensesStore } from "@/stores/expenses.store";
+import type { Account, AccountPayload, CreditSummary, MonthYearType, TransferInput } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
-export const useAccounts = (enabled = true) => {
+export const useAccounts = (enabled = true, includeArchived = false) => {
   const { data, isLoading, error, refetch } = useQuery<Account[]>(
-    "accounts",
-    AccountService.getAccounts,
+    ["accounts", { includeArchived }],
+    () => AccountService.getAccounts(includeArchived),
     {
       staleTime: Infinity, // Disable background fetching
       enabled,
@@ -17,5 +19,61 @@ export const useAccounts = (enabled = true) => {
     loadingAccounts: isLoading,
     error,
     refreshAccounts: refetch,
+  };
+};
+
+export const useCreditSummary = (accountId: string, enabled = true) => {
+  const { data, isLoading } = useQuery<CreditSummary>(
+    ["credit-summary", accountId],
+    () => AccountService.getCreditSummary(accountId),
+    {
+      staleTime: Infinity, // Refresh only when invalidated after a payment
+      enabled: enabled && Boolean(accountId),
+    }
+  );
+
+  return {
+    creditSummary: data ?? null,
+    loadingCreditSummary: isLoading,
+  };
+};
+
+export const useAccountMutations = () => {
+  const queryClient = useQueryClient();
+  const { month, year } = useExpensesStore((state) => state.monthYear) as MonthYearType;
+
+  const invalidateAccountData = () => {
+    queryClient.invalidateQueries(["accounts"]);
+    queryClient.invalidateQueries(["transactions", month, year]);
+    queryClient.invalidateQueries(["credit-summary"]);
+  };
+
+  const createAccount = useMutation(
+    (account: AccountPayload) => AccountService.createAccount(account),
+    { onSuccess: invalidateAccountData }
+  );
+
+  const updateAccount = useMutation(
+    ({ id, account }: { id: string; account: AccountPayload }) =>
+      AccountService.updateAccount(id, account),
+    { onSuccess: invalidateAccountData }
+  );
+
+  const archiveAccount = useMutation((id: string) => AccountService.archiveAccount(id), {
+    onSuccess: invalidateAccountData,
+  });
+
+  const payCard = useMutation((transfer: TransferInput) => TransactionService.createTransfer(transfer), {
+    onSuccess: invalidateAccountData,
+  });
+
+  return {
+    createAccount,
+    updateAccount,
+    archiveAccount,
+    payCard,
+    accountMutationLoading:
+      createAccount.isLoading || updateAccount.isLoading || archiveAccount.isLoading,
+    payingCard: payCard.isLoading,
   };
 };

@@ -1,5 +1,5 @@
 import { formatDateOnly, parseDateOnly } from "@/lib/DateUtils";
-import type { Transaction } from "@/types";
+import type { Transaction, TransferInput } from "@/types";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 const TRANSACTION_URL = `${VITE_API_BASE_URL}/transactions`;
@@ -25,6 +25,29 @@ class TransactionService {
       return Promise.reject(error);
     }
   }
+  public async createTransfer(transfer: TransferInput): Promise<{ id: string }> {
+    try {
+      const response = await fetch(TRANSACTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "transfer",
+          accountId: transfer.accountId,
+          toAccountId: transfer.toAccountId,
+          amount: transfer.amount,
+          date: formatDateOnly(transfer.date),
+          description: transfer.description,
+        }),
+      });
+      const { id } = await response.json();
+      return Promise.resolve({ id });
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   public async editTransaction({
     transactionToEdit,
     transactionEdited,
