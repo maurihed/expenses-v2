@@ -7,6 +7,7 @@ import { formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import type { Transaction } from "@/types";
 import clsx from "clsx";
+import { ArrowLeftRight } from "lucide-react";
 import { useState } from "react";
 import { useAccounts } from "../hooks/useAccounts";
 import { useTransactions } from "../hooks/useTransactions";
@@ -111,31 +112,52 @@ function ExpensesList() {
               </span>
             </h3>
             <ul className="flex flex-col gap-4">
-              {_transactions.map((transaction) => (
-                <li
-                  className="flex items-center justify-between gap-4"
-                  key={transaction.id}
-                  onClick={() => openEditTransactionModal(transaction)}
-                >
-                  <CategoryIcon category={transaction.category} />
-                  <div className="grow grid grid-cols-1">
-                    <p className="font-bold">{transaction.description}</p>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      {transaction.category} | {getAccountName(transaction.accountId)}
-                    </p>
-                  </div>
-
-                  <span
-                    className={clsx({
-                      ["text-red-500"]: transaction.type === "expense",
-                      ["text-green-500"]: transaction.type === "income",
-                    })}
+              {_transactions.map((transaction) => {
+                const isTransfer = transaction.type === "transfer";
+                const destinationName = transaction.toAccountId
+                  ? getAccountName(transaction.toAccountId)
+                  : "";
+                return (
+                  <li
+                    className="flex items-center justify-between gap-4 cursor-pointer"
+                    key={transaction.id}
+                    onClick={() => openEditTransactionModal(transaction)}
                   >
-                    {transaction.type === "expense" ? "-" : "+"}
-                    {formatMoney(transaction.amount)}
-                  </span>
-                </li>
-              ))}
+                    {isTransfer ? (
+                      <span className="rounded-full p-2 flex items-center justify-center w-10 h-10 bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-200">
+                        <ArrowLeftRight size={24} />
+                      </span>
+                    ) : (
+                      <CategoryIcon category={transaction.category} />
+                    )}
+                    <div className="grow grid grid-cols-1">
+                      <p className="font-bold">{transaction.description}</p>
+                      <p className="text-slate-600 dark:text-slate-400">
+                        {isTransfer
+                          ? destinationName
+                            ? `Transferencia | ${destinationName}`
+                            : "Transferencia"
+                          : `${transaction.category} | ${getAccountName(transaction.accountId)}`}
+                      </p>
+                    </div>
+
+                    <span
+                      className={clsx({
+                        ["text-red-500"]: transaction.type === "expense",
+                        ["text-green-500"]: transaction.type === "income",
+                        ["text-muted-foreground"]: isTransfer,
+                      })}
+                    >
+                      {transaction.type === "expense"
+                        ? "-"
+                        : transaction.type === "income"
+                          ? "+"
+                          : ""}
+                      {formatMoney(transaction.amount)}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

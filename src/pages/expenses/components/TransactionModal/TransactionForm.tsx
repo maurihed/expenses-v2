@@ -38,13 +38,14 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   const [dateOpen, setDateOpen] = useState(false);
   const { accounts } = useAccounts(false);
   const { categories } = useCategories();
-  const { persons } = usePersons();
   const { newTransaction, editTransaction, mutationLoading, transactionMutationError } =
     useTransactions(false);
   const autoSelectElementRef = useRef<HTMLInputElement>(null);
 
   const closeModal = useExpensesStore((state) => state.closeTransactionModal);
   const isModalOpen = useExpensesStore((state) => state.transactionModalOpen);
+  // Only load persons while the modal is open, mirroring the other gated hooks.
+  const { persons } = usePersons(isModalOpen);
 
   const accountItems = accounts.map((account: Account) => ({
     key: account.id,
