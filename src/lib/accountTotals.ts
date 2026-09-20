@@ -60,3 +60,19 @@ export const sumInvestments = (accounts: Account[], usdRate: number | null): num
   }
   return sum;
 };
+
+/**
+ * Deuda total de las tarjetas de crédito (saldo deudor) convertida a MXN.
+ */
+export const sumCreditDebtToMxn = (
+  accounts: Account[],
+  usdRate: number | null
+): number | null => {
+  let sum = 0;
+  for (const account of accounts.filter((entry) => entry.type === "CREDIT")) {
+    const converted = toMxn(account.balance, account.currency, usdRate);
+    if (converted == null) return null;
+    sum += converted;
+  }
+  return sum;
+};

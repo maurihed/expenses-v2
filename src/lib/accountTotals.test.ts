@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   convertTotalsToMxn,
   netTotalsByCurrency,
+  sumCreditDebtToMxn,
   sumInvestments,
   toMxn,
 } from "./accountTotals";
@@ -96,5 +97,28 @@ describe("sumInvestments", () => {
 
   it("sin inversiones suma 0", () => {
     expect(sumInvestments([acc({ type: "CASH", balance: 100 })], null)).toBe(0);
+  });
+});
+
+describe("sumCreditDebtToMxn", () => {
+  it("suma la deuda de las tarjetas y convierte USD", () => {
+    expect(
+      sumCreditDebtToMxn(
+        [
+          acc({ type: "CREDIT", currency: "MXN", balance: 1200 }),
+          acc({ type: "CREDIT", currency: "USD", balance: 10 }),
+          acc({ type: "DEBIT", currency: "MXN", balance: 9999 }),
+        ],
+        17
+      )
+    ).toBeCloseTo(1370, 6);
+  });
+
+  it("devuelve null si una tarjeta USD no tiene tasa", () => {
+    expect(sumCreditDebtToMxn([acc({ type: "CREDIT", currency: "USD", balance: 1 })], null)).toBeNull();
+  });
+
+  it("sin tarjetas suma 0", () => {
+    expect(sumCreditDebtToMxn([acc({ type: "CASH", balance: 100 })], null)).toBe(0);
   });
 });

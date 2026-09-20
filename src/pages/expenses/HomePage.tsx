@@ -1,18 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { ExpenseSection } from "@/components/ui/expense-section";
+import { Loader } from "@/components/ui/loader";
 import {
   convertTotalsToMxn,
   netTotalsByCurrency,
+  sumCreditDebtToMxn,
   sumInvestments,
 } from "@/lib/accountTotals";
 import { debtTotalsToMxn } from "@/lib/debtTotals";
 import { formatMoney, getDateString, getMonthName } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import clsx from "clsx";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Pencil } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import BudgetDrawer from "./components/BudgetDrawer";
 import { useAccounts } from "./hooks/useAccounts";
+import { useBudget } from "./hooks/useBudget";
 import { useDebts } from "./hooks/useDebts";
 import { useFxRate } from "./hooks/useFxRate";
 import { useTransactions } from "./hooks/useTransactions";
@@ -25,18 +30,30 @@ function HomePage() {
   const { debts } = useDebts();
   const { fx } = useFxRate();
   const { month, year } = useExpensesStore((state) => state.monthYear);
+  const { budget, loadingBudget, budgetError, refreshBudget } = useBudget(year, month);
+  const [budgetOpen, setBudgetOpen] = useState(false);
 
   const usdRate = fx?.rate ?? null;
   const totals = netTotalsByCurrency(accounts);
   const totalMxn = convertTotalsToMxn(totals, usdRate);
   const investmentAccounts = accounts.filter((account) => account.type === "INVESTMENT");
   const investmentsMxn = sumInvestments(accounts, usdRate);
+  const creditDebtMxn = sumCreditDebtToMxn(accounts, usdRate);
   const debtTotals = debtTotalsToMxn(debts, usdRate);
+  const debtActual =
+    creditDebtMxn != null && debtTotals != null ? creditDebtMxn + debtTotals.payable : null;
   const hasForeign = totals.some((entry) => entry.currency !== "MXN");
 
   const spentThisMonth = transactions
     .filter((transaction) => transaction.type === "expense")
     .reduce((acc, transaction) => acc + transaction.amount, 0);
+
+  const budgetAmount = budget && budget.amount > 0 ? budget.amount : null;
+  const budgetRemaining = budgetAmount != null ? budgetAmount - spentThisMonth : null;
+  const budgetProgress =
+    budgetAmount && budgetAmount > 0
+      ? Math.min(100, (spentThisMonth / budgetAmount) * 100)
+      : 0;
 
   const recent = transactions.slice(0, 6);
 
@@ -91,10 +108,16 @@ function HomePage() {
         </ExpenseSection>
 
         <ExpenseSection className="p-4">
-          <p className="text-sm text-muted-foreground">Deudas por pagar</p>
+          <p className="text-sm text-muted-foreground">Deuda actual</p>
           <p className="mt-1 text-2xl font-bold tabular-nums">
-            {debtTotals != null ? formatMoney(debtTotals.payable, "MXN") : "—"}
+            {debtActual != null ? formatMoney(debtActual, "MXN") : "—"}
           </p>
+          {creditDebtMxn != null && debtTotals != null && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Crédito {formatMoney(creditDebtMxn, "MXN")} · Por pagar{" "}
+              {formatMoney(debtTotals.payable, "MXN")}
+            </p>
+          )}
           {debtTotals != null && debtTotals.receivable > 0 && (
             <p className="mt-1 text-xs text-muted-foreground">
               Por cobrar: {formatMoney(debtTotals.receivable, "MXN")}
@@ -109,6 +132,84 @@ function HomePage() {
           <p className="mt-1 text-2xl font-bold tabular-nums">{formatMoney(spentThisMonth)}</p>
         </ExpenseSection>
       </div>
+
+      <ExpenseSection className="p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg">Presupuesto de {getMonthName(month)}</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="cursor-pointer"
+            aria-label="Definir presupuesto"
+            onClick={() => setBudgetOpen(true)}
+          >
+            <Pencil />
+          </Button>
+        </div>
+
+        {loadingBudget ? (
+          <div className="py-4">
+            <Loader />
+          </div>
+        ) : budgetError ? (
+          <div className="flex flex-col items-center gap-3 py-4">
+            <p className="text-destructive">Error al cargar el presupuesto</p>
+            <Button variant="outline" className="cursor-pointer" onClick={() => refreshBudget()}>
+              Reintentar
+            </Button>
+          </div>
+        ) : budgetAmount == null ? (
+          <div className="flex flex-col items-start gap-3 py-4">
+            <p className="text-sm text-muted-foreground">
+              Aún no defines un presupuesto para este mes.
+            </p>
+            <Button className="cursor-pointer" onClick={() => setBudgetOpen(true)}>
+              Definir presupuesto
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-2">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-xs text-muted-foreground">Gastado</p>
+                <p className="font-bold tabular-nums">
+                  {formatMoney(spentThisMonth, "MXN")}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">
+                  {budgetRemaining != null && budgetRemaining < 0 ? "Excedido" : "Disponible"}
+                </p>
+                <p
+                  className={clsx("font-bold tabular-nums", {
+                    "text-destructive": budgetRemaining != null && budgetRemaining < 0,
+                  })}
+                >
+                  {formatMoney(Math.abs(budgetRemaining ?? 0), "MXN")}
+                </p>
+              </div>
+            </div>
+            <div
+              className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted"
+              role="progressbar"
+              aria-valuenow={Math.round(budgetProgress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className={clsx("h-full rounded-full", {
+                  "bg-primary": budgetRemaining != null && budgetRemaining >= 0,
+                  "bg-destructive": budgetRemaining != null && budgetRemaining < 0,
+                })}
+                style={{ width: `${budgetProgress}%` }}
+              />
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Presupuesto {formatMoney(budgetAmount, "MXN")}
+            </p>
+          </div>
+        )}
+      </ExpenseSection>
 
       <ExpenseSection className="p-4">
         <h2 className="font-display text-lg">Gastos por categoría</h2>
@@ -165,6 +266,14 @@ function HomePage() {
           </ul>
         )}
       </ExpenseSection>
+
+      <BudgetDrawer
+        open={budgetOpen}
+        year={year}
+        month={month}
+        current={budgetAmount}
+        onClose={() => setBudgetOpen(false)}
+      />
     </div>
   );
 }
