@@ -19,7 +19,7 @@ interface AuthState {
   filters: FilterType;
   setFilters: (filters: FilterType) => void;
   setMonthYear: (monthYear: { month: number; year: number }) => void;
-  openNewTransactionModal: (accountId: string) => void;
+  openNewTransactionModal: (accountId?: string | null) => void;
   openEditTransactionModal: (transactionId: Transaction) => void;
   closeTransactionModal: () => void;
   openNewAccountModal: () => void;
@@ -49,10 +49,10 @@ export const useExpensesStore = create<AuthState>((set) => {
     payCardAccountId: null,
     filters: { search: "", categories: new Set() },
     setMonthYear: (monthYear) => set({ monthYear }),
-    openNewTransactionModal: (accountId: string) =>
+    openNewTransactionModal: (accountId?: string | null) =>
       set({
         transactionToEdit: null,
-        transactionAccountId: accountId,
+        transactionAccountId: accountId ?? null,
         transactionModalOpen: true,
       }),
     openEditTransactionModal: (transaction: Transaction) =>
