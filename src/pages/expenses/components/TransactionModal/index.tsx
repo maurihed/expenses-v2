@@ -40,7 +40,7 @@ function TransactionModal() {
             </Button>
           )}
           <DialogTitle>
-            {transactionAccountId ? "Nueva transaccion" : "Editar transaccion"}
+            {transactionToEdit ? "Editar transaccion" : "Nueva transaccion"}
           </DialogTitle>
           {deleteTransactionError && (
             <p role="alert" className="w-full text-sm text-destructive">

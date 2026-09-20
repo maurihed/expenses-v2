@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import TransactionModal from "@/pages/expenses/components/TransactionModal";
-import { ArrowLeftRight, Home, Menu, Wallet, type LucideIcon } from "lucide-react";
+import { useExpensesStore } from "@/stores/expenses.store";
+import { ArrowLeftRight, Home, Menu, Plus, Wallet, type LucideIcon } from "lucide-react";
 import { NavLink } from "react-router";
 
 type Tab = {
@@ -18,6 +19,7 @@ const tabs: Tab[] = [
 ];
 
 function MobileLayout({ children }: { children: React.ReactNode }) {
+  const openNewTransactionModal = useExpensesStore((state) => state.openNewTransactionModal);
   const buttonCommonClasses =
     "inline-flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-xs transition-colors duration-200 hover:bg-primary hover:text-primary-foreground";
 
@@ -42,6 +44,14 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
           ))}
         </ul>
       </nav>
+      <button
+        type="button"
+        onClick={() => openNewTransactionModal()}
+        aria-label="Agregar movimiento"
+        className="fixed bottom-[88px] right-4 z-40 flex size-14 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform duration-200 hover:scale-105"
+      >
+        <Plus className="size-7" aria-hidden="true" />
+      </button>
       <TransactionModal />
     </div>
   );
