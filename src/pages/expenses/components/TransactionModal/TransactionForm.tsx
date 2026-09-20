@@ -240,7 +240,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
 
   const renderAccountItem = (item: { key: string; value: string }) => (
     <>
-      <span className="bg-green-700 rounded-full p-2 flex items-center justify-center w-8 h-8">
+      <span className="bg-primary text-primary-foreground rounded-full p-2 flex items-center justify-center w-8 h-8">
         <Wallet size={24} />
       </span>
       <span>{item.value}</span>
@@ -263,9 +263,9 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                 >
                   <FormItem
                     className={cn([
-                      "flex items-center border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                      "flex items-center border p-2 border-border rounded-lg cursor-pointer transition-colors duration-200",
                       {
-                        "border-green-500": field.value === "income",
+                        "border-positive": field.value === "income",
                       },
                     ])}
                   >
@@ -276,9 +276,9 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                   </FormItem>
                   <FormItem
                     className={cn([
-                      "flex items-center border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                      "flex items-center border p-2 border-border rounded-lg cursor-pointer transition-colors duration-200",
                       {
-                        "border-red-500": field.value === "expense",
+                        "border-negative": field.value === "expense",
                       },
                     ])}
                   >
@@ -290,7 +290,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                   {allowTransfer && (
                     <FormItem
                       className={cn([
-                        "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                        "flex items-center gap-1 border p-2 border-border rounded-lg cursor-pointer transition-colors duration-200",
                         {
                           "border-primary": field.value === "transfer",
                         },
@@ -386,7 +386,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                     >
                       <FormItem
                         className={cn([
-                          "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                          "flex items-center gap-1 border p-2 border-border rounded-lg cursor-pointer transition-colors duration-200",
                           {
                             "border-primary": field.value === "joint",
                           },
@@ -399,7 +399,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                       </FormItem>
                       <FormItem
                         className={cn([
-                          "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                          "flex items-center gap-1 border p-2 border-border rounded-lg cursor-pointer transition-colors duration-200",
                           {
                             "border-primary": field.value === "personal",
                           },

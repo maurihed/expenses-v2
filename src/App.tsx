@@ -15,11 +15,11 @@ import RecurringPage from "./pages/expenses/RecurringPage";
 function App() {
   useEffect(() => {
     // Set the initial theme based on the user's preference
+    // Dark-first: si no hay preferencia guardada, se usa el tema oscuro.
+    const storedTheme = localStorage.theme;
     document.documentElement.classList.toggle(
       "dark",
-      localStorage.theme === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      storedTheme ? storedTheme === "dark" : true
     );
   }, []);
 

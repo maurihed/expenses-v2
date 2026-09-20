@@ -72,7 +72,7 @@ export default function CategoryPicker({ value, onChange }: Props) {
                 asChild
                 variant="ghost"
                 key={category}
-                className="flex justify-start gap-4 hover:bg-gray-100 cursor-pointer border-b"
+                className="flex justify-start gap-4 hover:bg-muted cursor-pointer border-b"
                 onClick={() => {
                   onChange(category);
                   setSearch("");

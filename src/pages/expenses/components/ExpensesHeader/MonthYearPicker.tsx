@@ -6,6 +6,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import { MoveLeft, MoveRight } from "lucide-react";
 
@@ -24,7 +25,7 @@ const MONTHS = [
   "Diciembre",
 ];
 
-function MonthYearPicker() {
+function MonthYearPicker({ inverted = false }: { inverted?: boolean }) {
   const { year, month } = useExpensesStore((state) => state.monthYear);
   const setMonthYear = useExpensesStore((state) => state.setMonthYear);
 
@@ -44,15 +45,21 @@ function MonthYearPicker() {
     }
   };
 
+  const buttonTone = inverted
+    ? "text-white hover:bg-white/15 hover:text-white"
+    : "text-foreground";
+
   return (
     <div className="pt-2">
-      <span className="text-slate-600 dark:text-slate-300">{year}</span>
-      <div>
-        <Button variant="ghost" onClick={() => handleArrowClick(-1)}>
+      <span className={cn(inverted ? "text-white/80" : "text-muted-foreground")}>{year}</span>
+      <div className="flex items-center justify-center gap-1">
+        <Button variant="ghost" className={buttonTone} aria-label="Mes anterior" onClick={() => handleArrowClick(-1)}>
           <MoveLeft />
         </Button>
         <DropdownMenu>
-          <DropdownMenuTrigger className="text-2xl min-w-32">
+          <DropdownMenuTrigger
+            className={cn("min-w-32 text-2xl font-display font-semibold", buttonTone)}
+          >
             {MONTHS[month]}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -68,7 +75,7 @@ function MonthYearPicker() {
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button variant="ghost" onClick={() => handleArrowClick(1)}>
+        <Button variant="ghost" className={buttonTone} aria-label="Mes siguiente" onClick={() => handleArrowClick(1)}>
           <MoveRight />
         </Button>
       </div>
