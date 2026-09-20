@@ -96,6 +96,9 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
 
   const isTransfer = selectedType === "transfer";
   const isPersonal = selectedScope === "personal";
+  // Transferencias solo se crean en su formulario propio; al editar una
+  // transferencia existente se mantiene la opción.
+  const allowTransfer = transactionToEdit?.type === "transfer";
 
   const selectedAccount = useMemo(
     () => accounts.find((account: Account) => account.id === selectedAccountId),
@@ -284,20 +287,22 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
                     </FormControl>
                     <FormLabel className="font-normal cursor-pointer">Gasto</FormLabel>
                   </FormItem>
-                  <FormItem
-                    className={cn([
-                      "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
-                      {
-                        "border-primary": field.value === "transfer",
-                      },
-                    ])}
-                  >
-                    <FormControl>
-                      <RadioGroupItem value="transfer" />
-                    </FormControl>
-                    <FormLabel className="font-normal cursor-pointer">Transferencia</FormLabel>
-                    <ArrowLeftRight className="h-4 w-4" />
-                  </FormItem>
+                  {allowTransfer && (
+                    <FormItem
+                      className={cn([
+                        "flex items-center gap-1 border p-2 border-slate-200 rounded-sm cursor-pointer transition-colors duration-200",
+                        {
+                          "border-primary": field.value === "transfer",
+                        },
+                      ])}
+                    >
+                      <FormControl>
+                        <RadioGroupItem value="transfer" />
+                      </FormControl>
+                      <FormLabel className="font-normal cursor-pointer">Transferencia</FormLabel>
+                      <ArrowLeftRight className="h-4 w-4" />
+                    </FormItem>
+                  )}
                 </RadioGroup>
               </FormControl>
               <FormMessage />
