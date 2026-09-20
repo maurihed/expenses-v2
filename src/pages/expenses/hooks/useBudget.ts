@@ -1,5 +1,5 @@
 import BudgetService from "@/services/BudgetService";
-import type { BudgetPayload } from "@/types";
+import type { Budget, BudgetPayload } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 export const useBudget = (year: number, month: number, enabled = true) => {
@@ -11,7 +11,7 @@ export const useBudget = (year: number, month: number, enabled = true) => {
     { staleTime: Infinity, enabled }
   );
 
-  const upsertBudget = useMutation(
+  const upsertBudget = useMutation<Budget, Error, BudgetPayload>(
     (payload: BudgetPayload) => BudgetService.upsertBudget(payload),
     {
       onSuccess: () => {
