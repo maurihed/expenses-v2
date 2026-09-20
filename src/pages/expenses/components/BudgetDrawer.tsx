@@ -35,10 +35,11 @@ function BudgetDrawer({
       upsertBudget.reset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, current]);
+  }, [open]);
 
   const parsed = Number(amount);
-  const canSubmit = Number.isFinite(parsed) && parsed >= 0 && !upsertBudget.isLoading;
+  const canSubmit =
+    amount.trim() !== "" && Number.isFinite(parsed) && parsed >= 0 && !upsertBudget.isLoading;
 
   const handleSave = () => {
     if (!canSubmit) return;

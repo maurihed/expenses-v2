@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { ExpenseSection } from "@/components/ui/expense-section";
+import { Loader } from "@/components/ui/loader";
 import {
   convertTotalsToMxn,
   netTotalsByCurrency,
@@ -29,7 +30,7 @@ function HomePage() {
   const { debts } = useDebts();
   const { fx } = useFxRate();
   const { month, year } = useExpensesStore((state) => state.monthYear);
-  const { budget } = useBudget(year, month);
+  const { budget, loadingBudget, budgetError, refreshBudget } = useBudget(year, month);
   const [budgetOpen, setBudgetOpen] = useState(false);
 
   const usdRate = fx?.rate ?? null;
@@ -47,7 +48,7 @@ function HomePage() {
     .filter((transaction) => transaction.type === "expense")
     .reduce((acc, transaction) => acc + transaction.amount, 0);
 
-  const budgetAmount = budget?.amount ?? null;
+  const budgetAmount = budget && budget.amount > 0 ? budget.amount : null;
   const budgetRemaining = budgetAmount != null ? budgetAmount - spentThisMonth : null;
   const budgetProgress =
     budgetAmount && budgetAmount > 0
@@ -146,7 +147,18 @@ function HomePage() {
           </Button>
         </div>
 
-        {budgetAmount == null ? (
+        {loadingBudget ? (
+          <div className="py-4">
+            <Loader />
+          </div>
+        ) : budgetError ? (
+          <div className="flex flex-col items-center gap-3 py-4">
+            <p className="text-destructive">Error al cargar el presupuesto</p>
+            <Button variant="outline" className="cursor-pointer" onClick={() => refreshBudget()}>
+              Reintentar
+            </Button>
+          </div>
+        ) : budgetAmount == null ? (
           <div className="flex flex-col items-start gap-3 py-4">
             <p className="text-sm text-muted-foreground">
               Aún no defines un presupuesto para este mes.
@@ -177,7 +189,13 @@ function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted"
+              role="progressbar"
+              aria-valuenow={Math.round(budgetProgress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
               <div
                 className={clsx("h-full rounded-full", {
                   "bg-primary": budgetRemaining != null && budgetRemaining >= 0,
