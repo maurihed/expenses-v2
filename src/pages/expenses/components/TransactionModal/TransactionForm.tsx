@@ -249,7 +249,10 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex min-h-0 flex-col space-y-8 overflow-y-auto"
+      >
         <FormField
           control={form.control}
           name="type"
@@ -590,7 +593,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
           </>
         )}
 
-        <DialogFooter className="mt-auto">
+        <DialogFooter className="sticky bottom-0 mt-auto bg-background pt-4">
           <div className="flex flex-col gap-2">
             {transactionMutationError && (
               <p role="alert" className="text-sm text-destructive">
