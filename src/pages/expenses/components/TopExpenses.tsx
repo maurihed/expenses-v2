@@ -70,6 +70,7 @@ export default function TopExpenses() {
               legend: {
                 position: "bottom",
                 labels: {
+                  color: textColor,
                   usePointStyle: true,
                   pointStyle: "circle",
                   font: { size: 13, family: "Outfit" },
