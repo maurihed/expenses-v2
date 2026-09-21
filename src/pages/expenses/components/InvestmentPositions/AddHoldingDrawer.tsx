@@ -13,6 +13,7 @@ import MarketService from "@/services/MarketService";
 import type { MarketQuote, MarketSearchResult } from "@/types";
 import { LoaderCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useFxRate } from "../../hooks/useFxRate";
 import { useHoldingMutations } from "../../hooks/useHoldings";
 import { useMarketSearch } from "../../hooks/useMarketSearch";
 
@@ -36,6 +37,8 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const { results, searching, searchError } = useMarketSearch(query);
   const { createHolding, holdingMutationLoading } = useHoldingMutations(accountId);
+  const { fx } = useFxRate();
+  const usdRate = fx?.rate ?? null;
 
   useEffect(() => {
     if (open) {
@@ -56,7 +59,11 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
     selected != null && Number.isFinite(parsedQuantity) && parsedQuantity > 0 && !holdingMutationLoading;
   const preview =
     quote?.price != null && Number.isFinite(parsedQuantity) && parsedQuantity > 0
-      ? parsedQuantity * quote.price
+      ? quote.currency === currency
+        ? parsedQuantity * quote.price
+        : quote.currency === "USD" && currency === "MXN" && usdRate != null
+          ? parsedQuantity * quote.price * usdRate
+          : null
       : null;
 
   const handleSelect = async (result: MarketSearchResult) => {
@@ -223,7 +230,14 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 <span className="shrink-0 rounded-md bg-muted px-2 py-1 text-xs font-semibold">
                   {selected.symbol}
                 </span>
-                <span className="min-w-0 grow truncate text-sm">{selected.name}</span>
+                <span className="min-w-0 grow">
+                  <span className="block truncate text-sm">{selected.name}</span>
+                  {quote?.price != null && (
+                    <span className="block text-xs text-muted-foreground tabular-nums">
+                      {formatMoney(quote.price, quote.currency)}
+                    </span>
+                  )}
+                </span>
                 <button
                   type="button"
                   className="min-h-11 cursor-pointer px-2 text-xs text-primary"
@@ -259,9 +273,9 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 />
                 <span className="text-sm">
                   Descontar del efectivo (registrar compra)
-                  <span className="block text-xs text-muted-foreground">
+                  <span className="block text-xs text-muted-foreground tabular-nums">
                     {preview != null
-                      ? `Se descontarán ≈ ${formatMoney(preview, quote?.currency ?? "USD")}`
+                      ? `Se descontarán ≈ ${formatMoney(preview, currency)}`
                       : `Se descontará de tu efectivo en ${currency}.`}
                   </span>
                 </span>

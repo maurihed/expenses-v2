@@ -30,7 +30,11 @@ function InvestmentPositions({ account, onAdd, onEdit }: Props) {
       <ExpenseSection className="p-4">
         <div className="flex flex-col items-center gap-3 py-6">
           <p className="text-destructive">Error al cargar posiciones</p>
-          <Button variant="outline" className="cursor-pointer" onClick={() => refreshHoldings()}>
+          <Button
+            variant="outline"
+            className="h-11 cursor-pointer"
+            onClick={() => refreshHoldings()}
+          >
             Reintentar
           </Button>
         </div>
