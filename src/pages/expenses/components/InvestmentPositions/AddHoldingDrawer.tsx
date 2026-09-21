@@ -174,7 +174,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
               <Button
                 type="button"
                 variant="ghost"
-                className="cursor-pointer"
+                className="h-11 cursor-pointer"
                 onClick={() => setManualMode(true)}
               >
                 Escribir el ticker manualmente
@@ -196,7 +196,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 <Button
                   type="button"
                   variant="secondary"
-                  className="cursor-pointer"
+                  className="h-11 cursor-pointer"
                   onClick={() => {
                     setManualMode(false);
                     setManualError(null);
@@ -206,7 +206,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 </Button>
                 <Button
                   type="button"
-                  className="cursor-pointer"
+                  className="h-11 cursor-pointer"
                   onClick={handleValidateManual}
                   disabled={validating || manualSymbol.trim() === ""}
                 >
@@ -226,7 +226,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 <span className="min-w-0 grow truncate text-sm">{selected.name}</span>
                 <button
                   type="button"
-                  className="cursor-pointer text-xs text-primary"
+                  className="min-h-11 cursor-pointer px-2 text-xs text-primary"
                   onClick={() => {
                     setSelected(null);
                     setQuote(null);
@@ -277,7 +277,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 <Button
                   type="button"
                   variant="secondary"
-                  className="cursor-pointer"
+                  className="h-11 cursor-pointer"
                   onClick={onClose}
                   disabled={holdingMutationLoading}
                 >
@@ -285,7 +285,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
                 </Button>
                 <Button
                   type="button"
-                  className="cursor-pointer"
+                  className="h-11 cursor-pointer"
                   onClick={handleSubmit}
                   disabled={!canSubmit}
                 >

@@ -102,7 +102,7 @@ function EditHoldingDrawer({ accountId, holding, onClose }: Props) {
                 <Button
                   type="button"
                   variant="secondary"
-                  className="cursor-pointer"
+                  className="h-11 cursor-pointer"
                   onClick={() => setConfirmDelete(false)}
                   disabled={holdingMutationLoading}
                 >
@@ -111,7 +111,7 @@ function EditHoldingDrawer({ accountId, holding, onClose }: Props) {
                 <Button
                   type="button"
                   variant="destructive"
-                  className="cursor-pointer"
+                  className="h-11 cursor-pointer"
                   onClick={handleDelete}
                   disabled={holdingMutationLoading}
                 >
@@ -124,7 +124,7 @@ function EditHoldingDrawer({ accountId, holding, onClose }: Props) {
             <Button
               type="button"
               variant="ghost"
-              className="cursor-pointer text-destructive hover:text-destructive"
+              className="h-11 cursor-pointer text-destructive hover:text-destructive"
               onClick={() => setConfirmDelete(true)}
               disabled={holdingMutationLoading}
             >
@@ -136,7 +136,7 @@ function EditHoldingDrawer({ accountId, holding, onClose }: Props) {
             <Button
               type="button"
               variant="secondary"
-              className="cursor-pointer"
+              className="h-11 cursor-pointer"
               onClick={onClose}
               disabled={holdingMutationLoading}
             >
@@ -144,7 +144,7 @@ function EditHoldingDrawer({ accountId, holding, onClose }: Props) {
             </Button>
             <Button
               type="button"
-              className="cursor-pointer"
+              className="h-11 cursor-pointer"
               onClick={handleSave}
               disabled={!canSubmit}
             >
