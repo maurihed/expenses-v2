@@ -17,18 +17,19 @@ Fecha: 2026-09-21
 
 | # | Criterio | Resultado | Evidencia |
 |---|---|---|---|
-| 1 | `GET /market/quote?symbol=VOO` devuelve precio, moneda, cambio y `stale`, con caché y fallback Yahoo → Nasdaq | **PASS** | `src/market/market.controller.ts` (`@Get('quote')`), `src/market/market.service.ts`; unit `src/market/market.spec.ts`; e2e `test/market.e2e-spec.ts` (fallback Yahoo→Nasdaq, `stale` con caché) |
-| 2 | `GET /market/search?q=vanguard` devuelve solo ETFs | **PASS** | `src/market/market.controller.ts` (`@Get('search')`); unit `src/market/market.spec.ts` (filtro ETF); e2e `test/market.e2e-spec.ts` |
-| 3 | `POST /accounts/:id/holdings` valida el símbolo y con `deductFromCash` ajusta el efectivo de forma atómica | **PASS** | `src/accounts/holdings.controller.ts` (`@Post()`), `src/accounts/holdings.service.ts`; e2e `test/holdings.e2e-spec.ts` (símbolo inválido 4xx, descuento atómico) |
-| 4 | `GET /accounts/:id/holdings` devuelve posiciones valuadas y totales; `null` si alguna no se puede valuar | **PASS** | `src/accounts/holdings.controller.ts` (`@Get()`), `src/accounts/holdings.service.ts`; unit `src/accounts/holdings.service.spec.ts`, `src/domain/portfolio.spec.ts`; e2e `test/holdings.e2e-spec.ts` (totales `null` sin valuación) |
-| 5 | `GET /accounts` enriquece las cuentas `INVESTMENT` | **PASS** | `src/accounts/accounts.service.ts`; e2e `test/accounts.e2e-spec.ts` (enriquecido de portafolio) |
+| 1 | `GET /market/quote?symbol=VOO` devuelve precio, moneda, cambio y `stale`, con caché y fallback Yahoo → Nasdaq | **PASS** | `src/market/market.controller.ts` (`@Get('quote')`), `src/market/market.service.ts`; unit `src/market/market.spec.ts` (fallback Yahoo→Nasdaq "usa Nasdaq si Yahoo devuelve un payload inutilizable", `stale` con caché "sirve la caché stale si ambos proveedores fallan"); e2e `test/market.e2e-spec.ts` (solo cotización cacheada y símbolo inválido 400) |
+| 2 | `GET /market/search?q=vanguard` devuelve solo ETFs | **PASS** | `src/market/market.controller.ts` (`@Get('search')`); unit `src/market/market.spec.ts` ("search filtra a ETFs y usa Nasdaq si Yahoo falla") — sin cobertura e2e de `/market/search` |
+| 3 | `POST /accounts/:id/holdings` valida el símbolo y con `deductFromCash` ajusta el efectivo de forma atómica | **PASS** | `src/accounts/holdings.controller.ts` (`@Post()`), `src/accounts/holdings.service.ts`; unit `src/accounts/holdings.service.spec.ts` (símbolo inexistente 400) y e2e `test/holdings.e2e-spec.ts` (duplicado 409, cantidad no positiva 400, cuenta no-inversión 400) |
+| 4 | `GET /accounts/:id/holdings` devuelve posiciones valuadas y totales; `null` si alguna no se puede valuar | **PASS** | `src/accounts/holdings.controller.ts` (`@Get()`), `src/accounts/holdings.service.ts`; unit `src/accounts/holdings.service.spec.ts` ("deja los totales en `null` si no hay tasa FX") y `src/domain/portfolio.spec.ts` (`sumPositionValues` → `null` si algún valor es `null`); e2e `test/holdings.e2e-spec.ts` cubre el portafolio vacío → `positionsValue` `0` |
+| 5 | `GET /accounts` enriquece las cuentas `INVESTMENT` | **PASS** | `src/accounts/accounts.service.ts`; e2e `test/holdings.e2e-spec.ts` (`GET /accounts enriquece las cuentas de inversión`) |
 | 6 | Fallo de ambos proveedores con caché → `stale`; sin caché → "—" sin romperse | **PASS** | `src/market/market.spec.ts` (stale con caché, sin caché no revienta); UI `AccountList.tsx` (badge `stale` con ícono `Clock`, "—" sin valuación) y `InvestmentPositions/index.tsx` ("—" en total/posición/precio) — verificado estáticamente |
-| 7 | Mobile 375px: ver total, abrir detalle, buscar y dar de alta, editar y eliminar | **PASS (estático)** | `AccountList.tsx`, `InvestmentDetailPage.tsx`, `InvestmentPositions/*` (`AddHoldingDrawer`, `EditHoldingDrawer`), targets ≥44px (`h-11`); validación visual real pendiente (ver abajo) |
+| 7 | Mobile 375px: ver total, abrir detalle, buscar y dar de alta, editar y eliminar | **Pendiente (validación estática)** | `AccountList.tsx`, `InvestmentDetailPage.tsx`, `InvestmentPositions/*` (`AddHoldingDrawer`, `EditHoldingDrawer`), targets ≥44px (`h-11`); validación visual real **no ejecutada** (ver "Prueba manual pendiente") |
 | 8 | Suites y builds en verde en ambos repos | **PASS** | tabla de suites |
 
-**Resumen: 8 PASS, 0 FAIL** (criterios 6 y 7 verificados estáticamente y por tests de
-backend; la validación visual a 375px se deja como prueba manual pendiente, patrón
-de todas las fases).
+**Resumen: 7 PASS (criterios 1–6 y 8), 1 pendiente (criterio 7 — validación manual a
+375px no ejecutada por el agente), 0 FAIL.** Los criterios 6 y 7 se verifican de forma
+estática y mediante tests de backend; la validación visual a 375px se deja como prueba
+manual pendiente, patrón de todas las fases.
 
 ## Resultado de la verificación automática
 
