@@ -6,7 +6,8 @@ import { netTotalsByCurrency, toMxn } from "@/lib/accountTotals";
 import { cn, formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import type { AccountType } from "@/types";
-import { Pencil, Plus, Wallet } from "lucide-react";
+import { Pencil, Plus, Wallet, Clock, TrendingDown, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router";
 import { useAccounts } from "../hooks/useAccounts";
 import { useFxRate } from "../hooks/useFxRate";
 import AccountModal from "./AccountModal";
@@ -28,6 +29,7 @@ function AccountList() {
   const openPayCardDrawer = useExpensesStore((state) => state.openPayCardDrawer);
   const { fx } = useFxRate();
   const usdRate = fx?.rate ?? null;
+  const navigate = useNavigate();
 
   const totalsByCurrency = netTotalsByCurrency(accounts);
 
@@ -97,7 +99,7 @@ function AccountList() {
                           {typeLabels[account.type]}
                         </span>
                       </span>
-                      {!isCredit && (
+                      {!isCredit && account.type !== "INVESTMENT" && (
                         <>
                           <span
                             className={cn(
@@ -110,6 +112,35 @@ function AccountList() {
                           {account.currency === "USD" && usdRate != null && (
                             <span className="text-xs text-muted-foreground tabular-nums">
                               ≈ {formatMoney(toMxn(account.balance, "USD", usdRate) ?? 0, "MXN")}
+                            </span>
+                          )}
+                        </>
+                      )}
+
+                      {account.type === "INVESTMENT" && (
+                        <>
+                          <span className="font-semibold tabular-nums">
+                            {account.totalValue != null
+                              ? formatMoney(account.totalValue, account.currency)
+                              : "—"}
+                          </span>
+                          <span className="text-xs text-muted-foreground tabular-nums">
+                            Efectivo {formatMoney(account.cashBalance ?? account.balance, account.currency)}
+                            {" · "}
+                            Posiciones{" "}
+                            {account.positionsValue != null
+                              ? formatMoney(account.positionsValue, account.currency)
+                              : "—"}
+                          </span>
+                          {account.totalValue == null && (
+                            <span className="text-xs text-destructive">
+                              Sin precio para alguna posición
+                            </span>
+                          )}
+                          {account.stale && (
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Clock className="size-3" aria-hidden="true" />
+                              Precio en caché
                             </span>
                           )}
                         </>
@@ -137,6 +168,33 @@ function AccountList() {
                       </Button>
                     </div>
                   </div>
+
+                  {account.type === "INVESTMENT" && (
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <Button
+                        className="cursor-pointer"
+                        onClick={() => navigate(`/cuentas/${account.id}`)}
+                      >
+                        Posiciones
+                      </Button>
+                      {account.changePercent != null && (
+                        <span
+                          className={cn(
+                            "flex items-center gap-1 text-sm tabular-nums",
+                            account.changePercent >= 0 ? "text-positive" : "text-negative"
+                          )}
+                        >
+                          {account.changePercent >= 0 ? (
+                            <TrendingUp className="size-4" aria-hidden="true" />
+                          ) : (
+                            <TrendingDown className="size-4" aria-hidden="true" />
+                          )}
+                          {account.changePercent >= 0 ? "+" : ""}
+                          {account.changePercent.toFixed(2)}%
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {isCredit && (
                     <div className="mt-3 flex flex-col gap-3">

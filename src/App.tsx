@@ -7,6 +7,7 @@ import AccountsPage from "./pages/expenses/AccountsPage";
 import CategoriesPage from "./pages/expenses/CategoriesPage";
 import DebtsPage from "./pages/expenses/DebtsPage";
 import HomePage from "./pages/expenses/HomePage";
+import InvestmentDetailPage from "./pages/expenses/InvestmentDetailPage";
 import MorePage from "./pages/expenses/MorePage";
 import MovementsPage from "./pages/expenses/MovementsPage";
 import PersonsPage from "./pages/expenses/PersonsPage";
@@ -33,6 +34,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/movimientos" element={<MovementsPage />} />
             <Route path="/cuentas" element={<AccountsPage />} />
+            <Route path="/cuentas/:id" element={<InvestmentDetailPage />} />
             <Route path="/mas" element={<MorePage />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route path="/recurrentes" element={<RecurringPage />} />
