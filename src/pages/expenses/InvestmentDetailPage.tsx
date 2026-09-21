@@ -1,13 +1,19 @@
 import { Button } from "@/components/ui/button";
+import type { Holding } from "@/types";
+import { useState } from "react";
 import { useAccounts } from "./hooks/useAccounts";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import InvestmentPositions from "./components/InvestmentPositions";
+import AddHoldingDrawer from "./components/InvestmentPositions/AddHoldingDrawer";
+import EditHoldingDrawer from "./components/InvestmentPositions/EditHoldingDrawer";
 
 function InvestmentDetailPage() {
   const { id = "" } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { accounts, loadingAccounts } = useAccounts();
+  const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState<Holding | null>(null);
 
   const account = accounts.find((entry) => entry.id === id) ?? null;
 
@@ -42,7 +48,19 @@ function InvestmentDetailPage() {
         <h1 className="font-display text-2xl">{account.name}</h1>
       </div>
 
-      <InvestmentPositions account={account} onAdd={() => {}} onEdit={() => {}} />
+      <InvestmentPositions account={account} onAdd={() => setAddOpen(true)} onEdit={setEditing} />
+
+      <AddHoldingDrawer
+        accountId={account.id}
+        currency={account.currency}
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+      />
+      <EditHoldingDrawer
+        accountId={account.id}
+        holding={editing}
+        onClose={() => setEditing(null)}
+      />
     </div>
   );
 }
