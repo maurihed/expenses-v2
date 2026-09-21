@@ -21,6 +21,7 @@ const typeLabels: Record<RecurringType, string> = {
 };
 
 const frequencyLabels: Record<RecurringFrequency, string> = {
+  daily: "Diario",
   weekly: "Semanal",
   biweekly: "Quincenal",
   monthly: "Mensual",

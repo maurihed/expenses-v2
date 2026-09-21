@@ -42,10 +42,16 @@ const typeOptions: { value: RecurringType; label: string }[] = [
 ];
 
 const frequencyOptions: { value: RecurringFrequency; label: string }[] = [
+  { value: "daily", label: "Diario" },
   { value: "weekly", label: "Semanal" },
   { value: "biweekly", label: "Quincenal" },
   { value: "monthly", label: "Mensual" },
 ];
+
+// Las reglas de interés solo admiten diario o mensual (el backend las valida).
+const interestFrequencyOptions = frequencyOptions.filter(
+  (option) => option.value === "daily" || option.value === "monthly"
+);
 
 const interestTierSchema = z.object({
   upTo: z.number().nullable(),
@@ -75,7 +81,7 @@ const recurringFormSchema = z
         required_error: "Ingresa un monto",
       })
       .optional(),
-    frequency: z.enum(["weekly", "biweekly", "monthly"], {
+    frequency: z.enum(["daily", "weekly", "biweekly", "monthly"], {
       required_error: "La frecuencia es obligatoria",
     }),
     startDate: z.date({ required_error: "La fecha de inicio es obligatoria" }),
@@ -193,6 +199,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
   const selectedType = form.watch("type");
   const selectedScope = form.watch("scope");
   const selectedAccountId = form.watch("accountId");
+  const selectedFrequency = form.watch("frequency");
   const tiers = form.watch("interestTiers");
 
   const isInterest = selectedType === "interest";
@@ -205,7 +212,11 @@ function RecurringRuleForm({ rule, onClose }: Props) {
   const mutationError = createRule.error ?? updateRule.error;
 
   useEffect(() => {
-    if (selectedType === "interest") {
+    if (selectedType !== "interest") return;
+    // Las reglas de interés solo admiten diario o mensual: si venías de
+    // semanal/quincenal, se normaliza a mensual.
+    const current = form.getValues("frequency");
+    if (current !== "daily" && current !== "monthly") {
       form.setValue("frequency", "monthly");
     }
   }, [selectedType, form]);
@@ -226,7 +237,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
   );
 
   function onSubmit(values: RecurringFormValues) {
-    const frequency = values.type === "interest" ? "monthly" : values.frequency;
+    const frequency = values.frequency;
     const payload: RecurringRulePayload = {
       name: values.name.trim(),
       type: values.type,
@@ -237,7 +248,8 @@ function RecurringRuleForm({ rule, onClose }: Props) {
       amount: values.type === "interest" ? null : values.amount,
       frequency,
       dayOfMonth: frequency === "monthly" ? values.startDate.getDate() : null,
-      dayOfWeek: frequency === "monthly" ? null : values.startDate.getDay(),
+      dayOfWeek:
+        frequency === "weekly" || frequency === "biweekly" ? values.startDate.getDay() : null,
       startDate: formatDateOnly(values.startDate),
       endDate: values.endDate ? formatDateOnly(values.endDate) : null,
       interestTiers:
@@ -447,6 +459,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
             tiers={tiers}
             balance={selectedAccount?.balance ?? 0}
             currency={selectedAccount?.currency}
+            frequency={selectedFrequency === "daily" ? "daily" : "monthly"}
             onChange={(next) =>
               form.setValue("interestTiers", next, { shouldValidate: true, shouldDirty: true })
             }
@@ -468,18 +481,14 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                 <RadioGroup
                   value={field.value}
                   onValueChange={field.onChange}
-                  className="grid grid-cols-3 gap-2"
+                  className={cn("grid gap-2", isInterest ? "grid-cols-2" : "grid-cols-3")}
                 >
-                  {(isInterest
-                    ? frequencyOptions.filter((option) => option.value === "monthly")
-                    : frequencyOptions
-                  ).map((option) => (
+                  {(isInterest ? interestFrequencyOptions : frequencyOptions).map((option) => (
                     <div
                       key={option.value}
-                      onClick={() => !isInterest && field.onChange(option.value)}
+                      onClick={() => field.onChange(option.value)}
                       className={cn(
-                        "flex items-center gap-1.5 rounded-md border p-2.5 transition-colors duration-200",
-                        isInterest ? "cursor-not-allowed opacity-70" : "cursor-pointer",
+                        "flex cursor-pointer items-center gap-1.5 rounded-md border p-2.5 transition-colors duration-200",
                         field.value === option.value
                           ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
                           : "border-border"
@@ -488,7 +497,6 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                       <RadioGroupItem
                         value={option.value}
                         id={`recurring-frequency-${option.value}`}
-                        disabled={isInterest}
                       />
                       <span className="text-sm">{option.label}</span>
                     </div>

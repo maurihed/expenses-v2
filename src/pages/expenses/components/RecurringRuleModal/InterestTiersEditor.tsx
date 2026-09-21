@@ -12,11 +12,17 @@ type Props = {
   tiers: InterestTierRow[];
   balance: number;
   currency?: string;
+  frequency?: "daily" | "monthly";
   onChange: (tiers: InterestTierRow[]) => void;
   error?: string;
 };
 
-const computeMonthlyInterest = (balance: number, tiers: InterestTierRow[]): number => {
+const computeEstimatedInterest = (
+  balance: number,
+  tiers: InterestTierRow[],
+  frequency: "daily" | "monthly"
+): number => {
+  const periodsPerYear = frequency === "daily" ? 365 : 12;
   const sorted = [...tiers].sort((a, b) => {
     if (a.upTo === null) return 1;
     if (b.upTo === null) return -1;
@@ -29,7 +35,7 @@ const computeMonthlyInterest = (balance: number, tiers: InterestTierRow[]): numb
   for (const tier of sorted) {
     const cap = tier.upTo ?? Infinity;
     const portion = Math.max(0, Math.min(balance, cap) - previousCap);
-    interest += (portion * (tier.annualRatePercent / 100)) / 12;
+    interest += (portion * (tier.annualRatePercent / 100)) / periodsPerYear;
     previousCap = cap;
     if (balance <= previousCap) break;
   }
@@ -37,7 +43,14 @@ const computeMonthlyInterest = (balance: number, tiers: InterestTierRow[]): numb
   return Math.round(interest * 100) / 100;
 };
 
-function InterestTiersEditor({ tiers, balance, currency = "MXN", onChange, error }: Props) {
+function InterestTiersEditor({
+  tiers,
+  balance,
+  currency = "MXN",
+  frequency = "monthly",
+  onChange,
+  error,
+}: Props) {
   const updateTier = (index: number, patch: Partial<InterestTierRow>) => {
     onChange(tiers.map((tier, i) => (i === index ? { ...tier, ...patch } : tier)));
   };
@@ -65,7 +78,8 @@ function InterestTiersEditor({ tiers, balance, currency = "MXN", onChange, error
     onChange(next);
   };
 
-  const estimated = computeMonthlyInterest(balance, tiers);
+  const estimated = computeEstimatedInterest(balance, tiers, frequency);
+  const periodLabel = frequency === "daily" ? "diario" : "mensual";
 
   return (
     <div className="flex flex-col gap-3">
@@ -155,7 +169,7 @@ function InterestTiersEditor({ tiers, balance, currency = "MXN", onChange, error
       </div>
 
       <div className="rounded-md bg-primary-100 p-3 text-sm text-primary-700">
-        Interés mensual estimado:{" "}
+        Interés {periodLabel} estimado:{" "}
         <span className="font-semibold tabular-nums">{formatMoney(estimated, currency)}</span>
         <span className="mt-1 block text-xs">
           Calculado con el saldo actual de la cuenta seleccionada.

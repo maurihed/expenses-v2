@@ -134,7 +134,7 @@ export type PersonPayload = {
 
 export type RecurringType = "subscription" | "income" | "interest";
 
-export type RecurringFrequency = "weekly" | "biweekly" | "monthly";
+export type RecurringFrequency = "daily" | "weekly" | "biweekly" | "monthly";
 
 export type InterestTier = {
   upTo: number | null;
