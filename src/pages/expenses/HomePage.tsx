@@ -253,8 +253,8 @@ function HomePage() {
                 </div>
                 <span
                   className={clsx("shrink-0 tabular-nums", {
-                    "text-red-500": transaction.type === "expense",
-                    "text-green-500": transaction.type === "income",
+                    "text-negative": transaction.type === "expense",
+                    "text-positive": transaction.type === "income",
                     "text-muted-foreground": transaction.type === "transfer",
                   })}
                 >

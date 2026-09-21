@@ -14,19 +14,19 @@ function ExpensesHeader() {
     .reduce((acc, cur) => acc + cur.amount, 0);
 
   return (
-    <div className="relative text-center bg-card rounded-b-lg pb-4">
+    <div className="brand-gradient brand-glow relative overflow-hidden rounded-3xl px-4 pb-6 pt-4 text-center text-white">
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-2 top-2 cursor-pointer"
+        className="absolute right-2 top-2 cursor-pointer text-white hover:bg-white/15 hover:text-white"
         aria-label="Administrar categorías"
         onClick={() => navigate("/categorias")}
       >
         <Tags />
       </Button>
-      <MonthYearPicker />
-      <p className="text-slate-600 dark:text-slate-300">Total Gastado</p>
-      <p className="text-3xl font-bold">{formatMoney(total)}</p>
+      <MonthYearPicker inverted />
+      <p className="mt-2 text-sm text-white/80">Total gastado</p>
+      <p className="font-display text-4xl font-bold tabular-nums">{formatMoney(total)}</p>
     </div>
   );
 }

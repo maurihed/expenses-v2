@@ -59,7 +59,7 @@ export default function DrawerSelector({ items, value, onChange, renderItem }: P
               asChild
               variant="ghost"
               key={_item.key}
-              className="flex justify-start gap-4 hover:bg-gray-100 cursor-pointer border-b"
+              className="flex justify-start gap-4 hover:bg-muted cursor-pointer border-b"
               onClick={() => {
                 onChange(_item.key);
                 setSearch("");

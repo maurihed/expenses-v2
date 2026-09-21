@@ -117,7 +117,7 @@ function ExpensesList() {
           <div key={_date}>
             <h3 className="text-left mb-4">
               <span className="font-bold">{formatTransactionDate(_date)}</span>
-              <span className="text-slate-600 dark:text-slate-400 text-sm ml-2">
+              <span className="text-muted-foreground text-sm ml-2">
                 {getTotalExpenses(_transactions)}
               </span>
             </h3>
@@ -145,7 +145,7 @@ function ExpensesList() {
                     onClick={() => openEditTransactionModal(transaction)}
                   >
                     {isTransfer ? (
-                      <span className="rounded-full p-2 flex items-center justify-center w-10 h-10 bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-200">
+                      <span className="rounded-full p-2 flex items-center justify-center w-10 h-10 bg-muted text-muted-foreground">
                         <ArrowLeftRight size={24} />
                       </span>
                     ) : (
@@ -153,15 +153,15 @@ function ExpensesList() {
                     )}
                     <div className="grow min-w-0 grid grid-cols-1">
                       <p className="font-bold truncate">{transaction.description}</p>
-                      <p className="text-slate-600 dark:text-slate-400 truncate" title={subtitle}>
+                      <p className="text-muted-foreground truncate" title={subtitle}>
                         {subtitle}
                       </p>
                     </div>
 
                     <span
                       className={clsx({
-                        ["text-red-500"]: transaction.type === "expense",
-                        ["text-green-500"]: transaction.type === "income",
+                        ["text-negative"]: transaction.type === "expense",
+                        ["text-positive"]: transaction.type === "income",
                         ["text-muted-foreground"]: isTransfer,
                       })}
                     >

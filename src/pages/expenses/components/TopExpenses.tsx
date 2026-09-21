@@ -1,6 +1,4 @@
-import { ExpenseSection } from "@/components/ui/expense-section";
 import { useDarkTheme } from "@/hooks/useDarkTheme";
-import { getCategoryInfo } from "@/lib/CategoryUtils";
 import { CategoryScale } from "chart.js";
 import Chart from "chart.js/auto";
 import { useMemo } from "react";
@@ -8,6 +6,8 @@ import { Doughnut } from "react-chartjs-2";
 import { useTransactions } from "../hooks/useTransactions";
 
 Chart.register(CategoryScale);
+
+const PALETTE = ["#6366f1", "#8b5cf6", "#10b981", "#f59e0b", "#0ea5e9"];
 
 export default function TopExpenses() {
   const { transactions } = useTransactions(false);
@@ -44,40 +44,42 @@ export default function TopExpenses() {
       datasets: [
         {
           data: entries,
-          backgroundColor: labels.map((category) => getCategoryInfo(category).rawColor),
+          backgroundColor: labels.map((_, index) => PALETTE[index % PALETTE.length]),
           borderWidth: 0,
+          spacing: 2,
+          borderRadius: 8,
         },
       ],
     }),
     [labels, entries]
   );
 
-  const textColor = isDarkTheme ? "#fafafa" : "#0a0a0a";
+  const textColor = isDarkTheme ? "#f4f4f7" : "#0b0b12";
 
   if (!transactions.length) return "No hay transacciones";
 
   return (
-    <ExpenseSection>
-      <div className="flex justify-center">
-        <div className="w-full max-w-3xl">
-          <Doughnut
-            data={chartData}
-            options={{
-              color: textColor,
-              plugins: {
-                legend: {
-                  labels: {
-                    font: {
-                      size: 14,
-                      family: "Inter",
-                    },
-                  },
+    <div className="flex justify-center">
+      <div className="w-full max-w-3xl">
+        <Doughnut
+          data={chartData}
+          options={{
+            color: textColor,
+            cutout: "62%",
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  color: textColor,
+                  usePointStyle: true,
+                  pointStyle: "circle",
+                  font: { size: 13, family: "Outfit" },
                 },
               },
-            }}
-          />
-        </div>
+            },
+          }}
+        />
       </div>
-    </ExpenseSection>
+    </div>
   );
 }

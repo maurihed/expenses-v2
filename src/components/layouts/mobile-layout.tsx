@@ -26,7 +26,7 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="min-h-screen w-full max-w-7xl mx-auto px-4 pb-[80px]">{children}</div>
-      <nav className="bg-card text-slate-800 dark:text-white py-2 text-center w-full fixed bottom-0">
+      <nav className="glass fixed bottom-0 z-30 w-full border-t border-border py-2 text-center text-foreground">
         <ul className="flex justify-around gap-1">
           {tabs.map(({ to, label, icon: Icon, end }) => (
             <li key={to}>
@@ -48,7 +48,7 @@ function MobileLayout({ children }: { children: React.ReactNode }) {
         type="button"
         onClick={() => openNewTransactionModal()}
         aria-label="Agregar movimiento"
-        className="fixed bottom-[88px] right-4 z-40 flex size-14 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform duration-200 hover:scale-105"
+        className="brand-gradient brand-glow fixed bottom-[88px] right-4 z-40 flex size-14 cursor-pointer items-center justify-center rounded-full text-white transition-transform duration-200 hover:scale-105 active:scale-95"
       >
         <Plus className="size-7" aria-hidden="true" />
       </button>
