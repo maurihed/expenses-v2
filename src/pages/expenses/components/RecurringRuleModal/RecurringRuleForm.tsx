@@ -299,9 +299,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                   className="grid grid-cols-2 gap-2"
                 >
                   {typeOptions.map((option) => (
-                    <div
+                    <label
                       key={option.value}
-                      onClick={() => field.onChange(option.value)}
+                      htmlFor={`recurring-type-${option.value}`}
                       className={cn(
                         "flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors duration-200",
                         field.value === option.value
@@ -311,7 +311,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                     >
                       <RadioGroupItem value={option.value} id={`recurring-type-${option.value}`} />
                       <span className="text-sm">{option.label}</span>
-                    </div>
+                    </label>
                   ))}
                 </RadioGroup>
               </FormControl>
@@ -372,8 +372,8 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                   onValueChange={field.onChange}
                   className="grid grid-cols-2 gap-2"
                 >
-                  <div
-                    onClick={() => field.onChange("joint")}
+                  <label
+                    htmlFor="recurring-scope-joint"
                     className={cn(
                       "flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors duration-200",
                       field.value === "joint"
@@ -383,9 +383,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                   >
                     <RadioGroupItem value="joint" id="recurring-scope-joint" />
                     <span className="text-sm">Conjunto</span>
-                  </div>
-                  <div
-                    onClick={() => field.onChange("personal")}
+                  </label>
+                  <label
+                    htmlFor="recurring-scope-personal"
                     className={cn(
                       "flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors duration-200",
                       field.value === "personal"
@@ -395,7 +395,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                   >
                     <RadioGroupItem value="personal" id="recurring-scope-personal" />
                     <span className="text-sm">Personal</span>
-                  </div>
+                  </label>
                 </RadioGroup>
               </FormControl>
               <FormMessage />
@@ -484,9 +484,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                   className={cn("grid gap-2", isInterest ? "grid-cols-2" : "grid-cols-3")}
                 >
                   {(isInterest ? interestFrequencyOptions : frequencyOptions).map((option) => (
-                    <div
+                    <label
                       key={option.value}
-                      onClick={() => field.onChange(option.value)}
+                      htmlFor={`recurring-frequency-${option.value}`}
                       className={cn(
                         "flex cursor-pointer items-center gap-1.5 rounded-md border p-2.5 transition-colors duration-200",
                         field.value === option.value
@@ -499,7 +499,7 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                         id={`recurring-frequency-${option.value}`}
                       />
                       <span className="text-sm">{option.label}</span>
-                    </div>
+                    </label>
                   ))}
                 </RadioGroup>
               </FormControl>

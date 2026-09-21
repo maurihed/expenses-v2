@@ -163,9 +163,9 @@ function AccountForm({ account, onClose, onArchived }: Props) {
                   className="grid grid-cols-2 gap-2"
                 >
                   {typeOptions.map((option) => (
-                    <div
+                    <label
                       key={option.value}
-                      onClick={() => field.onChange(option.value)}
+                      htmlFor={`account-type-${option.value}`}
                       className={cn(
                         "flex items-center gap-2 rounded-md border p-3 cursor-pointer transition-colors duration-200",
                         field.value === option.value
@@ -175,7 +175,7 @@ function AccountForm({ account, onClose, onArchived }: Props) {
                     >
                       <RadioGroupItem value={option.value} id={`account-type-${option.value}`} />
                       <span className="text-sm">{option.label}</span>
-                    </div>
+                    </label>
                   ))}
                 </RadioGroup>
               </FormControl>
@@ -197,9 +197,9 @@ function AccountForm({ account, onClose, onArchived }: Props) {
                   className="flex gap-2"
                 >
                   {currencyOptions.map((currency) => (
-                    <div
+                    <label
                       key={currency}
-                      onClick={() => field.onChange(currency)}
+                      htmlFor={`account-currency-${currency}`}
                       className={cn(
                         "flex flex-1 items-center gap-2 rounded-md border p-3 cursor-pointer transition-colors duration-200",
                         field.value === currency
@@ -209,7 +209,7 @@ function AccountForm({ account, onClose, onArchived }: Props) {
                     >
                       <RadioGroupItem value={currency} id={`account-currency-${currency}`} />
                       <span className="text-sm">{currency}</span>
-                    </div>
+                    </label>
                   ))}
                 </RadioGroup>
               </FormControl>
