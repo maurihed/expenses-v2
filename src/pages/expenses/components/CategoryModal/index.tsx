@@ -31,7 +31,7 @@ function CategoryModal() {
               : "Elige un nombre, un icono y un color para tu categoría."}
           </DrawerDescription>
         </DrawerHeader>
-        <div className="overflow-y-auto px-4 pb-6">
+        <div className="min-h-0 overflow-y-auto px-4 pb-6">
           {isOpen && (
             <CategoryForm
               category={categoryToEdit}

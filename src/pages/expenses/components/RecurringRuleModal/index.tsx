@@ -33,7 +33,7 @@ function RecurringRuleModal({ open, rule, onClose }: Props) {
               : "Automatiza una suscripción, ingreso o interés periódico."}
           </DrawerDescription>
         </DrawerHeader>
-        <div className="overflow-y-auto px-4 pb-6">
+        <div className="min-h-0 overflow-y-auto px-4 pb-6">
           {open && <RecurringRuleForm key={rule?.id ?? "new"} rule={rule} onClose={onClose} />}
         </div>
       </DrawerContent>

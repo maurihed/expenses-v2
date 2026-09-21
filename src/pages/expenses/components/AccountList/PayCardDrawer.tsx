@@ -68,7 +68,7 @@ function PayCardDrawer() {
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="flex flex-col gap-5 overflow-y-auto px-4 pb-2">
+        <div className="flex min-h-0 flex-col gap-5 overflow-y-auto px-4 pb-2">
           <div className="flex flex-col gap-2">
             <span className="text-sm font-medium">Cuenta de origen</span>
             {sources.length === 0 ? (
@@ -85,7 +85,7 @@ function PayCardDrawer() {
                     className={cn(
                       "flex w-full items-center justify-between gap-3 rounded-md border p-3 text-left cursor-pointer transition-colors duration-200",
                       selectedSourceId === source.id
-                        ? "border-primary bg-primary-100"
+                        ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
                         : "border-border hover:bg-muted"
                     )}
                   >

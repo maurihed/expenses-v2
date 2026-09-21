@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import MobileLayout from "./components/layouts/mobile-layout";
+import { applyTheme, resolveTheme, THEME_STORAGE_KEY } from "./lib/theme";
 import BakeryPage from "./pages/bakery/BakeryPage";
 import AccountsPage from "./pages/expenses/AccountsPage";
 import CategoriesPage from "./pages/expenses/CategoriesPage";
@@ -15,13 +16,18 @@ import RecurringPage from "./pages/expenses/RecurringPage";
 
 function App() {
   useEffect(() => {
-    // Set the initial theme based on the user's preference
-    // Dark-first: si no hay preferencia guardada, se usa el tema oscuro.
-    const storedTheme = localStorage.theme;
-    document.documentElement.classList.toggle(
-      "dark",
-      storedTheme ? storedTheme === "dark" : true
-    );
+    // Preferencia guardada > preferencia del sistema. Antes se forzaba dark
+    // cuando no había preferencia, ignorando el modo claro del dispositivo.
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    applyTheme(resolveTheme(localStorage.getItem(THEME_STORAGE_KEY), media.matches));
+
+    // Si el usuario no ha elegido explícitamente, seguir los cambios del SO.
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (localStorage.getItem(THEME_STORAGE_KEY)) return;
+      applyTheme(resolveTheme(null, event.matches));
+    };
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
   }, []);
 
   const queryClient = new QueryClient();

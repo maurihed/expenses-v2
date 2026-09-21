@@ -73,7 +73,7 @@ function EditHoldingDrawer({ accountId, holding, onClose }: Props) {
               : "Sin precio disponible"}
           </DrawerDescription>
         </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 pb-6">
+        <div className="flex min-h-0 flex-col gap-4 overflow-y-auto px-4 pb-6">
           <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">Cantidad</span>
             <Input

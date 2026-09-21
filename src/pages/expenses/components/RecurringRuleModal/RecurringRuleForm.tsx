@@ -292,7 +292,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                       onClick={() => field.onChange(option.value)}
                       className={cn(
                         "flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors duration-200",
-                        field.value === option.value ? "border-primary bg-primary-100" : "border-border"
+                        field.value === option.value
+                          ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
+                          : "border-border"
                       )}
                     >
                       <RadioGroupItem value={option.value} id={`recurring-type-${option.value}`} />
@@ -362,7 +364,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                     onClick={() => field.onChange("joint")}
                     className={cn(
                       "flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors duration-200",
-                      field.value === "joint" ? "border-primary bg-primary-100" : "border-border"
+                      field.value === "joint"
+                        ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
+                        : "border-border"
                     )}
                   >
                     <RadioGroupItem value="joint" id="recurring-scope-joint" />
@@ -372,7 +376,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                     onClick={() => field.onChange("personal")}
                     className={cn(
                       "flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors duration-200",
-                      field.value === "personal" ? "border-primary bg-primary-100" : "border-border"
+                      field.value === "personal"
+                        ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
+                        : "border-border"
                     )}
                   >
                     <RadioGroupItem value="personal" id="recurring-scope-personal" />
@@ -474,7 +480,9 @@ function RecurringRuleForm({ rule, onClose }: Props) {
                       className={cn(
                         "flex items-center gap-1.5 rounded-md border p-2.5 transition-colors duration-200",
                         isInterest ? "cursor-not-allowed opacity-70" : "cursor-pointer",
-                        field.value === option.value ? "border-primary bg-primary-100" : "border-border"
+                        field.value === option.value
+                          ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
+                          : "border-border"
                       )}
                     >
                       <RadioGroupItem

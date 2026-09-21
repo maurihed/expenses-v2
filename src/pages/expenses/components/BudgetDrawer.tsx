@@ -64,7 +64,7 @@ function BudgetDrawer({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="flex flex-col gap-2 px-4 pb-2">
+        <div className="flex min-h-0 flex-col gap-2 overflow-y-auto px-4 pb-2">
           <label htmlFor="budget-amount" className="text-sm font-medium">
             Monto
           </label>

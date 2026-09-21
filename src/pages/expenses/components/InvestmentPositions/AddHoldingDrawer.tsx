@@ -125,7 +125,7 @@ function AddHoldingDrawer({ accountId, currency, open, onClose }: Props) {
             Busca por nombre o ticker y captura tu cantidad.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 pb-6">
+        <div className="flex min-h-0 flex-col gap-4 overflow-y-auto px-4 pb-6">
           {!selected && !manualMode && (
             <>
               <div className="relative">

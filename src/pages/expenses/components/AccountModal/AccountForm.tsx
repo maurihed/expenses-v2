@@ -169,7 +169,7 @@ function AccountForm({ account, onClose, onArchived }: Props) {
                       className={cn(
                         "flex items-center gap-2 rounded-md border p-3 cursor-pointer transition-colors duration-200",
                         field.value === option.value
-                          ? "border-primary bg-primary-100"
+                          ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
                           : "border-border"
                       )}
                     >
@@ -203,7 +203,7 @@ function AccountForm({ account, onClose, onArchived }: Props) {
                       className={cn(
                         "flex flex-1 items-center gap-2 rounded-md border p-3 cursor-pointer transition-colors duration-200",
                         field.value === currency
-                          ? "border-primary bg-primary-100"
+                          ? "border-primary bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-100"
                           : "border-border"
                       )}
                     >

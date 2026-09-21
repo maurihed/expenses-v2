@@ -66,7 +66,7 @@ function PersonAdjustmentDrawer({ person, onClose }: PersonAdjustmentDrawerProps
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="flex flex-col gap-5 overflow-y-auto px-4 pb-2">
+        <div className="flex min-h-0 flex-col gap-5 overflow-y-auto px-4 pb-2">
           <div className="flex flex-col gap-2">
             <span className="text-sm font-medium">Tipo de ajuste</span>
             <div className="grid grid-cols-2 gap-2">

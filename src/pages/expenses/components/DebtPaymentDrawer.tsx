@@ -92,7 +92,7 @@ function DebtPaymentDrawer({ debt, onClose }: { debt: Debt | null; onClose: () =
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="flex flex-col gap-4 px-4 pb-2">
+        <div className="flex min-h-0 flex-col gap-4 overflow-y-auto px-4 pb-2">
           <div>
             <label htmlFor="debt-payment-amount" className="text-sm font-medium">
               Monto

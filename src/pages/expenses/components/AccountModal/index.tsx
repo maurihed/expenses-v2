@@ -31,7 +31,7 @@ function AccountModal() {
               : "Agrega una cuenta de efectivo, débito, crédito o inversión."}
           </DrawerDescription>
         </DrawerHeader>
-        <div className="overflow-y-auto px-4 pb-6">
+        <div className="min-h-0 overflow-y-auto px-4 pb-6">
           {isOpen && (
             <AccountForm account={accountToEdit} onClose={closeModal} onArchived={closeModal} />
           )}

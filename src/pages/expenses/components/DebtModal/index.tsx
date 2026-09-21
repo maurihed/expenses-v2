@@ -35,7 +35,7 @@ function DebtModal({
             Registra deudas por cobrar o por pagar; la fecha límite es opcional.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="overflow-y-auto px-4 pb-6">
+        <div className="min-h-0 overflow-y-auto px-4 pb-6">
           {open && (
             <DebtForm debt={debt} defaultType={defaultType} onClose={onClose} />
           )}

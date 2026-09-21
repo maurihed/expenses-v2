@@ -100,7 +100,7 @@ function TransferDrawer({ open, onClose }: { open: boolean; onClose: () => void 
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 pb-2">
+        <div className="flex min-h-0 flex-col gap-4 overflow-y-auto px-4 pb-2">
           <div>
             <label className="text-sm font-medium">Cuenta origen</label>
             <DrawerSelector
