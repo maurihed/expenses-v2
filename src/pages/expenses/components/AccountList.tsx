@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ExpenseSection } from "@/components/ui/expense-section";
 import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
-import { netTotalsByCurrency, toMxn } from "@/lib/accountTotals";
+import { netTotalsByCurrency, sortAccounts, toMxn } from "@/lib/accountTotals";
 import { cn, formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import type { AccountType } from "@/types";
@@ -32,6 +32,7 @@ function AccountList() {
   const navigate = useNavigate();
 
   const totalsByCurrency = netTotalsByCurrency(accounts);
+  const sortedAccounts = sortAccounts(accounts);
 
   return (
     <>
@@ -73,7 +74,7 @@ function AccountList() {
 
         {!loadingAccounts && !error && accounts.length > 0 && (
           <div className="mt-4 flex flex-col gap-3">
-            {accounts.map((account) => {
+            {sortedAccounts.map((account) => {
               const isCredit = account.type === "CREDIT";
               return (
                 <div

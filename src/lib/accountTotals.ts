@@ -1,6 +1,25 @@
-import type { Account, Currency } from "@/types";
+import type { Account, AccountType, Currency } from "@/types";
 
 export type CurrencyTotal = { currency: Currency; total: number };
+
+/** Orden de despliegue por tipo: activos primero, crédito al final. */
+const ACCOUNT_TYPE_ORDER: Record<AccountType, number> = {
+  CASH: 0,
+  DEBIT: 1,
+  INVESTMENT: 2,
+  CREDIT: 3,
+};
+
+/**
+ * Ordena las cuentas por tipo (efectivo → débito → inversión → crédito) y,
+ * dentro de cada tipo, por nombre. No muta el arreglo original.
+ */
+export const sortAccounts = (accounts: Account[]): Account[] =>
+  [...accounts].sort((a, b) => {
+    const byType = ACCOUNT_TYPE_ORDER[a.type] - ACCOUNT_TYPE_ORDER[b.type];
+    if (byType !== 0) return byType;
+    return a.name.localeCompare(b.name, "es", { sensitivity: "base" });
+  });
 
 /**
  * Valor de una cuenta para el patrimonio: en inversión usa el valor de mercado

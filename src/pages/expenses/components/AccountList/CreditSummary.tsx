@@ -47,6 +47,15 @@ function CreditSummary({ account }: Props) {
         </div>
       </div>
 
+      {creditSummary.initialDebtDue > 0 && (
+        <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 border-t border-border pt-3">
+          <span className="text-xs text-muted-foreground">Deuda inicial en el corte</span>
+          <span className="font-semibold tabular-nums">
+            {formatMoney(creditSummary.initialDebtDue, account.currency)}
+          </span>
+        </div>
+      )}
+
       {msiCommitted > 0 && (
         <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 border-t border-border pt-3">
           <span className="text-xs text-muted-foreground">

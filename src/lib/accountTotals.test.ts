@@ -4,6 +4,7 @@ import {
   accountValue,
   convertTotalsToMxn,
   netTotalsByCurrency,
+  sortAccounts,
   sumCreditDebtToMxn,
   sumInvestments,
   toMxn,
@@ -123,6 +124,26 @@ describe("sumInvestments con valor de mercado", () => {
         17
       )
     ).toBeCloseTo(42000, 6);
+  });
+});
+
+describe("sortAccounts", () => {
+  it("ordena por tipo y luego por nombre", () => {
+    const sorted = sortAccounts([
+      acc({ type: "CREDIT", name: "Visa" }),
+      acc({ type: "CASH", name: "Zeta" }),
+      acc({ type: "INVESTMENT", name: "GBM" }),
+      acc({ type: "CASH", name: "Alfa" }),
+      acc({ type: "DEBIT", name: "BBVA" }),
+    ]);
+    expect(sorted.map((a) => a.name)).toEqual(["Alfa", "Zeta", "BBVA", "GBM", "Visa"]);
+  });
+
+  it("no muta el arreglo original", () => {
+    const input = [acc({ type: "CREDIT", name: "Visa" }), acc({ type: "CASH", name: "Alfa" })];
+    const copy = [...input];
+    sortAccounts(input);
+    expect(input).toEqual(copy);
   });
 });
 
