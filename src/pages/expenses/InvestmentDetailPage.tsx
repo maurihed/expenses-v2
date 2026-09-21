@@ -33,7 +33,7 @@ function InvestmentDetailPage() {
         <Button
           variant="ghost"
           size="icon"
-          className="cursor-pointer"
+          className="size-11 cursor-pointer"
           aria-label="Volver a cuentas"
           onClick={() => navigate("/cuentas")}
         >

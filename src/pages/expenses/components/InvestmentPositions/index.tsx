@@ -81,14 +81,18 @@ function InvestmentPositions({ account, onAdd, onEdit }: Props) {
             </span>
           )}
         </div>
-        <Button variant="outline" className="cursor-pointer" onClick={() => openEditAccountModal(account)}>
+        <Button
+          variant="outline"
+          className="h-11 cursor-pointer"
+          onClick={() => openEditAccountModal(account)}
+        >
           Editar cuenta
         </Button>
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-3">
         <h3 className="font-display text-lg">Posiciones</h3>
-        <Button className="cursor-pointer" onClick={onAdd}>
+        <Button className="h-11 cursor-pointer" onClick={onAdd}>
           Agregar ETF
         </Button>
       </div>
@@ -99,7 +103,7 @@ function InvestmentPositions({ account, onAdd, onEdit }: Props) {
           <p className="text-sm text-muted-foreground">
             Agrega tu primer ETF para ver su valor de mercado.
           </p>
-          <Button className="cursor-pointer" onClick={onAdd}>
+          <Button className="h-11 cursor-pointer" onClick={onAdd}>
             Agregar ETF
           </Button>
         </div>

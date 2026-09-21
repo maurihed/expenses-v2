@@ -172,7 +172,7 @@ function AccountList() {
                   {account.type === "INVESTMENT" && (
                     <div className="mt-3 flex items-center justify-between gap-3">
                       <Button
-                        className="cursor-pointer"
+                        className="h-11 cursor-pointer"
                         onClick={() => navigate(`/cuentas/${account.id}`)}
                       >
                         Posiciones
