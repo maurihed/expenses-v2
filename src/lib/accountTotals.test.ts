@@ -1,6 +1,7 @@
 import type { Account } from "@/types";
 import { describe, expect, it } from "vitest";
 import {
+  accountValue,
   convertTotalsToMxn,
   netTotalsByCurrency,
   sumCreditDebtToMxn,
@@ -17,6 +18,17 @@ const acc = (over: Partial<Account>): Account =>
     currency: "MXN",
     ...over,
   }) as Account;
+
+describe("accountValue", () => {
+  it("usa el valor de mercado en cuentas de inversión", () => {
+    expect(accountValue(acc({ type: "INVESTMENT", balance: 5000, totalValue: 42000 }))).toBe(42000);
+  });
+
+  it("usa el saldo cuando no hay valor de mercado", () => {
+    expect(accountValue(acc({ type: "INVESTMENT", balance: 5000 }))).toBe(5000);
+    expect(accountValue(acc({ type: "CASH", balance: 100 }))).toBe(100);
+  });
+});
 
 describe("netTotalsByCurrency", () => {
   it("agrupa por moneda y resta el crédito", () => {
@@ -97,6 +109,20 @@ describe("sumInvestments", () => {
 
   it("sin inversiones suma 0", () => {
     expect(sumInvestments([acc({ type: "CASH", balance: 100 })], null)).toBe(0);
+  });
+});
+
+describe("sumInvestments con valor de mercado", () => {
+  it("suma el valor de mercado de las inversiones", () => {
+    expect(
+      sumInvestments(
+        [
+          acc({ type: "INVESTMENT", currency: "MXN", balance: 5000, totalValue: 42000 }),
+          acc({ type: "CASH", currency: "MXN", balance: 9999 }),
+        ],
+        17
+      )
+    ).toBeCloseTo(42000, 6);
   });
 });
 

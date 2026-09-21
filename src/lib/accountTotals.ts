@@ -3,12 +3,22 @@ import type { Account, Currency } from "@/types";
 export type CurrencyTotal = { currency: Currency; total: number };
 
 /**
+ * Valor de una cuenta para el patrimonio: en inversión usa el valor de mercado
+ * (efectivo + posiciones) cuando está disponible; si no, el saldo.
+ */
+export const accountValue = (account: Account): number =>
+  account.type === "INVESTMENT" && account.totalValue != null
+    ? account.totalValue
+    : account.balance;
+
+/**
  * Suma los saldos de las cuentas agrupados por moneda.
  * Regla: efectivo + débito + inversión − crédito (la deuda de crédito resta).
  */
 export const netTotalsByCurrency = (accounts: Account[]): CurrencyTotal[] => {
   return accounts.reduce<CurrencyTotal[]>((totals, account) => {
-    const signed = account.type === "CREDIT" ? -account.balance : account.balance;
+    const value = accountValue(account);
+    const signed = account.type === "CREDIT" ? -value : value;
     const group = totals.find((entry) => entry.currency === account.currency);
     if (group) {
       group.total += signed;
@@ -54,7 +64,7 @@ export const convertTotalsToMxn = (
 export const sumInvestments = (accounts: Account[], usdRate: number | null): number | null => {
   let sum = 0;
   for (const account of accounts.filter((entry) => entry.type === "INVESTMENT")) {
-    const converted = toMxn(account.balance, account.currency, usdRate);
+    const converted = toMxn(accountValue(account), account.currency, usdRate);
     if (converted == null) return null;
     sum += converted;
   }

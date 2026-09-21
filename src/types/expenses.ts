@@ -12,6 +12,11 @@ export type Account = {
   statementClosingDay: number | null;
   paymentDueDay: number | null;
   archived: boolean;
+  cashBalance?: number;
+  positionsValue?: number | null;
+  totalValue?: number | null;
+  changePercent?: number | null;
+  stale?: boolean;
 };
 
 export type AccountPayload = {
@@ -237,4 +242,55 @@ export type BudgetPayload = {
   month: number;
   amount: number;
   currency?: Currency;
+};
+
+export type MarketQuote = {
+  symbol: string;
+  price: number | null;
+  previousClose: number | null;
+  changePercent: number | null;
+  currency: string;
+  name: string | null;
+  exchange: string | null;
+  source: string | null;
+  fetchedAt: string | null;
+  stale: boolean;
+};
+
+export type MarketSearchResult = {
+  symbol: string;
+  name: string;
+  exchange: string | null;
+  currency: string | null;
+};
+
+export type Holding = {
+  id: string;
+  symbol: string;
+  name: string | null;
+  quantity: number;
+  price: number | null;
+  previousClose: number | null;
+  changePercent: number | null;
+  currency: string;
+  marketValue: number | null;
+  marketValueAccountCurrency: number | null;
+  fetchedAt: string | null;
+  stale: boolean;
+};
+
+export type PortfolioSummary = {
+  currency: Currency;
+  cashBalance: number;
+  positionsValue: number | null;
+  totalValue: number | null;
+  changePercent: number | null;
+  stale: boolean;
+  holdings: Holding[];
+};
+
+export type HoldingPayload = {
+  symbol?: string;
+  quantity?: number;
+  deductFromCash?: boolean;
 };
