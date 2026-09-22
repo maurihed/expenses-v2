@@ -22,7 +22,7 @@ function TransactionModal() {
   return (
     <Dialog open={isOpen} onOpenChange={closeModal}>
       <DialogContent
-        className="w-full max-w-2xl h-dvh md:h-auto md:max-h-[85vh] grid-rows-[min-content_1fr]"
+        className="w-full max-w-2xl max-h-[90vh] supports-[height:100dvh]:max-h-[90dvh] md:max-h-[85vh] grid-rows-[min-content_1fr]"
         aria-describedby="transaction modal form"
       >
         <DialogHeader className="flex flex-row flex-wrap items-center gap-2">
