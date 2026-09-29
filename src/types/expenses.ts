@@ -12,6 +12,7 @@ export type Account = {
   statementClosingDay: number | null;
   paymentDueDay: number | null;
   initialDebt?: number | null;
+  statementAmount?: number | null;
   archived: boolean;
   cashBalance?: number;
   positionsValue?: number | null;
@@ -28,7 +29,7 @@ export type AccountPayload = {
   creditLimit?: number;
   statementClosingDay?: number;
   paymentDueDay?: number;
-  initialDebt?: number;
+  statementAmount?: number;
 };
 
 export type CreditSummary = {
@@ -36,7 +37,7 @@ export type CreditSummary = {
   periodPayment: number;
   available: number | null;
   msiCommitted: number;
-  initialDebtDue: number;
+  statementAmount: number | null;
 };
 
 export type TransferInput = {

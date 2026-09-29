@@ -40,7 +40,7 @@ const accountFormSchema = z
       required_error: "La moneda es obligatoria",
     }),
     balance: z.number({ invalid_type_error: "Ingresa un número" }),
-    initialDebt: z
+    statementAmount: z
       .number({ invalid_type_error: "Ingresa un número" })
       .nonnegative("No puede ser negativo")
       .optional(),
@@ -95,7 +95,7 @@ function AccountForm({ account, onClose, onArchived }: Props) {
       type: account?.type ?? "CASH",
       currency: account?.currency ?? "MXN",
       balance: account?.balance ?? 0,
-      initialDebt: account?.initialDebt ?? account?.balance ?? 0,
+      statementAmount: account?.statementAmount ?? 0,
       creditLimit: account?.creditLimit ?? undefined,
       statementClosingDay: account?.statementClosingDay ?? undefined,
       paymentDueDay: account?.paymentDueDay ?? undefined,
@@ -111,18 +111,14 @@ function AccountForm({ account, onClose, onArchived }: Props) {
       name: values.name,
       type: values.type,
       currency: values.currency,
+      balance: values.balance,
     };
     if (values.type === "CREDIT") {
       payload.creditLimit = values.creditLimit;
       payload.statementClosingDay = values.statementClosingDay;
       payload.paymentDueDay = values.paymentDueDay;
-      // La deuda inicial fija el saldo de la tarjeta; solo se envía al crear o
-      // si el usuario la cambió, para no reiniciar el saldo en ediciones.
-      if (!account || form.formState.dirtyFields.initialDebt) {
-        payload.initialDebt = values.initialDebt ?? 0;
-      }
-    } else {
-      payload.balance = values.balance;
+      // El saldo a pagar al corte es parte de la deuda actual: se guarda tal cual.
+      payload.statementAmount = values.statementAmount ?? 0;
     }
 
     if (account) {
@@ -229,64 +225,73 @@ function AccountForm({ account, onClose, onArchived }: Props) {
           )}
         />
 
-        {isCredit ? (
-          <FormField
-            control={form.control}
-            name="initialDebt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Deuda inicial a pagar en corte</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="0.01"
-                    {...field}
-                    value={Number.isFinite(field.value) ? field.value : ""}
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.value === "" ? undefined : event.target.valueAsNumber
-                      )
-                    }
-                  />
-                </FormControl>
+        <FormField
+          control={form.control}
+          name="balance"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {isCredit ? "Deuda actual" : account ? "Saldo actual" : "Saldo inicial"}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  {...field}
+                  value={Number.isFinite(field.value) ? field.value : ""}
+                  onChange={(event) =>
+                    field.onChange(
+                      // 0 al vaciar: `undefined` haría que react-hook-form
+                      // revierta al valor por defecto.
+                      event.target.value === "" ? 0 : event.target.valueAsNumber
+                    )
+                  }
+                />
+              </FormControl>
+              {isCredit && (
                 <p className="text-xs text-muted-foreground">
-                  Es el saldo con el que arranca la tarjeta y cuenta en el pago del corte actual.
+                  Es la deuda total de la tarjeta; edítala si no registras los pagos como
+                  movimientos.
                 </p>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ) : (
-          <FormField
-            control={form.control}
-            name="balance"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{account ? "Saldo actual" : "Saldo inicial"}</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    inputMode="decimal"
-                    step="0.01"
-                    {...field}
-                    value={Number.isFinite(field.value) ? field.value : ""}
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.value === "" ? 0 : event.target.valueAsNumber
-                      )
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {isCredit && (
           <>
+            <FormField
+              control={form.control}
+              name="statementAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Saldo a pagar al corte</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      {...field}
+                      value={Number.isFinite(field.value) ? field.value : ""}
+                      onChange={(event) =>
+                        field.onChange(
+                          event.target.value === "" ? 0 : event.target.valueAsNumber
+                        )
+                      }
+                    />
+                  </FormControl>
+                  <p className="text-xs text-muted-foreground">
+                    Es una parte de la deuda actual (no se suma); se muestra en el resumen de la
+                    tarjeta.
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="creditLimit"
