@@ -9,9 +9,14 @@ function ExpensesHeader() {
   const navigate = useNavigate();
   const { transactions } = useTransactions(false);
 
-  const total = transactions
-    .filter((t) => t.type === "expense")
-    .reduce((acc, cur) => acc + cur.amount, 0);
+  const { income, expense } = transactions.reduce(
+    (acc, transaction) => {
+      if (transaction.type === "expense") acc.expense += transaction.amount;
+      if (transaction.type === "income") acc.income += transaction.amount;
+      return acc;
+    },
+    { income: 0, expense: 0 }
+  );
 
   return (
     <div className="brand-gradient brand-glow relative overflow-hidden rounded-3xl px-4 pb-6 pt-4 text-center text-white">
@@ -26,7 +31,10 @@ function ExpensesHeader() {
       </Button>
       <MonthYearPicker inverted />
       <p className="mt-2 text-sm text-white/80">Total gastado</p>
-      <p className="font-display text-4xl font-bold tabular-nums">{formatMoney(total)}</p>
+      <p className="font-display text-4xl font-bold tabular-nums">{formatMoney(expense)}</p>
+      <p className="mt-1 text-xs text-white/80 tabular-nums">
+        Ingresos {formatMoney(income)} · Balance {formatMoney(income - expense)}
+      </p>
     </div>
   );
 }

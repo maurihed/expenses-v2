@@ -5,13 +5,15 @@ shadcn, contra el backend NestJS (`express/expenses-api`).
 
 ## Navegación (mobile)
 
-Barra inferior con 4 tabs: **Inicio · Movimientos · Cuentas · Más**.
+Barra inferior con 4 tabs: **Inicio · Detalles · Cuentas · Más**.
 
-- `/`: **Inicio** — dinero total (por moneda), gasto del mes, gráfica de
-  categorías y movimientos recientes.
-- `/movimientos`: selector de mes/año, filtros y lista completa de movimientos.
+- `/`: **Inicio** — hero del mes (total gastado, ingresos y balance),
+  presupuesto, gráfica de categorías, filtros y lista completa de movimientos.
+- `/detalles`: patrimonio neto, dinero total, inversiones, deuda actual y
+  gastado del mes, más el resumen del mes (ingresos/gastos/balance, tasa de
+  ahorro y promedio diario). `/movimientos` redirige aquí.
 - `/cuentas`: cuentas (tipo, moneda, crédito con deuda/pago/disponible, botón
-  **Pagar tarjeta** y MSI).
+  **Pagar tarjeta** y MSI) y detalle de inversión en `/cuentas/:id`.
 - `/mas`: accesos a Categorías, Recurrentes y Personas.
 - `/categorias`: categorías dinámicas con alta/edición/archivado.
 - `/recurrentes`: suscripciones, ingresos e intereses.

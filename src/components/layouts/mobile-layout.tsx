@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import TransactionModal from "@/pages/expenses/components/TransactionModal";
 import { useExpensesStore } from "@/stores/expenses.store";
-import { ArrowLeftRight, Home, Menu, Plus, Wallet, type LucideIcon } from "lucide-react";
+import { ChartPie, Home, Menu, Plus, Wallet, type LucideIcon } from "lucide-react";
 import { NavLink } from "react-router";
 
 type Tab = {
@@ -13,7 +13,7 @@ type Tab = {
 
 const tabs: Tab[] = [
   { to: "/", label: "Inicio", icon: Home, end: true },
-  { to: "/movimientos", label: "Movimientos", icon: ArrowLeftRight },
+  { to: "/detalles", label: "Detalles", icon: ChartPie },
   { to: "/cuentas", label: "Cuentas", icon: Wallet },
   { to: "/mas", label: "Más", icon: Menu },
 ];

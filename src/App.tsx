@@ -7,10 +7,10 @@ import BakeryPage from "./pages/bakery/BakeryPage";
 import AccountsPage from "./pages/expenses/AccountsPage";
 import CategoriesPage from "./pages/expenses/CategoriesPage";
 import DebtsPage from "./pages/expenses/DebtsPage";
+import DetailsPage from "./pages/expenses/DetailsPage";
 import HomePage from "./pages/expenses/HomePage";
 import InvestmentDetailPage from "./pages/expenses/InvestmentDetailPage";
 import MorePage from "./pages/expenses/MorePage";
-import MovementsPage from "./pages/expenses/MovementsPage";
 import PersonsPage from "./pages/expenses/PersonsPage";
 import RecurringPage from "./pages/expenses/RecurringPage";
 
@@ -38,7 +38,8 @@ function App() {
         <MobileLayout>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/movimientos" element={<MovementsPage />} />
+            <Route path="/detalles" element={<DetailsPage />} />
+            <Route path="/movimientos" element={<Navigate to="/detalles" replace />} />
             <Route path="/cuentas" element={<AccountsPage />} />
             <Route path="/cuentas/:id" element={<InvestmentDetailPage />} />
             <Route path="/mas" element={<MorePage />} />
