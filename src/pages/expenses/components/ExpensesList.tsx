@@ -16,7 +16,7 @@ import ExpensesFilters from "./ExpensesFilters";
 
 function ExpensesList() {
   const { transactions, loading, error, refetch } = useTransactions();
-  const { accounts } = useAccounts(false);
+  const { accounts } = useAccounts();
   const hasPersonal = transactions.some(
     (transaction) => transaction.type !== "transfer" && transaction.scope === "personal"
   );

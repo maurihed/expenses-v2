@@ -13,6 +13,7 @@ import { CategoryIcon } from "@/components/ui/category-icon";
 import { DialogFooter } from "@/components/ui/dialog";
 import DrawerSelector from "@/components/ui/drawer-selector";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { resolveDefaultAccountId, resolveDefaultCategory } from "@/lib/capturePreferences";
@@ -47,7 +48,7 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
   const [dateOpen, setDateOpen] = useState(false);
   const [showMore, setShowMore] = useState(transactionToEdit != null);
   const [savedDefaults, setSavedDefaults] = useState(false);
-  const { accounts } = useAccounts(false);
+  const { accounts, loadingAccounts } = useAccounts();
   const { categories } = useCategories();
   const { newTransaction, editTransaction, mutationLoading, transactionMutationError } =
     useTransactions(false);
@@ -492,12 +493,16 @@ function TransactionForm({ accountId, transactionToEdit }: Props) {
             <FormItem>
               <FormLabel>{isTransfer ? "Cuenta origen" : "Cuenta"}</FormLabel>
               <FormControl>
-                <DrawerSelector
-                  items={accountItems}
-                  value={value}
-                  onChange={onChange}
-                  renderItem={renderAccountItem}
-                />
+                {loadingAccounts && accountItems.length === 0 ? (
+                  <Loader className="py-2" />
+                ) : (
+                  <DrawerSelector
+                    items={accountItems}
+                    value={value}
+                    onChange={onChange}
+                    renderItem={renderAccountItem}
+                  />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
