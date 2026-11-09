@@ -109,11 +109,7 @@ function DebtsPage() {
 
   const usdRate = fx?.rate ?? null;
   const debtTotals = debtTotalsToMxn(debts, usdRate);
-  const totalRemaining = debtTotals
-    ? type === "payable"
-      ? debtTotals.payable
-      : debtTotals.receivable
-    : null;
+  const totalRemaining = type === "payable" ? debtTotals.payable : debtTotals.receivable;
 
   return (
     <div className="grid grid-cols-1 gap-4">

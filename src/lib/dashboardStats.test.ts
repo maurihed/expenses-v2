@@ -68,6 +68,20 @@ describe("computePatrimony", () => {
     expect(result.debtsMxn).toBe(0);
     expect(result.netMxn).toBe(250);
   });
+
+  it("no oculta la deuda por pagar si una por cobrar no se puede convertir", () => {
+    const result = computePatrimony(
+      [acc({ balance: 1000 })],
+      [
+        debt({ type: "payable", remaining: 100 }),
+        debt({ type: "receivable", currency: "USD", remaining: 10 }),
+      ],
+      null
+    );
+    expect(result.assetsMxn).toBe(1000);
+    expect(result.debtsMxn).toBe(100);
+    expect(result.netMxn).toBe(900);
+  });
 });
 
 describe("computeMonthStats", () => {
@@ -131,5 +145,44 @@ describe("computeMonthStats", () => {
       count: 0,
       topCategory: null,
     });
+  });
+
+  it("convierte ingresos y gastos a MXN según la cuenta", () => {
+    const accounts = [
+      acc({ id: "mxn", currency: "MXN" }),
+      acc({ id: "usd", currency: "USD" }),
+    ];
+    const stats = computeMonthStats(
+      [
+        tx({ type: "income", accountId: "mxn", amount: 1000 }),
+        tx({ type: "expense", accountId: "mxn", amount: 100 }),
+        tx({ type: "expense", accountId: "usd", amount: 10 }),
+      ],
+      8,
+      2026,
+      today,
+      accounts,
+      17
+    );
+    expect(stats.income).toBe(1000);
+    expect(stats.expense).toBeCloseTo(270, 6);
+    expect(stats.balance).toBeCloseTo(730, 6);
+    expect(stats.topCategory).toEqual({ category: Categories.OTROS, amount: 270 });
+  });
+
+  it("devuelve totales nulos si falta la tasa de un movimiento USD", () => {
+    const accounts = [acc({ id: "usd", currency: "USD" })];
+    const stats = computeMonthStats(
+      [tx({ accountId: "usd", amount: 10 })],
+      8,
+      2026,
+      today,
+      accounts,
+      null
+    );
+    expect(stats.expense).toBeNull();
+    expect(stats.balance).toBeNull();
+    expect(stats.avgDaily).toBeNull();
+    expect(stats.topCategory).toBeNull();
   });
 });

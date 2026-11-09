@@ -7,23 +7,22 @@ import clsx from "clsx";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useBudget } from "../hooks/useBudget";
-import { useTransactions } from "../hooks/useTransactions";
+import { useMonthlySpending } from "../hooks/useMonthlySpending";
 import BudgetDrawer from "./BudgetDrawer";
 
 function BudgetCard() {
-  const { transactions } = useTransactions();
+  const { spentMxn, loading: spentLoading, error: spentError } = useMonthlySpending();
   const { month, year } = useExpensesStore((state) => state.monthYear);
   const { budget, loadingBudget, budgetError, refreshBudget } = useBudget(year, month);
   const [budgetOpen, setBudgetOpen] = useState(false);
 
-  const spentThisMonth = transactions
-    .filter((transaction) => transaction.type === "expense")
-    .reduce((sum, transaction) => sum + transaction.amount, 0);
-
   const budgetAmount = budget && budget.amount > 0 ? budget.amount : null;
-  const budgetRemaining = budgetAmount != null ? budgetAmount - spentThisMonth : null;
+  const budgetRemaining =
+    budgetAmount != null && spentMxn != null ? budgetAmount - spentMxn : null;
   const budgetProgress =
-    budgetAmount && budgetAmount > 0 ? Math.min(100, (spentThisMonth / budgetAmount) * 100) : 0;
+    budgetAmount && budgetAmount > 0 && spentMxn != null
+      ? Math.min(100, (spentMxn / budgetAmount) * 100)
+      : 0;
 
   return (
     <>
@@ -66,7 +65,13 @@ function BudgetCard() {
             <div className="flex items-end justify-between gap-3">
               <div>
                 <p className="text-xs text-muted-foreground">Gastado</p>
-                <p className="font-bold tabular-nums">{formatMoney(spentThisMonth, "MXN")}</p>
+                {spentLoading ? (
+                  <Loader className="py-1" />
+                ) : (
+                  <p className="font-bold tabular-nums">
+                    {spentError || spentMxn == null ? "—" : formatMoney(spentMxn, "MXN")}
+                  </p>
+                )}
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">
@@ -77,7 +82,9 @@ function BudgetCard() {
                     "text-destructive": budgetRemaining != null && budgetRemaining < 0,
                   })}
                 >
-                  {formatMoney(Math.abs(budgetRemaining ?? 0), "MXN")}
+                  {budgetRemaining != null
+                    ? formatMoney(Math.abs(budgetRemaining), "MXN")
+                    : "—"}
                 </p>
               </div>
             </div>
@@ -99,6 +106,12 @@ function BudgetCard() {
             <p className="mt-1 text-xs text-muted-foreground">
               Presupuesto {formatMoney(budgetAmount, "MXN")}
             </p>
+            {Boolean(spentError) && (
+              <p className="mt-1 text-xs text-destructive">No se pudo cargar el gasto del mes.</p>
+            )}
+            {!spentLoading && !spentError && spentMxn == null && (
+              <p className="mt-1 text-xs text-destructive">No se pudo convertir el gasto a MXN.</p>
+            )}
           </div>
         )}
       </ExpenseSection>

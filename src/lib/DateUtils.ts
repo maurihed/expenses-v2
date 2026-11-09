@@ -12,7 +12,7 @@ const MONTHS = [
   "Septiembre",
   "Octubre",
   "Noviembre",
-  "Dicdiembre",
+  "Diciembre",
 ];
 const WEEK_DAYS = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 export const formatTransactionDate = (date: string) => {

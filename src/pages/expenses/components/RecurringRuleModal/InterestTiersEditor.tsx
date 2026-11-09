@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { computeTieredInterest } from "@/lib/interest";
 import { cn, formatMoney } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -15,32 +16,6 @@ type Props = {
   frequency?: "daily" | "monthly";
   onChange: (tiers: InterestTierRow[]) => void;
   error?: string;
-};
-
-const computeEstimatedInterest = (
-  balance: number,
-  tiers: InterestTierRow[],
-  frequency: "daily" | "monthly"
-): number => {
-  const periodsPerYear = frequency === "daily" ? 365 : 12;
-  const sorted = [...tiers].sort((a, b) => {
-    if (a.upTo === null) return 1;
-    if (b.upTo === null) return -1;
-    return a.upTo - b.upTo;
-  });
-
-  let previousCap = 0;
-  let interest = 0;
-
-  for (const tier of sorted) {
-    const cap = tier.upTo ?? Infinity;
-    const portion = Math.max(0, Math.min(balance, cap) - previousCap);
-    interest += (portion * (tier.annualRatePercent / 100)) / periodsPerYear;
-    previousCap = cap;
-    if (balance <= previousCap) break;
-  }
-
-  return Math.round(interest * 100) / 100;
 };
 
 function InterestTiersEditor({
@@ -78,7 +53,11 @@ function InterestTiersEditor({
     onChange(next);
   };
 
-  const estimated = computeEstimatedInterest(balance, tiers, frequency);
+  const estimated = computeTieredInterest(
+    balance,
+    tiers.map((tier) => ({ upTo: tier.upTo, annualRate: tier.annualRatePercent / 100 })),
+    frequency === "daily" ? 365 : 12
+  );
   const periodLabel = frequency === "daily" ? "diario" : "mensual";
 
   return (

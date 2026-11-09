@@ -39,8 +39,26 @@ describe("debtTotalsToMxn", () => {
     expect(result).toEqual({ payable: 170, receivable: 0 });
   });
 
-  it("devuelve null si una deuda USD no tiene tasa", () => {
-    expect(debtTotalsToMxn([debt({ currency: "USD", amount: 10 })], null)).toBeNull();
+  it("marca null solo el lado que no se puede convertir", () => {
+    const result = debtTotalsToMxn(
+      [
+        debt({ type: "payable", amount: 1000 }),
+        debt({ type: "receivable", amount: 10, currency: "USD" }),
+      ],
+      null
+    );
+    expect(result).toEqual({ payable: 1000, receivable: null });
+  });
+
+  it("mantiene las deudas por cobrar si una por pagar no se puede convertir", () => {
+    const result = debtTotalsToMxn(
+      [
+        debt({ type: "payable", amount: 10, currency: "USD" }),
+        debt({ type: "receivable", amount: 500 }),
+      ],
+      null
+    );
+    expect(result).toEqual({ payable: null, receivable: 500 });
   });
 
   it("sin deudas devuelve ceros", () => {

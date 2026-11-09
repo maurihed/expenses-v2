@@ -3,7 +3,7 @@ import { computeMonthStats } from "@/lib/dashboardStats";
 import { formatMoney } from "@/lib/utils";
 import { useExpensesStore } from "@/stores/expenses.store";
 import clsx from "clsx";
-import { useTransactions } from "../../hooks/useTransactions";
+import { useMonthlySpending } from "../../hooks/useMonthlySpending";
 import MonthYearPicker from "../ExpensesHeader/MonthYearPicker";
 
 function Row({ label, value, tone }: { label: string; value: string; tone?: "positive" | "negative" }) {
@@ -24,10 +24,11 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: "pos
 }
 
 function MonthSummary() {
-  const { transactions } = useTransactions();
+  const { transactions, accounts, usdRate } = useMonthlySpending();
   const { month, year } = useExpensesStore((state) => state.monthYear);
-  const stats = computeMonthStats(transactions, month, year);
+  const stats = computeMonthStats(transactions, month, year, new Date(), accounts, usdRate);
 
+  const money = (value: number | null) => (value != null ? formatMoney(value, "MXN") : "—");
   const savingsRate =
     stats.savingsRate != null ? `${Math.round(stats.savingsRate * 100)}%` : "—";
 
@@ -39,28 +40,28 @@ function MonthSummary() {
       <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3">
         <div>
           <p className="text-xs text-muted-foreground">Ingresos</p>
-          <p className="font-bold tabular-nums text-positive">{formatMoney(stats.income, "MXN")}</p>
+          <p className="font-bold tabular-nums text-positive">{money(stats.income)}</p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Gastos</p>
-          <p className="font-bold tabular-nums text-negative">{formatMoney(stats.expense, "MXN")}</p>
+          <p className="font-bold tabular-nums text-negative">{money(stats.expense)}</p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Balance</p>
           <p
-            className={clsx(
-              "font-bold tabular-nums",
-              stats.balance < 0 ? "text-negative" : "text-positive"
-            )}
+            className={clsx("font-bold tabular-nums", {
+              "text-negative": stats.balance != null && stats.balance < 0,
+              "text-positive": stats.balance != null && stats.balance >= 0,
+            })}
           >
-            {formatMoney(stats.balance, "MXN")}
+            {money(stats.balance)}
           </p>
         </div>
       </div>
 
       <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
         <Row label="Tasa de ahorro" value={savingsRate} />
-        <Row label="Promedio diario de gasto" value={formatMoney(stats.avgDaily, "MXN")} />
+        <Row label="Promedio diario de gasto" value={money(stats.avgDaily)} />
         <Row label="Movimientos del mes" value={String(stats.count)} />
         <Row
           label="Categoría con más gasto"

@@ -7,10 +7,11 @@ import { useDebts } from "../../hooks/useDebts";
 import { useFxRate } from "../../hooks/useFxRate";
 
 function PatrimonyCard() {
-  const { accounts, loadingAccounts } = useAccounts();
+  const { accounts: allAccounts, loadingAccounts } = useAccounts(true, true);
   const { debts } = useDebts();
   const { fx } = useFxRate();
   const usdRate = fx?.rate ?? null;
+  const accounts = allAccounts.filter((account) => !account.archived);
 
   const { assetsMxn, debtsMxn, netMxn } = computePatrimony(accounts, debts, usdRate);
 
